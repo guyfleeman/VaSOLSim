@@ -1,0 +1,19 @@
+/////////////////
+//  For Users  //
+/////////////////
+
+The "documentation" folder contains resources to help users learn how VaSolSim works, adn how they can utilize all of its features. If storage space on github becomes tight, it will inclode links to a youtube channel.
+
+The "bin" folder contains all of the finished programs. If you are looking to download VASolSim, please grab the latest version form here. You will need Oracle Java 7 or later.
+
+//////////////////////
+//  For Developers  //
+//////////////////////
+
+The "src" directory contains all of the source code for the project.
+
+The "javadoc" directory contains all of the code documentation for the project.
+
+The "out" directory contains developer build artifacts and class files.
+
+VaSOLSim.iml is the IntelliJ IDEA project file.
