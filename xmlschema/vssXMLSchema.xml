@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="vsstest">
+        <xs:complexType>
+            <xs:sequence>
+
+                <xs:element name="information">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="author" type="xs:string" />
+                            <xs:element name="school" type="xs:string" />
+                            <xs:element name="class" type="xs:string" />
+                            <xs:element name="date" type="xs:string" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="sec">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="hashAlgorithm" type="xs:string" />
+                            <xs:element name="encryptedValidationHash" type="xs:string" />
+                            <xs:element name="encryptingQuestions" type="xs:boolean" />
+
+                            <xs:element name="statisticsReporting" type="xs:boolean" />
+                            <xs:element name="statisticsStandaloneSMTP" type="xs:boolean" />
+                            <xs:element name="encryptingStatistics" type="xs:boolean" />
+                            <xs:element name="encryptedStatisticsEmailAddress" />
+                            <xs:element name="encryptedStatisticsEmailSMTPPassword" />
+
+                            <xs:element name="notificationReporting" type="xs:boolean" />
+                            <xs:element name="notificationStandaloneSMTP" type="xs:boolean" />
+                            <xs:element name="encryptedNotificationEmailAddress" />
+                            <xs:element name="encryptedNotificationEmailSMTPPassword" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="questionSet" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="setId" />
+                            <xs:element name="usingResource" type="xs:boolean" />
+                            <xs:element name="resourceParadigm" type="xs:string" />
+                            <xs:element name="resourceData" />
+
+                            <xs:element name="questionGroup" minOccurs="1" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="questionID" />
+                                        <xs:element name="question" type="xs:string" />
+                                        <xs:element name="encryptedAnswerHash" />
+
+                                        <xs:element name="answer" minOccurs="1" maxOccurs="8">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="answerID" />
+                                                    <xs:element name="answerChoiceID" />
+                                                    <xs:element name="answer" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
