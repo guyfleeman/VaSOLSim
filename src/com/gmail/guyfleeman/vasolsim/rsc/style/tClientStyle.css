@@ -1,0 +1,36 @@
+.root
+{
+	-fx-background-image: url("../img/background.jpg");
+}
+
+.borders
+{
+	-fx-padding: 10 10 10 10;
+	-fx-spacing: 20 20 20 20;
+}
+
+.leftvbox
+{
+	-fx-padding: 10 10 10 10;
+    -fx-spacing: 20 20 20 20;
+
+	-fx-background-color: rgba(51, 173, 255, 0.2);
+	-fx-border-width: 2;
+	-fx-border-color: rgba(51, 173, 255, 0.6);
+	/* top-left, top-right, bottom-right, bottom-left */
+     -fx-border-radius: 10 0 0 10;
+     -fx-background-radius: 9 0 0 9;
+}
+
+.centervbox
+{
+	-fx-padding: 10 10 10 10;
+    -fx-spacing: 20 20 20 20;
+
+    -fx-background-color: rgba(51, 173, 255, 0.2);
+    -fx-border-width: 2;
+    -fx-border-color: rgba(51, 173, 255, 0.6);
+    /* top-left, top-right, bottom-right, bottom-left */
+    -fx-border-radius: 0 10 10 0;
+    -fx-background-radius: 0 9 9 0;
+}

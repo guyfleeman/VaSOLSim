@@ -1,9 +1,16 @@
 package com.gmail.guyfleeman.vasolsim;
 
-import com.gmail.guyfleeman.vasolsim.common.file.VaSOLSimExam;
+import com.gmail.guyfleeman.vasolsim.common.VaSolSimException;
+import com.gmail.guyfleeman.vasolsim.common.file.Exam;
+import com.gmail.guyfleeman.vasolsim.common.file.ExamBuilder;
+import com.gmail.guyfleeman.vasolsim.common.struct.AnswerChoice;
+import com.gmail.guyfleeman.vasolsim.common.struct.Question;
+import com.gmail.guyfleeman.vasolsim.common.struct.QuestionSet;
 
-import javax.crypto.Cipher;
 import java.io.File;
+import java.util.ArrayList;
+
+import static com.gmail.guyfleeman.vasolsim.common.GenericUtils.*;
 
 /**
  * @author guyfleeman
@@ -15,44 +22,87 @@ public class VaSOLSimTestRunner
 	public static void main(String[] args) throws Exception
 	{
 		docGen();
-
-		//System.out.println(VaSOLSimExam.convertHashToString(VaSOLSimExam.generateHash("m3chdud3m@n".getBytes(), (short) 512)));
-		//System.out.println(VaSOLSimExam.convertHashToString(VaSOLSimExam.generateHash("m3chdud3m@n".getBytes(), (short) 512)));
-
-		/*
-		System.out.println(VaSOLSimExam.convertHashToString(VaSOLSimExam.generateHash("m3chdud3m@n".getBytes(), VaSOLSimExam.HashType.SHA256)));
-		System.out.println(VaSOLSimExam.convertHashToString(VaSOLSimExam.generateHash("m3chdud3m@n".getBytes(), VaSOLSimExam.HashType.SHA512)));
-
-		byte[] passwordHash = VaSOLSimExam.generateHash("m3chdud3m@n".getBytes(), VaSOLSimExam.HashType.SHA256);
-		Cipher ec = VaSOLSimExam.getEncryptionCipher(passwordHash);
-		Cipher dc = VaSOLSimExam.getDecryptionCipher(passwordHash);
-
-		String message = "Hello Crypto World!";
-		System.out.println(message);
-		byte[] encMessage = ec.doFinal(message.getBytes());
-		System.out.println(new String(encMessage));
-		String decMessage = new String(dc.doFinal(encMessage));
-		System.out.println(decMessage);
-		*/
 	}
 
-	public static void docGen() throws Exception
+	public static void smtpTest()
 	{
-		VaSOLSimExam exam = new VaSOLSimExam();
-		exam.setReportingStatistics(true);
-		exam.setReportingStatisticsEncrypted(true);
-		exam.setReportingStatisticsUsingStandaloneEmailParadigm(true);
-		exam.setDecryptedStatisticsEmail("guyfleeman@gmail.com");
-		exam.setDecryptedStatisticsEmailPassword("guyfleeman".getBytes());
+		System.out.println(isValidEmail("guyfleeman@gmail.com"));
+		System.out.println(isValidAddress("smtp.gmail.com"));
+		//System.out.println(canConnectToAddress("smtp.gmail.com"));
+		System.out.println(isValidSMTPConfiguration("smtp.gmail.com",
+				587,
+				"guyfleeman@gmail.com",
+				"mechdudeman".getBytes(),
+				true));
+	}
 
-		exam.setNotifyingCompletion(true);
-		exam.setDecryptedNotificationEmail("guyfleeman@gmail.com");
-		exam.setDecryptedNotificationEmailPassword("guyfleeman".getBytes());
+	public static void docGen() throws VaSolSimException
+	{
+		ExamBuilder eb = ExamBuilder.getInstance("password".getBytes());
+		eb.setReportingStats(true);
+		eb.setStatsDestinationEmail("guyfleeman@gmail.com");
+		eb.setReportingStatsStandalone(true);
+		eb.setStatsSenderEmail("guyfleeman@gmail.com");
+		eb.setStatsSenderEmailPassword("<mypassword>".getBytes());
+		eb.setStatsSenderSMTPAddress("smtp.gmail.com");
+		Exam myExam = eb.getExamFramework();
 
-		exam.setValidationKey("m3chdud3m@n");
+		ArrayList<QuestionSet> questionSets = new ArrayList<QuestionSet>();
+		QuestionSet setOne = new QuestionSet("Question Set One", null, false);
+		Question questionOne = new Question("Q1",
+				"Was George Washington the first president of the United States?",
+				QuestionType.MULTIPLE_CHOICE,
+				null,
+				null,
+				true,
+				false,
+				false);
+		AnswerChoice acOne = new AnswerChoice("A. ", "True", false);
+		AnswerChoice acTwo = new AnswerChoice("B. ", "False", false);
+		ArrayList<AnswerChoice> answers = new ArrayList<AnswerChoice>();
+		answers.add(acOne);
+		answers.add(acTwo);
+		questionOne.setAnswerChoices(answers);
+		ArrayList<String> encAnsHash = new ArrayList<String>();
+		encAnsHash.add(convertBytesToHexString(applyCryptographicCipher("True".getBytes(), myExam.getEncryptionCipher())));
+		questionOne.setCorrectAnswerEncryptedHashes(encAnsHash);
 
-		exam.setTestPublisher("Will S.");
+		Question questionTwo = new Question("Q1",
+				"Which of the following are nouns?",
+				QuestionType.MULTIPLE_CHOICE,
+				null,
+				null,
+				true,
+				false,
+				false);
+		AnswerChoice acThree = new AnswerChoice("A. ", "red", false);
+		AnswerChoice acFour = new AnswerChoice("B. ", "apple", false);
+		AnswerChoice acFive = new AnswerChoice("C. ", "family", false);
+		AnswerChoice acSix = new AnswerChoice("D. ", "to run", false);
+		ArrayList<AnswerChoice> answersTwo = new ArrayList<AnswerChoice>();
+		answersTwo.add(acThree);
+		answersTwo.add(acFour);
+		answersTwo.add(acFive);
+		answersTwo.add(acSix);
+		questionTwo.setAnswerChoices(answersTwo);
+		ArrayList<String> encAnsHashTwo = new ArrayList<String>();
+		encAnsHashTwo.add(convertBytesToHexString(applyCryptographicCipher("apple".getBytes(),
+				myExam.getEncryptionCipher())));
+		encAnsHashTwo.add(convertBytesToHexString(applyCryptographicCipher("family".getBytes(),
+				myExam.getEncryptionCipher())));
+		questionTwo.setCorrectAnswerEncryptedHashes(encAnsHashTwo);
 
-		exam.write(new File("/home/williamstuckey/Desktop/exam.xml"), true);
+		ArrayList<Question> questions = new ArrayList<Question>();
+		questions.add(questionOne);
+		questions.add(questionTwo);
+
+		setOne.setQuestions(questions);
+		questionSets.add(setOne);
+
+		myExam.setQuestionSets(questionSets);
+
+		myExam.sendEmail("My First Email", "This is the body.", true);
+
+		ExamBuilder.writeExamToFile(myExam, new File("/home/guyfleeman/Desktop/exam.xml"), true);
 	}
 }

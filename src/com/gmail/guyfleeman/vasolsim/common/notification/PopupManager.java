@@ -22,6 +22,11 @@ public class PopupManager
 
 	public static void showMessage(String message)
 	{
-		JOptionPane.showMessageDialog(null, message);
+		showMessage(message, "Message");
+	}
+
+	public static void showMessage(String message, String title)
+	{
+		JOptionPane.showMessageDialog(null, message, title, JOptionPane.WARNING_MESSAGE);
 	}
 }
