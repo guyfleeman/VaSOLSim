@@ -4,7 +4,7 @@
         <xs:complexType>
             <xs:sequence>
 
-                <xs:element name="information">
+                <xs:element name="info">
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="testName" type="xs:string" />
@@ -19,21 +19,16 @@
                 <xs:element name="sec">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="hashAlgorithm" type="xs:string" />
-                            <xs:element name="encryptedValidationHash" type="xs:string" />
-                            <xs:element name="parametricIV" type="xs:string" />
-                            <xs:element name="encryptingQuestions" type="xs:boolean" />
+                            <xs:element name="encValHash" type="xs:string" />
+                            <xs:element name="paramIV" type="xs:string" />
 
-                            <xs:element name="statisticsReporting" type="xs:boolean" />
-                            <xs:element name="statisticsStandaloneParadigm" type="xs:boolean" />
-                            <xs:element name="encryptingStatistics" type="xs:boolean" />
-                            <xs:element name="encryptedStatisticsReportingEmail" />
-                            <xs:element name="encryptedStatisticsReportingEmailPassword" />
-
-                            <xs:element name="notificationReporting" type="xs:boolean" />
-                            <xs:element name="notificationStandaloneSMTP" type="xs:boolean" />
-                            <xs:element name="encryptedNotificationReportingEmail" />
-                            <xs:element name="encryptedNotificationReportingEmailPassword" />
+                            <xs:element name="statsReporting" type="xs:boolean" />
+                            <xs:element name="statsStandalone" type="xs:boolean" />
+                            <xs:element name="statsDestEmail" />
+                            <xs:element name="statsSender" />
+                            <xs:element name="statsSenderPw" />
+                            <xs:element name="statsSenderSMTPAddr" />
+                            <xs:element name="statsSenderSMTPPort" />
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
@@ -42,18 +37,19 @@
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="setID" />
-                            <xs:element name="usingResource" type="xs:boolean" />
-                            <xs:element name="resourceParadigm" type="xs:string" />
-                            <xs:element name="resourceData" />
+                            <xs:element name="setName" />
+                            <xs:element name="rscType" type="xs:string" />
+                            <xs:element name="data" />
 
-                            <xs:element name="questionGrouping" minOccurs="1" maxOccurs="unbounded">
+                            <xs:element name="question" minOccurs="1" maxOccurs="unbounded">
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="questionID" />
+                                        <xs:element name="questionName" />
                                         <xs:element name="question" type="xs:string" />
-                                        <xs:element name="encryptedAnswerHash" />
-                                        <xs:element name="scramblingAnswers" />
-                                        <xs:element name="orderMatters" />
+                                        <xs:element name="scramAns" />
+                                        <xs:element name="retOrder" />
+                                        <xs:element name="encAnsHash" minOccurs="1" maxOccurs="8" />
 
                                         <xs:element name="answerChoice" minOccurs="1" maxOccurs="8">
                                             <xs:complexType>

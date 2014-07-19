@@ -1,0 +1,4 @@
+//sources
+//http://www.werockyourweb.com/list-outgoing-smtp-mail-servers/
+//http://www.liveport.com/smtp-servers
+//http://www.arclab.com/en/amlc/list-of-smtp-and-imap-servers-mailserver-list.html
