@@ -4,9 +4,11 @@ import com.gmail.guyfleeman.vasolsim.common.notification.PopupManager;
 import com.gmail.guyfleeman.vasolsim.common.struct.AnswerChoice;
 import com.gmail.guyfleeman.vasolsim.common.struct.Question;
 import com.gmail.guyfleeman.vasolsim.common.struct.QuestionSet;
+import com.gmail.guyfleeman.vasolsim.tclient.element.tree.TreeElement;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -223,6 +225,74 @@ public class GenericUtils {
 		D_AND_D_VENN_DIAGRAM
 	}
 
+	///////////////////////////////////
+	//  TEACHER CLIENT UI CONSTANTS  //
+	@SuppressWarnings("unused")
+	private static final boolean __BEGIN_TEACHER_CLIENT_UI_CONSTANTS = false;
+	///////////////////////////////////
+
+	//TODO MAKE ALL THESE VAR CAPS (dee dee dee)
+	public static final String passwordDescriptionLabel   = "Please provide and confirm the exam's password prior to" +
+			" " +
+			"creation. This password will be used to prevent students from modifying the contents and the exam. The " +
+			"students will enter this password when they go to take the exam, so please do not use your personal " +
+			"information. Some good choices might be \"class period\" (e.g \"4y\") or \"your name\" (e.g. \"Karen\")" +
+			"." +
+			"You do not need to include the quotation marks, however symbols are valid. Students must enter the " +
+			"*EXACT* same password that you enter here in order to access the exam. Once you set the exam's " +
+			"password," +
+			"it may not be changed for security reasons; please double check your password prior to continuing.";
+	public static final String passwordPromptOne          = "Please enter the password: ";
+	public static final String passwordPromptTwo          = "Please confirm the password: ";
+	public static final String passwordContinueButtonText = "Continue";
+	public static final String passwordInvalidTitle       = "Invalid Password";
+	public static final String passwordInvalidMessage     = "Password cannot be of zero length or all whitespace.";
+	public static final String passwordNoMatch            = "Passwords do not match.";
+
+	public static final String statsReportingInfoLabelText = "This form will take the information needed to report " +
+			"the answers given by students. The answers can be read and compiled into class statistics. \n\n" +
+			"If you want to report statistics please check the box and enter the email address you want the " +
+			"statistics to be sent. DO NOT SEND STATISTICS TO YOUR PERSONAL EMAIL; you will get a bulky email for " +
+			"every student that completes the test. It is strongly recommended that you establish a gmail account " +
+			"for the sole purpose of reporting statistics. Once you create the email account, you will never have " +
+			"to read it again, the program will do it for you and compile the stats. When the student completes the " +
+			"test, he/she will be prompted to enter his/her email address. The program will automatically send an " +
+			"email from their account to the destination address you provide. \n\nIf you have any more concerns, " +
+			"or need help filling out the form, please visit my youtube channel. (!!LINK COMING SOON!!)";
+	public static final String statsReportingLabelText     = "Check this box to enable statistics reporting.";
+	public static final String statsReportingCBText        = "reporting statistics";
+	public static final String statsDestAddrLabelText      = "The destination email address for reported statistics.";
+	public static final String statsVerifyButtonText = "Verify ->";
+
+	public static final String statsSAInfoLabelText = "If you'd prefer students not enter their own emails, " +
+			"you can report stats in \"standalone mode.\" In this mode, you will provide the address and password " +
+			"of an email account, which will send the answer data for all students. DO NOT USE YOUR PERSONAL EMAIL. " +
+			"The email and password will be encrypted using the industry standard for credit card data " +
+			"(SHA-512 -> AES-256 -> StartTLS). ";
+	public static final String statsSALabelText = "Check this box to enable standalone stats reporting.";
+	public static final String statsSACBText = "reporting statistics standalone";
+	public static final String statsSAAddrLabelText = "The sender email address.";
+	public static final String statsSAPasswordLabelText = "The sender email address password.";
+	public static final String statsSASMTPAddrLabelText = "The SMTP address for the email provider (should " +
+			"auto-complete).";
+	public static final String statsSASMTPPortLabelText = "The port for the SMTP address (should auto-complete).";
+	public static final String addressInvalidTitle = "Invalid Address";
+	public static final String emailInvalidMessage = "Email cannot be of zero length or all whitespace.";
+	public static final String emailInvalidRegexMessage = "Email is not of valid form.";
+	public static final String verifiedTitle = "Information Verified";
+	public static final String verifiedMessage = "All required information has been verified.";
+	public static final String addressInvalidMessage = "The address cannot be of zero length or all whitespace.";
+	public static final String addressInvalidRegexMessage = "The address is not of valid form.";
+	public static final String portInvalidTitle = "Invalid Port";
+	public static final String portInvalidMessage = "The port cannot be nothing or all whitespace";
+	public static final String portInvalidCharsMessage = "The port must be a numeric integer.";
+	public static final String portInvalidRange = "The port must be between 0 and 65536.";
+	public static final String smtpBadConfig = "The SMTP configuration was invalid.";
+	public static final String smtpBadTitle = "Invalid SMTP";
+	public static final String internalExceptionOnExamBuilderInstanceInit = "A problem internal to VaSOLSim has " +
+			"occurred.\nI apologize for the inconvenience.\n\n";
+	public static final String internalExceptionTitle = "Internal Exception";
+
 	////////////////////////////////
 	//  END CONSTANT DECLARATION  //
 	////////////////////////////////
@@ -417,11 +487,6 @@ public class GenericUtils {
 		if (!isValidAddress(address) || port <= 0 || !isValidEmail(email) || password.length == 0)
 			return false;
 
-		/*
-		if (!canConnectToAddress(address))
-			return false;
-			*/
-
 		try {
 			Properties smtpProperties = new Properties();
 			smtpProperties.put("mail.smtp.starttls.enable", "true");
@@ -433,8 +498,7 @@ public class GenericUtils {
 			return true;
 		} catch (Exception e) {
 			if (notify) {
-				PopupManager.showMessage("Cause:\n" + e.getCause() + "\n\nMessage:\n" + e.getMessage(),
-						"SMTP Failed!");
+				PopupManager.showMessage("Cause:\n" + e.getCause() + "\n\nMessage:\n" + e.getMessage(), smtpBadTitle);
 				System.out.println(e.getCause());
 				System.out.println(e.getMessage());
 			}
@@ -530,6 +594,20 @@ public class GenericUtils {
 		examsIcon.setFitHeight(imgSize);
 		examsIcon.setFitWidth(imgSize);
 		return new TreeItem<String>(title, examsIcon);
+	}
+
+	public static TreeItem<TreeElement> createTreeItem(Class resourceLoaderClass,
+	                                            TreeElement box,
+	                                            String iconLocation,
+	                                            int imgSize) {
+		if (resourceLoaderClass == null || box == null || iconLocation == null || imgSize <= 0)
+			return null;
+
+		ImageView examsIcon = new ImageView(
+				new Image(resourceLoaderClass.getResource(iconLocation).toExternalForm()));
+		examsIcon.setFitHeight(imgSize);
+		examsIcon.setFitWidth(imgSize);
+		return new TreeItem<TreeElement>(box, examsIcon);
 	}
 
 	/**

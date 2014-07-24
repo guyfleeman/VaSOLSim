@@ -572,4 +572,18 @@ public class ExamBuilder
 	 	if (isValidAddress(address))
 		    this.decryptedStatsSenderSMTPAddress = address.getBytes();
 	}
+
+	public void setStatsSenderSMTPPort(int port)
+	{
+		setStatsSenderSMTPPort(Integer.toString(port));
+	}
+
+	public void setStatsSenderSMTPPort(String port)
+	{
+		try {
+			if (!isValidPort(Integer.parseInt(port)))
+				this.decryptedStatsSenderSMTPPort = port.getBytes();
+		}
+		catch (NumberFormatException e) {}
+	}
 }
