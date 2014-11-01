@@ -15,6 +15,12 @@
 	-fx-padding: 3 5 3 5;
 }
 
+.helementspacing
+{
+	-fx-padding: 10 10 10 0;
+    -fx-spacing: 10 10 10 0;
+}
+
 .leftvbox
 {
 	-fx-padding: 10 10 10 10;
@@ -81,6 +87,27 @@
 	-fx-font-size: 16;
 	-fx-text-fill: rgb(255, 255, 255);
 	-fx-font-weight: bold;
+}
+
+.lbltextsub
+{
+ 	-fx-font-size: 14;
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-font-weight: bold;
+}
+
+.rectspacer
+{
+	-fx-fill: white;
+	-fx-stroke-width: 3;
+}
+
+.lblspacer
+{
+	-fx-font-size: 0;
+	-fx-padding: 0 0 0 0;
+	-fx-background-color: rgb(255, 255, 255);
+	/* -fx-background-radius: 2 2 2 2; */
 }
 
 .cbtext

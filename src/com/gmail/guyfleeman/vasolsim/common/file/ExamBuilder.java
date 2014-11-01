@@ -41,15 +41,17 @@ import static com.gmail.guyfleeman.vasolsim.common.GenericUtils.*;
 
 /**
  * @author williamstuckey
- * @date 7/11/14
- * <p></p>
+ * @date 7/11/14 <p></p>
  */
 public class ExamBuilder
 {
 	/**
-	 * Returns a new instance of an exam factory.
+	 * Returns a new thisInstance of an exam factory.
+	 *
 	 * @param validationKey the key that will be used to validate the exam
+	 *
 	 * @return an ExamFactory ready for validation
+	 *
 	 * @throws VaSolSimException
 	 */
 	public static ExamBuilder getInstance(String validationKey) throws VaSolSimException
@@ -58,14 +60,17 @@ public class ExamBuilder
 	}
 
 	/**
-	 * Returns a new instance of an exam factory.
+	 * Returns a new thisInstance of an exam factory.
+	 *
 	 * @param key the key that will be used to validate the exam
+	 *
 	 * @return an ExamFactory ready for validation
+	 *
 	 * @throws VaSolSimException
 	 */
 	public static ExamBuilder getInstance(byte[] key) throws VaSolSimException
 	{
-		/*
+	    /*
 		 * Generate a 512 bit (64 byte) hash from the given key.
 		 */
 		byte[] hash;
@@ -85,7 +90,9 @@ public class ExamBuilder
 
 	/**
 	 * Opens an exam from an exam xml file.
+	 *
 	 * @param examFile
+	 *
 	 * @return
 	 */
 	public static Exam getExamFromFile(File examFile, byte[] key)
@@ -144,11 +151,11 @@ public class ExamBuilder
 			examDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 
 			examTransformer = TransformerFactory.newInstance().newTransformer();
-			examTransformer.setOutputProperty(OutputKeys.INDENT,         "yes");
-			examTransformer.setOutputProperty(OutputKeys.METHOD,         "xml");
-			examTransformer.setOutputProperty(OutputKeys.ENCODING,       "UTF-8");
+			examTransformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			examTransformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			examTransformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			examTransformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "roles.dtd");
-			examTransformer.setOutputProperty(INDENTATION_KEY,           "4");
+			examTransformer.setOutputProperty(INDENTATION_KEY, "4");
 		}
 		catch (ParserConfigurationException e)
 		{
@@ -166,11 +173,11 @@ public class ExamBuilder
 		Element info = examDoc.createElement(XML_INFO_ELEMENT_NAME);
 		root.appendChild(info);
 
-		appendSubNode(XML_TEST_NAME_ELEMENT_NAME,   exam.getTestName(),   info, examDoc);
+		appendSubNode(XML_TEST_NAME_ELEMENT_NAME, exam.getTestName(), info, examDoc);
 		appendSubNode(XML_AUTHOR_NAME_ELEMENT_NAME, exam.getAuthorName(), info, examDoc);
 		appendSubNode(XML_SCHOOL_NAME_ELEMENT_NAME, exam.getSchoolName(), info, examDoc);
 		appendSubNode(XML_PERIOD_NAME_ELEMENT_NAME, exam.getPeriodName(), info, examDoc);
-		appendSubNode(XML_DATE_ELEMENT_NAME,        exam.getDate(),       info, examDoc);
+		appendSubNode(XML_DATE_ELEMENT_NAME, exam.getDate(), info, examDoc);
 
 
 		//start security xml section
@@ -178,41 +185,41 @@ public class ExamBuilder
 		root.appendChild(security);
 
 		appendSubNode(XML_ENCRYPTED_VALIDATION_HASH_ELEMENT_NAME,
-				convertBytesToHexString(exam.getEncryptedValidationHash()),
-				security,
-				examDoc);
+		              convertBytesToHexString(exam.getEncryptedValidationHash()),
+		              security,
+		              examDoc);
 		appendSubNode(XML_PARAMETRIC_INITIALIZATION_VECTOR_ELEMENT_NAME,
-				new String(exam.getParametricIV()),
-				security,
-				examDoc);
+		              new String(exam.getParametricIV()),
+		              security,
+		              examDoc);
 		appendSubNode(XML_IS_REPORTING_STATISTICS_ELEMENT_NAME,
-				Boolean.toString(exam.isReportingStats()),
-				security,
-				examDoc);
+		              Boolean.toString(exam.isReportingStats()),
+		              security,
+		              examDoc);
 		appendSubNode(XML_IS_REPORTING_STATISTICS_STANDALONE_ELEMENT_NAME,
-				Boolean.toString(exam.isReportingStatsStandalone()),
-				security,
-				examDoc);
+		              Boolean.toString(exam.isReportingStatsStandalone()),
+		              security,
+		              examDoc);
 		appendSubNode(XML_STATISTICS_DESTINATION_EMAIL_ADDRESS_ELEMENT_NAME,
-				exam.getStatsDestinationEmail(),
-				security,
-				examDoc);
+		              exam.getStatsDestinationEmail(),
+		              security,
+		              examDoc);
 		appendSubNode(XML_STATISTICS_SENDER_EMAIL_ADDRESS_ELEMENT_NAME,
-				new String(exam.getEncryptedStatsSenderEmail()),
-				security,
-				examDoc);
+		              new String(exam.getEncryptedStatsSenderEmail()),
+		              security,
+		              examDoc);
 		appendSubNode(XML_STATISTICS_SENDER_EMAIL_PASSWORD_ELEMENT_NAME,
-				new String(exam.getEncryptedStatsSenderEmailPassword()),
-				security,
-				examDoc);
+		              new String(exam.getEncryptedStatsSenderEmailPassword()),
+		              security,
+		              examDoc);
 		appendSubNode(XML_STATISTICS_SENDER_SMTP_ADDRESS_ELEMENT_NAME,
-				new String(exam.getEncryptedStatsSenderSMTPAddress()),
-				security,
-				examDoc);
+		              new String(exam.getEncryptedStatsSenderSMTPAddress()),
+		              security,
+		              examDoc);
 		appendSubNode(XML_STATISTICS_SENDER_SMTP_PORT_ELEMENT_NAME,
-				new String(exam.getEncryptedStatsSenderSMTPPort()),
-				security,
-				examDoc);
+		              new String(exam.getEncryptedStatsSenderSMTPPort()),
+		              security,
+		              examDoc);
 
 		ArrayList<QuestionSet> questionSets = exam.getQuestionSets();
 		if (verifyQuestionSetsIntegrity(questionSets))
@@ -225,23 +232,23 @@ public class ExamBuilder
 				root.appendChild(qSetElement);
 
 				appendSubNode(XML_QUESTION_SET_ID_ELEMENT_NAME,
-						Integer.toString(setsIndex + 1),
-						qSetElement,
-						examDoc);
+				              Integer.toString(setsIndex + 1),
+				              qSetElement,
+				              examDoc);
 				appendSubNode(XML_QUESTION_SET_NAME_ELEMENT_NAME,
-						(qSet.getName() == null || qSet.getName().equals(""))
-								? "Question Set " + (setsIndex + 1)
-								: qSet.getName(),
-						qSetElement,
-						examDoc);
+				              (qSet.getName() == null || qSet.getName().equals(""))
+				              ? "Question Set " + (setsIndex + 1)
+				              : qSet.getName(),
+				              qSetElement,
+				              examDoc);
 				appendSubNode(XML_QUESTION_SET_RESOURCE_TYPE_ELEMENT_NAME,
-						qSet.getResourceType().toString(),
-						qSetElement,
-						examDoc);
+				              qSet.getResourceType().toString(),
+				              qSetElement,
+				              examDoc);
 				appendSubNode(XML_QUESTION_SET_RESOURCE_DATA_ELEMENT_NAME,
-						new String(qSet.getResource()),
-						qSetElement,
-						examDoc);
+				              new String(qSet.getResource()),
+				              qSetElement,
+				              examDoc);
 
 				for (int setIndex = 0; setIndex < qSet.getQuestions().size(); setIndex++)
 				{
@@ -251,33 +258,33 @@ public class ExamBuilder
 					qSetElement.appendChild(qElement);
 
 					appendSubNode(XML_QUESTION_ID_ELEMENT_NAME,
-							Integer.toString(setIndex + 1),
-							qElement,
-							examDoc);
+					              Integer.toString(setIndex + 1),
+					              qElement,
+					              examDoc);
 					appendSubNode(XML_QUESTION_NAME_ELEMENT_NAME,
-							(question.getName() == null || question.getName().equals(""))
-									? "Question " + (setIndex + 1)
-									: question.getName(),
-							qElement,
-							examDoc);
+					              (question.getName() == null || question.getName().equals(""))
+					              ? "Question " + (setIndex + 1)
+					              : question.getName(),
+					              qElement,
+					              examDoc);
 					appendSubNode(XML_QUESTION_TEXT_ELEMENT_NAME,
-							question.getQuestion(),
-							qElement,
-							examDoc);
+					              question.getQuestion(),
+					              qElement,
+					              examDoc);
 					appendSubNode(XML_QUESTION_SCRAMBLE_ANSWERS_ELEMENT_NAME,
-							Boolean.toString(question.getScrambleAnswers()),
-							qElement,
-							examDoc);
+					              Boolean.toString(question.getScrambleAnswers()),
+					              qElement,
+					              examDoc);
 					appendSubNode(XML_QUESTION_REATIAN_ANSWER_ORDER_ELEMENT_NAME,
-							Boolean.toString(question.getAnswerOrderMatters()),
-							qElement,
-							examDoc);
+					              Boolean.toString(question.getAnswerOrderMatters()),
+					              qElement,
+					              examDoc);
 
 					for (String encAnsHash : question.getCorrectAnswerEncryptedHashes())
 						appendSubNode(XML_QUESTION_ENCRYPTED_ANSWER_HASH,
-								encAnsHash,
-								qElement,
-								examDoc);
+						              encAnsHash,
+						              qElement,
+						              examDoc);
 
 
 					for (int questionIndex = 0; questionIndex < question.getAnswerChoices().size(); questionIndex++)
@@ -288,17 +295,17 @@ public class ExamBuilder
 						qElement.appendChild(acElement);
 
 						appendSubNode(XML_ANSWER_CHOICE_ID_ELEMENT_NAME,
-								Integer.toString(questionIndex + 1),
-								acElement,
-								examDoc);
+						              Integer.toString(questionIndex + 1),
+						              acElement,
+						              examDoc);
 						appendSubNode(XML_ANSWER_CHOICE_VISIBLE_ID_ELEMENT_NAME,
-								ac.getVisibleChoiceID(),
-								acElement,
-								examDoc);
+						              ac.getVisibleChoiceID(),
+						              acElement,
+						              examDoc);
 						appendSubNode(XML_ANSWER_TEXT_ELEMENT_NAME,
-								ac.getAnswerText(),
-								acElement,
-								examDoc);
+						              ac.getAnswerText(),
+						              acElement,
+						              examDoc);
 					}
 				}
 			}
@@ -332,26 +339,26 @@ public class ExamBuilder
 	//  End Builder Instance Elements  //
 	/////////////////////////////////////
 
-	private byte[] encryptedValidationHash           = new byte[]{};
-	private byte[] parametricIV                      = new byte[16];
-	private Cipher encryptionCipher                  = null;
-	private Cipher decryptionCipher                  = null;
+	private byte[] encryptedValidationHash = new byte[]{};
+	private byte[] parametricIV            = new byte[16];
+	private Cipher encryptionCipher        = null;
+	private Cipher decryptionCipher        = null;
 
-	private boolean reportingStats                   = false;
-	private boolean reportingStatsStandalone         = false;
-	private byte[] decryptedStatsSenderEmail         = NO_SMTP.getBytes();
+	private boolean reportingStats                    = false;
+	private boolean reportingStatsStandalone          = false;
+	private byte[]  decryptedStatsSenderEmail         = NO_SMTP.getBytes();
 	@SuppressWarnings("all")
-	private byte[] encryptedStatsSenderEmail         = new byte[]{};
-	private byte[] decryptedStatsSenderEmailPassword = NO_SMTP.getBytes();
+	private byte[]  encryptedStatsSenderEmail         = new byte[]{};
+	private byte[]  decryptedStatsSenderEmailPassword = NO_SMTP.getBytes();
 	@SuppressWarnings("all")
-	private byte[] encryptedStatsSenderEmailPassword = new byte[]{};
-	private byte[] decryptedStatsSenderSMTPAddress   = NO_SMTP.getBytes();
+	private byte[]  encryptedStatsSenderEmailPassword = new byte[]{};
+	private byte[]  decryptedStatsSenderSMTPAddress   = NO_SMTP.getBytes();
 	@SuppressWarnings("all")
-	private byte[] encryptedStatsSenderSMTPAddress   = new byte[]{};
-	private byte[] decryptedStatsSenderSMTPPort      = "587".getBytes();
+	private byte[]  encryptedStatsSenderSMTPAddress   = new byte[]{};
+	private byte[]  decryptedStatsSenderSMTPPort      = "587".getBytes();
 	@SuppressWarnings("all")
-	private byte[] encryptedStatsSenderSMTPPort      = new byte[]{};
-	private String statsDestinationEmail             = NO_STATS;
+	private byte[]  encryptedStatsSenderSMTPPort      = new byte[]{};
+	private String  statsDestinationEmail             = NO_STATS;
 
 	protected ExamBuilder(byte[] validationHash) throws VaSolSimException
 	{
@@ -402,58 +409,58 @@ public class ExamBuilder
 		catch (IllegalBlockSizeException e)
 		{
 			throw new VaSolSimException(ERROR_MESSAGE_GENERIC_CRYPTO + "\n\nILLEGAL BLOCK SIZE\n" +
-					e.toString() + "\n" +
-					e.getCause() + "\n" +
-					ExceptionUtils.getStackTrace(e),
-					e);
+					                            e.toString() + "\n" +
+					                            e.getCause() + "\n" +
+					                            ExceptionUtils.getStackTrace(e),
+			                            e);
 		}
 		catch (BadPaddingException e)
 		{
 			throw new VaSolSimException(ERROR_MESSAGE_GENERIC_CRYPTO + "\n\nBAD PADDING\n" +
-					e.toString() + "\n" +
-					e.getCause() + "\n" +
-					ExceptionUtils.getStackTrace(e),
-					e);
+					                            e.toString() + "\n" +
+					                            e.getCause() + "\n" +
+					                            ExceptionUtils.getStackTrace(e),
+			                            e);
 		}
 		catch (NoSuchAlgorithmException e)
 		{
 			throw new VaSolSimException(ERROR_MESSAGE_GENERIC_CRYPTO + "\n\nBAD ALGORITHM\n" +
-					e.toString() + "\n" +
-					e.getCause() + "\n" +
-					ExceptionUtils.getStackTrace(e),
-					e);
+					                            e.toString() + "\n" +
+					                            e.getCause() + "\n" +
+					                            ExceptionUtils.getStackTrace(e),
+			                            e);
 		}
 		catch (NoSuchProviderException e)
 		{
 			throw new VaSolSimException(ERROR_MESSAGE_GENERIC_CRYPTO + "\n\nBAD PROVIDER\n" +
-					e.toString() + "\n" +
-					e.getCause() + "\n" +
-					ExceptionUtils.getStackTrace(e),
-					e);
+					                            e.toString() + "\n" +
+					                            e.getCause() + "\n" +
+					                            ExceptionUtils.getStackTrace(e),
+			                            e);
 		}
 		catch (NoSuchPaddingException e)
 		{
 			throw new VaSolSimException(ERROR_MESSAGE_GENERIC_CRYPTO + "\n\nNO SUCH PADDING\n" +
-					e.toString() + "\n" +
-					e.getCause() + "\n" +
-					ExceptionUtils.getStackTrace(e),
-					e);
+					                            e.toString() + "\n" +
+					                            e.getCause() + "\n" +
+					                            ExceptionUtils.getStackTrace(e),
+			                            e);
 		}
 		catch (InvalidKeyException e)
 		{
 			throw new VaSolSimException(ERROR_MESSAGE_GENERIC_CRYPTO + "\n\nBAD KEY\n" +
-					e.toString() + "\n" +
-					e.getCause() + "\n" +
-					ExceptionUtils.getStackTrace(e),
-					e);
+					                            e.toString() + "\n" +
+					                            e.getCause() + "\n" +
+					                            ExceptionUtils.getStackTrace(e),
+			                            e);
 		}
 		catch (InvalidAlgorithmParameterException e)
 		{
 			throw new VaSolSimException(ERROR_MESSAGE_GENERIC_CRYPTO + "\n\nBAD ALGORITHM PARAMS\n" +
-					e.toString() + "\n" +
-					e.getCause() + "\n" +
-					ExceptionUtils.getStackTrace(e),
-					e);
+					                            e.toString() + "\n" +
+					                            e.getCause() + "\n" +
+					                            ExceptionUtils.getStackTrace(e),
+			                            e);
 		}
 
 		this.parametricIV = parametricIV;
@@ -501,27 +508,27 @@ public class ExamBuilder
 		if (!isCipherProperlyInitialized(encryptionCipher) || !isCipherProperlyInitialized(decryptionCipher))
 			throw new VaSolSimException(ERROR_MESSAGE_CIPHER_NOT_INITIALIZED_PROPERLY);
 
-		encryptedStatsSenderEmail         = applyCryptographicCipher(
+		encryptedStatsSenderEmail = applyCryptographicCipher(
 				decryptedStatsSenderEmail, encryptionCipher);
 		encryptedStatsSenderEmailPassword = applyCryptographicCipher(
 				decryptedStatsSenderEmailPassword, encryptionCipher);
-		encryptedStatsSenderSMTPAddress   = applyCryptographicCipher(
+		encryptedStatsSenderSMTPAddress = applyCryptographicCipher(
 				decryptedStatsSenderSMTPAddress, encryptionCipher);
-		encryptedStatsSenderSMTPPort      = applyCryptographicCipher(
+		encryptedStatsSenderSMTPPort = applyCryptographicCipher(
 				decryptedStatsSenderSMTPPort, encryptionCipher);
 
 		return new Exam(encryptedValidationHash,
-				parametricIV,
-				encryptionCipher,
-				decryptionCipher,
-				statsDestinationEmail,
-				reportingStats,
-				reportingStatsStandalone,
-				encryptedStatsSenderEmail,
-				encryptedStatsSenderEmailPassword,
-				encryptedStatsSenderSMTPAddress,
-				encryptedStatsSenderSMTPPort,
-				false);
+		                parametricIV,
+		                encryptionCipher,
+		                decryptionCipher,
+		                statsDestinationEmail,
+		                reportingStats,
+		                reportingStatsStandalone,
+		                encryptedStatsSenderEmail,
+		                encryptedStatsSenderEmailPassword,
+		                encryptedStatsSenderSMTPAddress,
+		                encryptedStatsSenderSMTPPort,
+		                false);
 	}
 
 	public boolean isReportingStats()
@@ -569,8 +576,8 @@ public class ExamBuilder
 
 	public void setStatsSenderSMTPAddress(String address)
 	{
-	 	if (isValidAddress(address))
-		    this.decryptedStatsSenderSMTPAddress = address.getBytes();
+		if (isValidAddress(address))
+			this.decryptedStatsSenderSMTPAddress = address.getBytes();
 	}
 
 	public void setStatsSenderSMTPPort(int port)
@@ -580,10 +587,13 @@ public class ExamBuilder
 
 	public void setStatsSenderSMTPPort(String port)
 	{
-		try {
+		try
+		{
 			if (!isValidPort(Integer.parseInt(port)))
 				this.decryptedStatsSenderSMTPPort = port.getBytes();
 		}
-		catch (NumberFormatException e) {}
+		catch (NumberFormatException e)
+		{
+		}
 	}
 }

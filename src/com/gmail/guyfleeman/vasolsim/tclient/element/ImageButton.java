@@ -13,33 +13,37 @@ import javafx.scene.input.MouseEvent;
  */
 public class ImageButton extends Button
 {
-	public ImageButton(Class loader,
-	                   String imageInternalURL,
-	                   final String hoverCSSClass,
-	                   final String noHoverCSSClass,
-	                   int dim)
-	{
-		ImageView img = new ImageView(new Image(loader.getClass().getResourceAsStream(imageInternalURL)));
-		img.setFitHeight(dim);
-		img.setFitWidth(dim);
-		setGraphic(img);
+    public ImageButton(Class loader,
+                       String imageInternalURL,
+                       final String hoverCSSClass,
+                       final String noHoverCSSClass,
+                       int dim)
+    {
+        ImageView img = new ImageView(new Image(loader.getClass().getResourceAsStream(imageInternalURL)));
+        img.setFitHeight(dim);
+        img.setFitWidth(dim);
+        setGraphic(img);
 
-		getStyleClass().add(noHoverCSSClass);
+        getStyleClass().add(noHoverCSSClass);
 
-		setOnMouseEntered(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				getStyleClass().remove(noHoverCSSClass);
-				getStyleClass().add(hoverCSSClass);
-			}
-		});
+        setOnMouseEntered(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {
+                getStyleClass().remove(noHoverCSSClass);
+                getStyleClass().add(hoverCSSClass);
+            }
+        });
 
-		setOnMouseExited(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				getStyleClass().remove(hoverCSSClass);
-				getStyleClass().add(noHoverCSSClass);
-			}
-		});
-	}
+        setOnMouseExited(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {
+                getStyleClass().remove(hoverCSSClass);
+                getStyleClass().add(noHoverCSSClass);
+            }
+        });
+    }
 }

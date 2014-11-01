@@ -7,30 +7,28 @@ package com.gmail.guyfleeman.vasolsim.common;
  */
 public class MalformedXMLException extends VaSolSimException
 {
-	/**
-	 * @param message
-	 */
-	public MalformedXMLException(String message)
-	{
-		super(message);
-	}
+    /**
+     * @param message
+     */
+    public MalformedXMLException(String message)
+    {
+        super(message);
+    }
 
-	/**
-	 *
-	 * @param cause
-	 */
-	public MalformedXMLException(Throwable cause)
-	{
-		super(cause);
-	}
+    /**
+     * @param cause
+     */
+    public MalformedXMLException(Throwable cause)
+    {
+        super(cause);
+    }
 
-	/**
-	 *
-	 * @param message
-	 * @param cause
-	 */
-	public MalformedXMLException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
+    /**
+     * @param message
+     * @param cause
+     */
+    public MalformedXMLException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
 }

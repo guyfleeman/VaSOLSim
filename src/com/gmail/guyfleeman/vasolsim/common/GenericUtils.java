@@ -26,10 +26,10 @@ import java.util.regex.Pattern;
 
 /**
  * @author guyfleeman
- * @date 7/14/14
- * <p></p>
+ * @date 7/14/14 <p></p>
  */
-public class GenericUtils {
+public class GenericUtils
+{
 	//////////////////////////////////
 	//  BEGIN CONSTANT DECLARATION  //
 	@SuppressWarnings("unused")
@@ -155,12 +155,12 @@ public class GenericUtils {
 	public static final String XML_QUESTION_SET_NAME_ELEMENT_NAME          = "setName";
 	public static final String XML_QUESTION_SET_RESOURCE_TYPE_ELEMENT_NAME = "rscType";
 	public static final String XML_QUESTION_SET_RESOURCE_DATA_ELEMENT_NAME = "rscData";
-	public static final String XML_QUESTION_ELEMENT_NAME                   = "question";
+	public static final String XML_QUESTION_ELEMENT_NAME                   = "QandA";
 
 	//root+++ depth (questionSet++, questionGrouping+)
 	public static final String XML_QUESTION_ID_ELEMENT_NAME                   = "questionID";
 	public static final String XML_QUESTION_NAME_ELEMENT_NAME                 = "questionName";
-	public static final String XML_QUESTION_TEXT_ELEMENT_NAME                 = "question";
+	public static final String XML_QUESTION_TEXT_ELEMENT_NAME                 = "QandA";
 	public static final String XML_QUESTION_SCRAMBLE_ANSWERS_ELEMENT_NAME     = "scramAns";
 	public static final String XML_QUESTION_REATIAN_ANSWER_ORDER_ELEMENT_NAME = "retOrder";
 	public static final String XML_QUESTION_ENCRYPTED_ANSWER_HASH             = "encAnsHash";
@@ -198,31 +198,37 @@ public class GenericUtils {
 	public static final int MIN_HASHES    = 1;
 	public static final int MAX_HASHES    = 8;
 
-	public static final String NO_STATS = "!@!NO-STATS!@!";
-	public static final String NO_SMTP  = "!@!NO-SMTP!@!";
+	public static final String NO_STATS         = "!@!NO-STATS!@!";
+	public static final String NO_SMTP          = "!@!NO-SMTP!@!";
 	public static final String NO_RESOURCE_DATA = "!@!NO-RSC-DATA!@!";
 
-	public static final String NO_TEST_NAME_GIVEN = "No test name given.";
+	public static final String NO_TEST_NAME_GIVEN   = "No test name given.";
 	public static final String NO_AUTHOR_NAME_GIVEN = "No author given.";
 	public static final String NO_SCHOOL_NAME_GIVEN = "No school name given.";
-	public static final String NO_PERIOD_ID_GIVEN = "No period given";
-	public static final String NO_DATE_GIVEN = "No date given.";
+	public static final String NO_PERIOD_ID_GIVEN   = "No period given";
+	public static final String NO_DATE_GIVEN        = "No date given.";
 
-	public static enum ResourceType {
+	public static enum ResourceType
+	{
 		NONE,
-		TEXT,
+		TXT,
+		DOCX,
 		PDF,
 		PNG,
 		JPG,
 		GIF
 	}
 
-	public enum QuestionType {
+	public enum QuestionType
+	{
 		MULTIPLE_CHOICE,
-		D_AND_D_MULTIPLE_CHOICE,
-		D_AND_D_MULTIPLE_RESPONSE,
-		D_AND_D_GRAMMAR_MULTIPLE_RESPONSE,
-		D_AND_D_VENN_DIAGRAM
+		MULTIPLE_RESPONSE,
+		TE_MULTIPLE_CHOICE,
+		TE_MULTIPLE_RESPONSE,
+		TE_D_AND_D_MULTIPLE_CHOICE,
+		TE_D_AND_D_MULTIPLE_RESPONSE,
+		TE_D_AND_D_GRAMMAR_MULTIPLE_RESPONSE,
+		TE_D_AND_D_VENN_DIAGRAM
 	}
 
 	///////////////////////////////////
@@ -232,7 +238,7 @@ public class GenericUtils {
 	///////////////////////////////////
 
 	//TODO MAKE ALL THESE VAR CAPS (dee dee dee)
-	public static final String passwordDescriptionLabel   = "Please provide and confirm the exam's password prior to" +
+	public static final String passwordDescriptionLabel = "Please provide and confirm the exam's password prior to" +
 			" " +
 			"creation. This password will be used to prevent students from modifying the contents and the exam. The " +
 			"students will enter this password when they go to take the exam, so please do not use your personal " +
@@ -242,12 +248,12 @@ public class GenericUtils {
 			"*EXACT* same password that you enter here in order to access the exam. Once you set the exam's " +
 			"password," +
 			"it may not be changed for security reasons; please double check your password prior to continuing.";
-	public static final String passwordPromptOne          = "Please enter the password: ";
-	public static final String passwordPromptTwo          = "Please confirm the password: ";
-	public static final String passwordContinueButtonText = "Continue";
-	public static final String passwordInvalidTitle       = "Invalid Password";
-	public static final String passwordInvalidMessage     = "Password cannot be of zero length or all whitespace.";
-	public static final String passwordNoMatch            = "Passwords do not match.";
+	public static final String passwordPromptOne        = "Please enter the password: ";
+	public static final String passwordPromptTwo        = "Please confirm the password: ";
+	public static final String continueButtonText       = "Continue";
+	public static final String passwordInvalidTitle     = "Invalid Password";
+	public static final String passwordInvalidMessage   = "Password cannot be of zero length or all whitespace.";
+	public static final String passwordNoMatch          = "Passwords do not match.";
 
 	public static final String statsReportingInfoLabelText = "This form will take the information needed to report " +
 			"the answers given by students. The answers can be read and compiled into class statistics. \n\n" +
@@ -262,36 +268,80 @@ public class GenericUtils {
 	public static final String statsReportingLabelText     = "Check this box to enable statistics reporting.";
 	public static final String statsReportingCBText        = "reporting statistics";
 	public static final String statsDestAddrLabelText      = "The destination email address for reported statistics.";
-	public static final String statsVerifyButtonText = "Verify ->";
+	public static final String statsVerifyButtonText       = "Verify ->";
 
-	public static final String statsSAInfoLabelText = "If you'd prefer students not enter their own emails, " +
+	public static final String statsSAInfoLabelText                       = "If you'd prefer students not enter their" +
+			" " +
+			"own emails, " +
 			"you can report stats in \"standalone mode.\" In this mode, you will provide the address and password " +
 			"of an email account, which will send the answer data for all students. DO NOT USE YOUR PERSONAL EMAIL. " +
 			"The email and password will be encrypted using the industry standard for credit card data " +
 			"(SHA-512 -> AES-256 -> StartTLS). ";
-	public static final String statsSALabelText = "Check this box to enable standalone stats reporting.";
-	public static final String statsSACBText = "reporting statistics standalone";
-	public static final String statsSAAddrLabelText = "The sender email address.";
-	public static final String statsSAPasswordLabelText = "The sender email address password.";
-	public static final String statsSASMTPAddrLabelText = "The SMTP address for the email provider (should " +
+	public static final String statsSALabelText                           = "Check this box to enable standalone " +
+			"stats" +
+			" reporting.";
+	public static final String statsSACBText                              = "reporting statistics standalone";
+	public static final String statsSAAddrLabelText                       = "The sender email address.";
+	public static final String statsSAPasswordLabelText                   = "The sender email address password.";
+	public static final String statsSASMTPAddrLabelText                   = "The SMTP address for the email provider" +
+			" " +
+			"(should " +
 			"auto-complete).";
-	public static final String statsSASMTPPortLabelText = "The port for the SMTP address (should auto-complete).";
-	public static final String addressInvalidTitle = "Invalid Address";
-	public static final String emailInvalidMessage = "Email cannot be of zero length or all whitespace.";
-	public static final String emailInvalidRegexMessage = "Email is not of valid form.";
-	public static final String verifiedTitle = "Information Verified";
-	public static final String verifiedMessage = "All required information has been verified.";
-	public static final String addressInvalidMessage = "The address cannot be of zero length or all whitespace.";
-	public static final String addressInvalidRegexMessage = "The address is not of valid form.";
-	public static final String portInvalidTitle = "Invalid Port";
-	public static final String portInvalidMessage = "The port cannot be nothing or all whitespace";
-	public static final String portInvalidCharsMessage = "The port must be a numeric integer.";
-	public static final String portInvalidRange = "The port must be between 0 and 65536.";
-	public static final String smtpBadConfig = "The SMTP configuration was invalid.";
-	public static final String smtpBadTitle = "Invalid SMTP";
+	public static final String statsSASMTPPortLabelText                   = "The port for the SMTP address (should " +
+			"auto-complete).";
+	public static final String addressInvalidTitle                        = "Invalid Address";
+	public static final String emailInvalidMessage                        = "Email cannot be of zero length or all " +
+			"whitespace.";
+	public static final String emailInvalidRegexMessage                   = "Email is not of valid form.";
+	public static final String verifiedTitle                              = "Information Verified";
+	public static final String verifiedMessage                            = "All required information has been " +
+			"verified.";
+	public static final String addressInvalidMessage                      = "The address cannot be of zero length or" +
+			" " +
+			"all whitespace.";
+	public static final String addressInvalidRegexMessage                 = "The address is not of valid form.";
+	public static final String portInvalidTitle                           = "Invalid Port";
+	public static final String portInvalidMessage                         = "The port cannot be nothing or all " +
+			"whitespace";
+	public static final String portInvalidCharsMessage                    = "The port must be a numeric integer.";
+	public static final String portInvalidRange                           = "The port must be between 0 and 65536.";
+	public static final String smtpBadConfig                              = "The SMTP configuration was invalid.";
+	public static final String smtpBadTitle                               = "Invalid SMTP";
 	public static final String internalExceptionOnExamBuilderInstanceInit = "A problem internal to VaSOLSim has " +
 			"occurred.\nI apologize for the inconvenience.\n\n";
-	public static final String internalExceptionTitle = "Internal Exception";
+	public static final String internalExceptionTitle                     = "Internal Exception";
+
+	public static final String testStatsLabelText  = "Exam Information Overview";
+	public static final String testNameLabelText   = "Test Name:";
+	public static final String authorNameLabelText = "Author Name:";
+	public static final String schoolNameLabelText = "School Name:";
+	public static final String periodNameLabelText = "Period:";
+
+	public static final String multipleChoiceText                 = "multiple choice (1 answer)";
+	public static final String multipleResponseText               = "multiple response (0-8 answers)";
+	public static final String techEnhancedMultipleChoiceText     = "multiple choice, technology enhanced format (1 " +
+			"answer)";
+	public static final String techEnchancedMultipleResponseText  = "multiple response, technology enhanced format " +
+			"(0-8 answers)";
+	public static final String techEnhancedDDMultipleChoiceText   = "multiple choice, drag and drop format (1 answer)";
+	public static final String techEnhancedDDMultipleResponseText = "multiple response, drag and drop format, " +
+			"predefined (1-8 answers)";
+	public static final String techEnchancedDDGrammarText         = "grammar multiple response (punctuation), " +
+			"drag and drop " +
+			"format (udf answer count)";
+	public static final String techEnchancedVennDiagramText       = "venn diagram, multiple response " +
+			"(avaliable in a future release)";
+
+	public static final String questionSetInfoLabelText  = "Question Set Information Overview";
+	public static final String questionSetNameLabelText  = "Question Set Name:";
+	public static final String resourceFileInfoLabelText = "Use this section to attach a resource file. The resource" +
+			" " +
+			"will be visible to the student as he/she works through every QandA in the section. Valid files are " +
+			"text (.txt), MS Word (.docx), PDF (.pdf), and images (.jpg, .png, .gif).";
+	public static final String invalidFileTypeMessage    = "File type not recognized: .";
+	public static final String invalidFileTypeTitle      = "Invalid File Type";
+
+
 
 	////////////////////////////////
 	//  END CONSTANT DECLARATION  //
@@ -308,14 +358,16 @@ public class GenericUtils {
 	 * Securely shrinks a 512bit hash to a 128bit hash
 	 *
 	 * @param hash 512 bit (64 byte) hash to shrink
+	 *
 	 * @return 128 bit (16 byte) hash, -1 if 64 byte array not provided
 	 */
-	public static byte[] validate512HashTo128Hash(byte[] hash) {
+	public static byte[] validate512HashTo128Hash(byte[] hash)
+	{
 		if (hash.length != 64)
 			return new byte[]{-1};
 
 		/*
-		 * Create 16byte quarters from the 64 byte hash
+	     * Create 16byte quarters from the 64 byte hash
 		 */
 		byte[] lowerQuarterOne = new byte[16];
 		byte[] lowerQuarterTwo = new byte[16];
@@ -336,7 +388,8 @@ public class GenericUtils {
 		/*
 		 * XOR the lower and higher quarters, then xor the lower and high halves
 		 */
-		for (int index = 0; index < 16; index++) {
+		for (int index = 0; index < 16; index++)
+		{
 			lowerHalf[index] = (byte) (0xFF & ((int) lowerQuarterOne[index] ^ (int) lowerQuarterTwo[index]));
 			higherHalf[index] = (byte) (0xFF & ((int) higherQuarterOne[index] ^ (int) higherQuarterTwo[index]));
 			xorHash[index] = (byte) (0xFF & ((int) lowerHalf[index] ^ (int) higherHalf[index]));
@@ -349,9 +402,11 @@ public class GenericUtils {
 	 * Converts a byte array hash to a character representation for storage and comparison
 	 *
 	 * @param hash the hash to convert to plain text
+	 *
 	 * @return plain text representation of the hash value
 	 */
-	public static String convertBytesToHexString(byte[] hash) {
+	public static String convertBytesToHexString(byte[] hash)
+	{
 		StringBuilder hashString = new StringBuilder();
 		for (byte b : hash)
 			hashString.append(Integer.toString((b & 0xFF) + 0x0100, 0x10).substring(1));
@@ -364,12 +419,17 @@ public class GenericUtils {
 	 *
 	 * @param message the bytes to be ciphered
 	 * @param cipher  the *initialized* cipher
+	 *
 	 * @return the new bytes, or -1 if ya done fucked up
 	 */
-	public static byte[] applyCryptographicCipher(byte[] message, Cipher cipher) {
-		try {
+	public static byte[] applyCryptographicCipher(byte[] message, Cipher cipher)
+	{
+		try
+		{
 			return forceCryptographicCipher(message, cipher);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			return new byte[]{-1};
 		}
 	}
@@ -378,9 +438,11 @@ public class GenericUtils {
 	 * Runs basic tests to see if a cipher is initialized properly.
 	 *
 	 * @param cipher cipher
+	 *
 	 * @return if properly initialized
 	 */
-	public static boolean isCipherProperlyInitialized(Cipher cipher) {
+	public static boolean isCipherProperlyInitialized(Cipher cipher)
+	{
 		return !(cipher instanceof NullCipher);
 
 		/*
@@ -400,12 +462,15 @@ public class GenericUtils {
 	 *
 	 * @param message the bytes to be ciphered
 	 * @param cipher  the *initialized* cipher
+	 *
 	 * @return new bytes
+	 *
 	 * @throws IllegalBlockSizeException
 	 * @throws BadPaddingException
 	 */
 	public static byte[] forceCryptographicCipher(byte[] message, Cipher cipher)
-			throws IllegalBlockSizeException, BadPaddingException {
+			throws IllegalBlockSizeException, BadPaddingException
+	{
 		return cipher.doFinal(message);
 	}
 
@@ -413,9 +478,11 @@ public class GenericUtils {
 	 * Returns if a given string is a valid email regex
 	 *
 	 * @param email email address
+	 *
 	 * @return if the email address is a valid email
 	 */
-	public static boolean isValidEmail(String email) {
+	public static boolean isValidEmail(String email)
+	{
 		return !(email == null || email.equals("")) && validEmailPattern.matcher(email).matches();
 	}
 
@@ -423,9 +490,11 @@ public class GenericUtils {
 	 * Returns if a given string is a valid address
 	 *
 	 * @param address net address
+	 *
 	 * @return if the address is a valid address
 	 */
-	public static boolean isValidAddress(String address) {
+	public static boolean isValidAddress(String address)
+	{
 		return !(address == null || address.equals("")) && validAddressPattern.matcher(address).matches();
 	}
 
@@ -433,20 +502,25 @@ public class GenericUtils {
 	 * Returns if a given http based address can be connected to
 	 *
 	 * @param address the address
+	 *
 	 * @return if teh connection can be made
 	 */
-	public static boolean canConnectToAddress(String address) {
+	public static boolean canConnectToAddress(String address)
+	{
 		if (!isValidAddress(address))
 			return false;
 
-		try {
+		try
+		{
 			HttpURLConnection connection = (HttpURLConnection) (new URL(address).openConnection());
 			connection.setRequestMethod("HEAD");
 			connection.connect();
 			boolean success = (connection.getResponseCode() == HttpURLConnection.HTTP_OK);
 			connection.disconnect();
 			return success;
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			return false;
 		}
 	}
@@ -459,12 +533,14 @@ public class GenericUtils {
 	 * @param port     the SMTP port
 	 * @param email    the email address
 	 * @param password the email address password
+	 *
 	 * @return if the AUTH was successful
 	 */
 	public static boolean isValidSMTPConfiguration(String address,
 	                                               int port,
 	                                               String email,
-	                                               byte[] password) {
+	                                               byte[] password)
+	{
 		return isValidSMTPConfiguration(address, port, email, password, false);
 	}
 
@@ -477,17 +553,20 @@ public class GenericUtils {
 	 * @param email    the email address
 	 * @param password the email address password
 	 * @param notify   if popup dialogs will appear carrying the servers unsuccessful response message
+	 *
 	 * @return if the AUTH was successful
 	 */
 	public static boolean isValidSMTPConfiguration(String address,
 	                                               int port,
 	                                               String email,
 	                                               byte[] password,
-	                                               boolean notify) {
+	                                               boolean notify)
+	{
 		if (!isValidAddress(address) || port <= 0 || !isValidEmail(email) || password.length == 0)
 			return false;
 
-		try {
+		try
+		{
 			Properties smtpProperties = new Properties();
 			smtpProperties.put("mail.smtp.starttls.enable", "true");
 			smtpProperties.put("mail.smtp.auth", "true");
@@ -496,8 +575,11 @@ public class GenericUtils {
 			transport.connect(address, port, email, new String(password));
 			transport.close();
 			return true;
-		} catch (Exception e) {
-			if (notify) {
+		}
+		catch (Exception e)
+		{
+			if (notify)
+			{
 				PopupManager.showMessage("Cause:\n" + e.getCause() + "\n\nMessage:\n" + e.getMessage(), smtpBadTitle);
 				System.out.println(e.getCause());
 				System.out.println(e.getMessage());
@@ -511,9 +593,11 @@ public class GenericUtils {
 	 * Returns if a port is valid.
 	 *
 	 * @param port port
+	 *
 	 * @return if its valid
 	 */
-	public static boolean isValidPort(int port) {
+	public static boolean isValidPort(int port)
+	{
 		return port > 0 && port < 65536;
 	}
 
@@ -525,32 +609,37 @@ public class GenericUtils {
 	 * @param parentElement the parent element
 	 * @param doc           the document (root)
 	 */
-	public static void appendSubNode(String elementName, String nodeData, Element parentElement, Document doc) {
+	public static void appendSubNode(String elementName, String nodeData, Element parentElement, Document doc)
+	{
 		Element subElement = doc.createElement(elementName);
 		subElement.appendChild(doc.createTextNode(nodeData));
 		parentElement.appendChild(subElement);
 	}
 
 	/**
-	 * Checks questions sets to ensure no null elements are present and
+	 * Checks questions qSets to ensure no null elements are present and
 	 *
 	 * @param questionSets
+	 *
 	 * @return
 	 */
-	public static boolean verifyQuestionSetsIntegrity(ArrayList<QuestionSet> questionSets) {
+	public static boolean verifyQuestionSetsIntegrity(ArrayList<QuestionSet> questionSets)
+	{
 		if (questionSets == null
 				|| questionSets.size() < MIN_SETS
 				|| questionSets.size() > MAX_SETS)
 			return false;
 
-		for (QuestionSet set : questionSets) {
+		for (QuestionSet set : questionSets)
+		{
 			if (set == null
 					|| set.getQuestions() == null
 					|| set.getQuestions().size() < MIN_QUESTIONS
 					|| set.getQuestions().size() > MAX_QUESTIONS)
 				return false;
 
-			for (Question question : set.getQuestions()) {
+			for (Question question : set.getQuestions())
+			{
 				if (question == null
 						|| question.getAnswerChoices() == null
 						|| question.getAnswerChoices().size() < MIN_QUESTIONS
@@ -570,6 +659,7 @@ public class GenericUtils {
 
 	////////////////////////
 	//  YAY JAVAFX UTILS  //
+	@SuppressWarnings("unused")
 	private static final boolean __BEGIN_JAVAFX_UTILS = false;
 	////////////////////////
 
@@ -580,12 +670,14 @@ public class GenericUtils {
 	 * @param title
 	 * @param iconLocation
 	 * @param imgSize
+	 *
 	 * @return
 	 */
 	public static TreeItem<String> createTreeItem(Class resourceLoaderClass,
 	                                              String title,
 	                                              String iconLocation,
-	                                              int imgSize) {
+	                                              int imgSize)
+	{
 		if (resourceLoaderClass == null || title == null || iconLocation == null || imgSize <= 0)
 			return null;
 
@@ -597,9 +689,10 @@ public class GenericUtils {
 	}
 
 	public static TreeItem<TreeElement> createTreeItem(Class resourceLoaderClass,
-	                                            TreeElement box,
-	                                            String iconLocation,
-	                                            int imgSize) {
+	                                                   TreeElement box,
+	                                                   String iconLocation,
+	                                                   int imgSize)
+	{
 		if (resourceLoaderClass == null || box == null || iconLocation == null || imgSize <= 0)
 			return null;
 
@@ -613,6 +706,7 @@ public class GenericUtils {
 	/**
 	 * Everything should be static so don't allow initialization of the class.
 	 */
-	private GenericUtils() {
+	private GenericUtils()
+	{
 	}
 }

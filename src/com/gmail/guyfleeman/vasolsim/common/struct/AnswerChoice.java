@@ -7,53 +7,72 @@ package com.gmail.guyfleeman.vasolsim.common.struct;
  */
 public class AnswerChoice
 {
-	private final boolean initializedFromFile;
-	private int idNumber;
-	private String visibleChoiceID;
-	private String text;
+    private final boolean initializedFromFile;
+    private int idNumber;
+	private String answerName;
+    private String visibleChoiceID;
+    private String text;
 
-	public AnswerChoice(final String visibleChoiceID,
-	                    final String text,
-	                    boolean initializedFromFile)
+	public AnswerChoice()
 	{
-		this.visibleChoiceID = visibleChoiceID;
-		this.text = text;
-		this.initializedFromFile = initializedFromFile;
+		this("New Answer", "none", "none", false);
 	}
 
-	public String getVisibleChoiceID()
+    public AnswerChoice(final String answerName,
+		                final String visibleChoiceID,
+                        final String text,
+                        boolean initializedFromFile)
+    {
+	    this.answerName = answerName;
+        this.visibleChoiceID = visibleChoiceID;
+        this.text = text;
+        this.initializedFromFile = initializedFromFile;
+    }
+
+    public String getVisibleChoiceID()
+    {
+        return visibleChoiceID;
+    }
+
+    public String getAnswerText()
+    {
+        return text;
+    }
+
+    public int getIdNumber()
+    {
+        return idNumber;
+    }
+
+    public void setIdNumber(int idNumber)
+    {
+        this.idNumber = idNumber;
+    }
+
+    public boolean isInitializedFromFile()
+    {
+        return initializedFromFile;
+    }
+
+    public void setVisibleChoiceID(String visibleChoiceID)
+    {
+        if (!initializedFromFile)
+            this.visibleChoiceID = visibleChoiceID;
+    }
+
+    public void setText(String text)
+    {
+        if (!initializedFromFile)
+            this.text = text;
+    }
+
+	public String getAnswerName()
 	{
-		return visibleChoiceID;
+		return answerName;
 	}
 
-	public String getAnswerText()
+	public void setAnswerName(String answerName)
 	{
-		return text;
-	}
-
-	public int getIdNumber()
-	{
-		return idNumber;
-	}
-
-	public void setIdNumber(int idNumber)
-	{
-		this.idNumber = idNumber;
-	}
-
-	public boolean isInitializedFromFile() {
-		return initializedFromFile;
-	}
-
-	public void setVisibleChoiceID(String visibleChoiceID)
-	{
-		if (!initializedFromFile)
-			this.visibleChoiceID = visibleChoiceID;
-	}
-
-	public void setText(String text)
-	{
-		if (!initializedFromFile)
-			this.text = text;
+		this.answerName = answerName;
 	}
 }

@@ -10,14 +10,14 @@ import javafx.stage.Stage;
  */
 public class StudentClient extends Application
 {
-	@Override
-	public void start(Stage primaryStage)
-	{
+    @Override
+    public void start(Stage primaryStage)
+    {
 
-	}
+    }
 
-	public static void main(String[] args)
-	{
+    public static void main(String[] args)
+    {
 
-	}
+    }
 }

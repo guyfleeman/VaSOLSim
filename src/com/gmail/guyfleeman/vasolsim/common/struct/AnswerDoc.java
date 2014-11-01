@@ -5,5 +5,6 @@ package com.gmail.guyfleeman.vasolsim.common.struct;
  * @date 7/15/14
  * <p></p>
  */
-public class AnswerDoc {
+public class AnswerDoc
+{
 }

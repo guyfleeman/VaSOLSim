@@ -7,11 +7,11 @@
                 <xs:element name="info">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="testName" type="xs:string" />
-                            <xs:element name="author" type="xs:string" />
-                            <xs:element name="school" type="xs:string" />
-                            <xs:element name="class" type="xs:string" />
-                            <xs:element name="date" type="xs:string" />
+                            <xs:element name="testName" type="xs:string"/>
+                            <xs:element name="author" type="xs:string"/>
+                            <xs:element name="school" type="xs:string"/>
+                            <xs:element name="class" type="xs:string"/>
+                            <xs:element name="date" type="xs:string"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
@@ -19,16 +19,16 @@
                 <xs:element name="sec">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="encValHash" type="xs:string" />
-                            <xs:element name="paramIV" type="xs:string" />
+                            <xs:element name="encValHash" type="xs:string"/>
+                            <xs:element name="paramIV" type="xs:string"/>
 
-                            <xs:element name="statsReporting" type="xs:boolean" />
-                            <xs:element name="statsStandalone" type="xs:boolean" />
-                            <xs:element name="statsDestEmail" />
-                            <xs:element name="statsSender" />
-                            <xs:element name="statsSenderPw" />
-                            <xs:element name="statsSenderSMTPAddr" />
-                            <xs:element name="statsSenderSMTPPort" />
+                            <xs:element name="statsReporting" type="xs:boolean"/>
+                            <xs:element name="statsStandalone" type="xs:boolean"/>
+                            <xs:element name="statsDestEmail"/>
+                            <xs:element name="statsSender"/>
+                            <xs:element name="statsSenderPw"/>
+                            <xs:element name="statsSenderSMTPAddr"/>
+                            <xs:element name="statsSenderSMTPPort"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
@@ -36,27 +36,27 @@
                 <xs:element name="questionSet" minOccurs="1" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="setID" />
-                            <xs:element name="setName" />
-                            <xs:element name="rscType" type="xs:string" />
-                            <xs:element name="data" />
+                            <xs:element name="setID"/>
+                            <xs:element name="setName"/>
+                            <xs:element name="rscType" type="xs:string"/>
+                            <xs:element name="data"/>
 
                             <xs:element name="question" minOccurs="1" maxOccurs="unbounded">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="questionID" />
-                                        <xs:element name="questionName" />
-                                        <xs:element name="question" type="xs:string" />
-                                        <xs:element name="scramAns" />
-                                        <xs:element name="retOrder" />
-                                        <xs:element name="encAnsHash" minOccurs="1" maxOccurs="8" />
+                                        <xs:element name="questionID"/>
+                                        <xs:element name="questionName"/>
+                                        <xs:element name="question" type="xs:string"/>
+                                        <xs:element name="scramAns"/>
+                                        <xs:element name="retOrder"/>
+                                        <xs:element name="encAnsHash" minOccurs="1" maxOccurs="8"/>
 
                                         <xs:element name="answerChoice" minOccurs="1" maxOccurs="8">
                                             <xs:complexType>
                                                 <xs:sequence>
-                                                    <xs:element name="answerID" />
-                                                    <xs:element name="answerChoiceID" />
-                                                    <xs:element name="answer" />
+                                                    <xs:element name="answerID"/>
+                                                    <xs:element name="answerChoiceID"/>
+                                                    <xs:element name="answer"/>
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>

@@ -7,30 +7,28 @@ package com.gmail.guyfleeman.vasolsim.common;
  */
 public class VaSolSimException extends Exception
 {
-	/**
-	 * @param message
-	 */
-	public VaSolSimException(String message)
-	{
-		super(message);
-	}
+    /**
+     * @param message
+     */
+    public VaSolSimException(String message)
+    {
+        super(message);
+    }
 
-	/**
-	 *
-	 * @param cause
-	 */
-	public VaSolSimException(Throwable cause)
-	{
-		super(cause);
-	}
+    /**
+     * @param cause
+     */
+    public VaSolSimException(Throwable cause)
+    {
+        super(cause);
+    }
 
-	/**
-	 *
-	 * @param message
-	 * @param cause
-	 */
-	public VaSolSimException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
+    /**
+     * @param message
+     * @param cause
+     */
+    public VaSolSimException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
 }

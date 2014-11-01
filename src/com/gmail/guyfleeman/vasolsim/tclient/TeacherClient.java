@@ -37,88 +37,93 @@ import static com.gmail.guyfleeman.vasolsim.common.GenericUtils.*;
  */
 public class TeacherClient extends Application
 {
-	public static String title            = "Virginia Standards Of Learning Simulator (VaSOLSim) - Teacher Client";
-	public static String rscPathRoot      = "/com/gmail/guyfleeman/vasolsim/rsc/";
-	public static String pathToStyle      = rscPathRoot + "style/tClientStyle.css";
-	public static String pathToExamsIcon  = rscPathRoot + "img/exams.png";
-	public static String pathToExamIcon   = rscPathRoot + "img/exam.png";
-	public static String pathToAddIcon    = rscPathRoot + "img/add.png";
-	public static String pathToRemoveIcon = rscPathRoot + "img/remove.png";
+    public static String title = "Virginia Standards Of Learning Simulator (VaSOLSim) - Teacher Client";
+    public static String rscPathRoot = "/com/gmail/guyfleeman/vasolsim/rsc/";
+    public static String pathToStyle = rscPathRoot + "style/tClientStyle.css";
+    public static String pathToExamsIcon = rscPathRoot + "img/exams.png";
+    public static String pathToExamIcon = rscPathRoot + "img/exam.png";
+    public static String pathToAddIcon = rscPathRoot + "img/add.png";
+    public static String pathToRemoveIcon = rscPathRoot + "img/remove.png";
+	public static String pathToQuestionSetIcon = rscPathRoot + "img/set.png";
+	public static String pathToQuestionIcon = rscPathRoot + "img/question.png";
+	public static String pathToCorrectAnswerIcon = rscPathRoot + "img/answerCorrect.png";
+	public static String pathToIncorrectAnswerIcon = rscPathRoot + "img/answerIncorrect.png";
 
-	@SuppressWarnings("all")
-	public static Stage stage;
-	@SuppressWarnings("all")
-	public static Scene scene;
-	@SuppressWarnings("all")
-	public static Node topNode    = new VBox();
-	@SuppressWarnings("all")
-	public static Node leftNode   = new HBox();
-	@SuppressWarnings("all")
-	public static HBox centerNode = new HBox();
-	@SuppressWarnings("all")
-	public static Node rightNode  = new HBox();
-	@SuppressWarnings("all")
-	public static Node bottomNode = new VBox();
-	@SuppressWarnings("all")
-	public static TreeItem<TreeElement> examsRoot;
+    @SuppressWarnings("all")
+    public static Stage stage;
+    @SuppressWarnings("all")
+    public static Scene scene;
+    @SuppressWarnings("all")
+    public static Node topNode = new VBox();
+    @SuppressWarnings("all")
+    public static Node leftNode = new HBox();
+    @SuppressWarnings("all")
+    public static HBox centerNode = new HBox();
+    @SuppressWarnings("all")
+    public static Node rightNode = new HBox();
+    @SuppressWarnings("all")
+    public static Node bottomNode = new VBox();
+    @SuppressWarnings("all")
+    public static TreeItem<TreeElement> examsRoot;
 
-	@Override
-	public void start(Stage primaryStage)
-	{
-		stage = primaryStage;
+    @Override
+    public void start(Stage primaryStage)
+    {
+        stage = primaryStage;
 
-		topNode = createTopNode();
-		leftNode = createLeftNode();
-		centerNode = CenterNode.getCenterRoot();
+        topNode = createTopNode();
+        leftNode = createLeftNode();
+        centerNode = CenterNode.getCenterRoot();
 
 
-		BorderPane border = new BorderPane();
-		//border.getStyleClass().add("borders");
-		border.setTop(topNode);
-		border.setLeft(leftNode);
-		border.setCenter(centerNode);
-		border.setRight(rightNode);
-		border.setBottom(bottomNode);
+        BorderPane border = new BorderPane();
+        //border.getStyleClass().add("borders");
+        border.setTop(topNode);
+        border.setLeft(leftNode);
+        border.setCenter(centerNode);
+        border.setRight(rightNode);
+        border.setBottom(bottomNode);
 
-		Scene scene = new Scene(border, 1000, 800);
-		TeacherClient.scene = scene;
-		scene.getStylesheets().add(TeacherClient.class.getResource(pathToStyle).toExternalForm());
-		System.out.println(TeacherClient.class.getResource(pathToStyle).toExternalForm());
-		primaryStage.setTitle(title);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+        Scene scene = new Scene(border, 960, 720);
+        TeacherClient.scene = scene;
+        scene.getStylesheets().add(TeacherClient.class.getResource(pathToStyle).toExternalForm());
+        primaryStage.setTitle(title);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
 
-	public static Node createTopNode()
-	{
-		MenuBar menuBar = new MenuBar();
-		Menu fileMenu = new Menu("File");
-		Menu helpMenu = new Menu("Help");
-		menuBar.getMenus().addAll(fileMenu, helpMenu);
-		return menuBar;
-	}
+    public static Node createTopNode()
+    {
+        MenuBar menuBar = new MenuBar();
+        Menu fileMenu = new Menu("File");
+        Menu helpMenu = new Menu("Help");
+        menuBar.getMenus().addAll(fileMenu, helpMenu);
+        return menuBar;
+    }
 
-	private static int index = 1;
-	public static HBox createLeftNode() {
-		HBox leftHorizRoot = new HBox();
-		leftHorizRoot.getStyleClass().add("borders");
+    private static int index = 1;
 
-		VBox leftVertRoot = new VBox();
-		leftVertRoot.getStyleClass().add("leftvbox");
-		leftVertRoot.setMinWidth(320);
-		leftHorizRoot.getChildren().add(leftVertRoot);
+    public static HBox createLeftNode()
+    {
+        HBox leftHorizRoot = new HBox();
+        leftHorizRoot.getStyleClass().add("borders");
 
-		ExamsTreeElement exams = new ExamsTreeElement();
+        VBox leftVertRoot = new VBox();
+        leftVertRoot.getStyleClass().add("leftvbox");
+        leftVertRoot.setMinWidth(320);
+        leftHorizRoot.getChildren().add(leftVertRoot);
 
-		examsRoot = createTreeItem(TeacherClient.class, exams, pathToExamsIcon, 24);
-		TreeView<TreeElement> view = new TreeView<TreeElement>(examsRoot);
-		leftVertRoot.getChildren().add(view);
+        ExamsTreeElement exams = new ExamsTreeElement();
 
-		return leftHorizRoot;
-	}
+        examsRoot = createTreeItem(TeacherClient.class, exams, pathToExamsIcon, 24);
+        TreeView<TreeElement> view = new TreeView<TreeElement>(examsRoot);
+        leftVertRoot.getChildren().add(view);
 
-	public static void main(String[] args)
-	{
-	 	launch(args);
-	}
+        return leftHorizRoot;
+    }
+
+    public static void main(String[] args)
+    {
+        launch(args);
+    }
 }

@@ -13,7 +13,7 @@ import javafx.scene.layout.HBox;
  */
 public class TreeElement extends HBox
 {
-	public TreeItem objectReference;
+	public TreeItem treeElementReference;
 
 	public Button addButton;
 	public Button removeButton;
@@ -29,17 +29,19 @@ public class TreeElement extends HBox
 
 		if (label != null) {
 			label.getStyleClass().add("paddingtwo");
-			getChildren().add(label);
-		}
+            getChildren().add(label);
+        }
 
-		if (addButton != null) {
-			addButton.getStyleClass().add("paddingtwo");
-			getChildren().add(addButton);
-		}
+        if (addButton != null)
+        {
+            addButton.getStyleClass().add("paddingtwo");
+            getChildren().add(addButton);
+        }
 
-		if (removeButton != null) {
-			removeButton.getStyleClass().add("paddingtwo");
-			getChildren().add(removeButton);
-		}
-	}
+        if (removeButton != null)
+        {
+            removeButton.getStyleClass().add("paddingtwo");
+            getChildren().add(removeButton);
+        }
+    }
 }

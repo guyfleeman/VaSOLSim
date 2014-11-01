@@ -9,24 +9,24 @@ import javax.swing.*;
  */
 public class PopupManager
 {
-	public static boolean askYesNo(String message)
-	{
-		return (JOptionPane.showConfirmDialog(
-						null,
-						message,
-						"Request",
-						JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE)
-					== JOptionPane.YES_OPTION);
-	}
+    public static boolean askYesNo(String message)
+    {
+        return (JOptionPane.showConfirmDialog(
+                null,
+                message,
+                "Request",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE)
+                == JOptionPane.YES_OPTION);
+    }
 
-	public static void showMessage(String message)
-	{
-		showMessage(message, "Message");
-	}
+    public static void showMessage(String message)
+    {
+        showMessage(message, "Message");
+    }
 
-	public static void showMessage(String message, String title)
-	{
-		JOptionPane.showMessageDialog(null, message, title, JOptionPane.WARNING_MESSAGE);
-	}
+    public static void showMessage(String message, String title)
+    {
+        JOptionPane.showMessageDialog(null, message, title, JOptionPane.WARNING_MESSAGE);
+    }
 }

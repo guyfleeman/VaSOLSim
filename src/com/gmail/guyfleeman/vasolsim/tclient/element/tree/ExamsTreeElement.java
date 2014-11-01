@@ -1,14 +1,13 @@
 package com.gmail.guyfleeman.vasolsim.tclient.element.tree;
 
 import com.gmail.guyfleeman.vasolsim.tclient.TeacherClient;
-import com.gmail.guyfleeman.vasolsim.tclient.element.ExamPasswordNode;
+import com.gmail.guyfleeman.vasolsim.tclient.element.form.ExamPasswordNode;
 import com.gmail.guyfleeman.vasolsim.tclient.element.ImageButton;
 import com.gmail.guyfleeman.vasolsim.tclient.element.core.CenterNode;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 
-import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -18,24 +17,27 @@ import java.util.Vector;
  */
 public class ExamsTreeElement extends TreeElement
 {
-	public static Vector<ExamTreeElement> exams = new Vector<ExamTreeElement>();
+    public static Vector<ExamTreeElement> exams = new Vector<ExamTreeElement>();
 
-	public ExamsTreeElement() {
-		super(new Label("Exams"),
-				new ImageButton(
-						TeacherClient.class,
-						TeacherClient.pathToAddIcon,
-						"btnconfirmhover",
-						"btnnormal",
-						12),
-				null);
+    public ExamsTreeElement()
+    {
+        super(new Label("Exams"),
+                new ImageButton(
+                        TeacherClient.class,
+                        TeacherClient.pathToAddIcon,
+                        "btnconfirmhover",
+                        "btnnormal",
+                        12),
+                null);
 
-		super.addButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				CenterNode.getStyledRoot().getChildren().clear();
-				CenterNode.getStyledRoot().getChildren().add(ExamPasswordNode.getExamPasswordPromptNode());
-			}
-		});
-	}
+        super.addButton.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent mouseEvent)
+            {
+                CenterNode.getStyledRoot().getChildren().clear();
+                CenterNode.getStyledRoot().getChildren().add(ExamPasswordNode.getExamPasswordPromptNode());
+            }
+        });
+    }
 }
