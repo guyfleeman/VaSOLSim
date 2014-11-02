@@ -1,7 +1,7 @@
 package com.gmail.guyfleeman.vasolsim.tclient.element.form;
 
 import com.gmail.guyfleeman.vasolsim.common.VaSolSimException;
-import com.gmail.guyfleeman.vasolsim.common.file.ExamBuilder;
+import com.gmail.guyfleeman.vasolsim.common.file.__NONUSEDREFERENCE_OldExamBuilder;
 import com.gmail.guyfleeman.vasolsim.common.notification.PopupManager;
 import com.gmail.guyfleeman.vasolsim.tclient.element.core.CenterNode;
 import javafx.event.EventHandler;
@@ -101,6 +101,7 @@ public class ExamPasswordNode
 		});
 		*/
 
+	    /*
         nextButton.setOnMouseClicked(new EventHandler<MouseEvent>()
         {
             @Override
@@ -140,10 +141,10 @@ public class ExamPasswordNode
                             CenterNode.getStyledRoot().getChildren().remove(examPasswordPromptNode);
                             try
                             {
-                                ExamStatsInfoNode.setExamBuilder(ExamBuilder.getInstance(
-                                        lastValidatedPassword.getBytes()));
+                                ExamStatsInfoNode.setExamBuilder(__NONUSEDREFERENCE_OldExamBuilder.getInstance(
+		                                lastValidatedPassword.getBytes()));
                                 CenterNode.addScrollRoot();
-                                CenterNode.getScrollRoot().setContent(ExamStatsInfoNode.getExamStatsInfoNode());
+                                CenterNode.getScrollRoot().setContent(ExamStatsInfoNode.getNode());
                             } catch (VaSolSimException e)
                             {
                                 PopupManager.showMessage(internalExceptionOnExamBuilderInstanceInit + "Error Info:\n" +
@@ -156,6 +157,7 @@ public class ExamPasswordNode
 
             }
         });
+        */
 
         examPasswordPromptNode = horizontalRoot;
     }

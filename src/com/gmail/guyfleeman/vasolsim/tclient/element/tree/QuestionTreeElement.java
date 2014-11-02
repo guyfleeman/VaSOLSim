@@ -1,8 +1,6 @@
 package com.gmail.guyfleeman.vasolsim.tclient.element.tree;
 
-import com.gmail.guyfleeman.vasolsim.common.file.Exam;
 import com.gmail.guyfleeman.vasolsim.common.struct.Question;
-import com.gmail.guyfleeman.vasolsim.common.struct.QuestionSet;
 import com.gmail.guyfleeman.vasolsim.tclient.TeacherClient;
 import com.gmail.guyfleeman.vasolsim.tclient.element.ImageButton;
 import com.gmail.guyfleeman.vasolsim.tclient.element.core.CenterNode;

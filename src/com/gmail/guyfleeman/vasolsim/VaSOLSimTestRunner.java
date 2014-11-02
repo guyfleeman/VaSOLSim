@@ -1,18 +1,7 @@
 package com.gmail.guyfleeman.vasolsim;
 
-import com.gmail.guyfleeman.vasolsim.common.VaSolSimException;
-import com.gmail.guyfleeman.vasolsim.common.file.Exam;
-import com.gmail.guyfleeman.vasolsim.common.file.ExamBuilder;
-import com.gmail.guyfleeman.vasolsim.common.struct.AnswerChoice;
-import com.gmail.guyfleeman.vasolsim.common.struct.Question;
-import com.gmail.guyfleeman.vasolsim.common.struct.QuestionSet;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import static com.gmail.guyfleeman.vasolsim.common.GenericUtils.*;
@@ -122,7 +111,7 @@ public class VaSOLSimTestRunner
 	private static long fileCt, lineCt, charCt, maxDepth;
 	public static void printProjectBuildSize()
 	{
-		getBuildSizeInfo(new File("/home/willstuckey/Dropbox/PROGRAMMING/Java/VaSOLSim/src"), 0L);
+		getBuildSizeInfo(new File("/home/willstuckey/Dropbox/PROGRAMMING/Java/VaSOLSim/project/src"), 0L);
 		System.out.println("RAYBURN SCOPE STATISTICS: numFiles=" + fileCt
 				+ ", numLines=" + lineCt
 				+ ", numChars=" + charCt

@@ -1,15 +1,12 @@
 package com.gmail.guyfleeman.vasolsim.common.file;
 
 import com.gmail.guyfleeman.vasolsim.common.VaSolSimException;
-import com.gmail.guyfleeman.vasolsim.common.notification.PopupManager;
 import com.gmail.guyfleeman.vasolsim.common.struct.QuestionSet;
 
 import javax.crypto.Cipher;
 import javax.mail.Address;
-import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -21,135 +18,112 @@ import static com.gmail.guyfleeman.vasolsim.common.GenericUtils.*;
 
 /**
  * @author guyfleeman
- * @date 7/14/14
- * <p></p>
+ * @date 7/14/14 <p></p>
  */
 public class Exam
 {
-    private final boolean initializedFromFile;
+	private final boolean initializedFromFile;
 
-    private byte[] encryptedValidationHash = new byte[]{};
-    private byte[] parametricIV = new byte[16];
-    private Cipher encryptionCipher = null;
-    private Cipher decryptionCipher = null;
+	private boolean reportingStats           = false;
+	private boolean reportingStatsStandalone = false;
+	private String  statsSenderEmail         = null;
+	private String  statsSenderPassword      = null;
+	private String  statsSenderSMTPAddress   = null;
+	private int     statsSenderSMTPPort      = 587;
+	private String  statsDestinationEmail    = null;
 
-    private boolean reportingStats = false;
-    private boolean reportingStatsStandalone = false;
-    private byte[] decryptedStatsSenderEmail = new byte[]{};
-    private byte[] encryptedStatsSenderEmail = new byte[]{};
-    private byte[] decryptedStatsSenderEmailPassword = new byte[]{};
-    private byte[] encryptedStatsSenderEmailPassword = new byte[]{};
-    private byte[] decryptedStatsSenderSMTPAddress = new byte[]{};
-    private byte[] encryptedStatsSenderSMTPAddress = new byte[]{};
-    private byte[] encryptedStatsSenderSMTPPort = new byte[]{};
-    private int decryptedStatsSenderSMTPPort = 587;
-    private String statsDestinationEmail = null;
+	private String testName   = NO_TEST_NAME_GIVEN;
+	private String authorName = NO_AUTHOR_NAME_GIVEN;
+	private String schoolName = NO_SCHOOL_NAME_GIVEN;
+	private String periodName = NO_PERIOD_ID_GIVEN;
+	private String date       = NO_DATE_GIVEN;
 
-    private String testName = NO_TEST_NAME_GIVEN;
-    private String authorName = NO_AUTHOR_NAME_GIVEN;
-    private String schoolName = NO_SCHOOL_NAME_GIVEN;
-    private String periodName = NO_PERIOD_ID_GIVEN;
-    private String date = NO_DATE_GIVEN;
+	private ArrayList<QuestionSet> questionSets = new ArrayList<QuestionSet>();
 
-    private ArrayList<QuestionSet> questionSets = new ArrayList<QuestionSet>();
+	public Exam(final boolean initializedFromFile)
+	{
+		this.initializedFromFile = initializedFromFile;
+	}
 
-    protected Exam(final byte[] encryptedValidationHash,
-                   final byte[] parametricIV,
-                   final Cipher encryptionCipher,
-                   final Cipher decryptionCipher,
-                   final String statsDestinationEmail,
-                   boolean reportingStats,
-                   boolean reportingStatsStandalone,
-                   final byte[] encryptedStatsSenderEmail,
-                   final byte[] encryptedStatsSenderEmailPassword,
-                   final byte[] encryptedStatsSenderSMTPAddress,
-                   final byte[] encryptedStatsSenderSMTPPort,
-                   final boolean initializedFromFile)
-    {
-        this.encryptedValidationHash = encryptedValidationHash;
-        this.parametricIV = parametricIV;
-        this.encryptionCipher = encryptionCipher;
-        this.decryptionCipher = decryptionCipher;
+	protected Exam(boolean reportingStats,
+	               boolean reportingStatsStandalone,
+	               final String statsDestinationEmail,
+	               final String statsSenderEmail,
+	               final String statsSenderPassword,
+	               final String statsSenderSMTPAddress,
+	               final int statsSenderSMTPPort,
+	               final boolean initializedFromFile)
+	{
+		this.reportingStats = reportingStats;
+		this.reportingStatsStandalone = reportingStatsStandalone;
+		this.statsDestinationEmail = statsDestinationEmail;
+		this.statsSenderEmail = statsSenderEmail;
+		this.statsSenderPassword = statsSenderPassword;
+		this.statsSenderSMTPAddress = statsSenderSMTPAddress;
+		this.statsSenderSMTPPort = statsSenderSMTPPort;
+		this.initializedFromFile = initializedFromFile;
+	}
 
-        this.reportingStats = reportingStats;
-        this.reportingStatsStandalone = reportingStatsStandalone;
-        this.statsDestinationEmail = statsDestinationEmail;
-        this.encryptedStatsSenderEmail = encryptedStatsSenderEmail;
-        this.encryptedStatsSenderEmailPassword = encryptedStatsSenderEmailPassword;
-        this.encryptedStatsSenderSMTPAddress = encryptedStatsSenderSMTPAddress;
-        this.encryptedStatsSenderSMTPPort = encryptedStatsSenderSMTPPort;
+	public boolean sendEmail(String title,
+	                         String body,
+	                         boolean usingStartTLS) throws VaSolSimException
+	{
+		return sendEmail(statsDestinationEmail, title, body, usingStartTLS);
+	}
 
-        this.decryptedStatsSenderEmail = applyCryptographicCipher(
-                this.encryptedStatsSenderEmail, this.decryptionCipher);
-        this.decryptedStatsSenderEmailPassword = applyCryptographicCipher(
-                this.encryptedStatsSenderEmailPassword, this.decryptionCipher);
-        this.decryptedStatsSenderSMTPAddress = applyCryptographicCipher(
-                this.encryptedStatsSenderSMTPAddress, this.decryptionCipher);
-        this.decryptedStatsSenderSMTPPort = Integer.parseInt(new String(applyCryptographicCipher(
-                this.encryptedStatsSenderSMTPPort, this.decryptionCipher)));
+	public boolean sendEmail(String destination,
+	                         String title,
+	                         String body,
+	                         boolean usingStartTLS) throws VaSolSimException
+	{
+		Properties smtpProperties = new Properties();
 
-        this.initializedFromFile = initializedFromFile;
-    }
+		if (usingStartTLS)
+			smtpProperties.put("mail.smtp.starttls.enable", "true");
 
-    public boolean sendEmail(String title,
-                             String body,
-                             boolean usingStartTLS) throws VaSolSimException
-    {
-        return sendEmail(statsDestinationEmail, title, body, usingStartTLS);
-    }
+		smtpProperties.put("mail.smtp.auth", "true");
 
-    public boolean sendEmail(String destination,
-                             String title,
-                             String body,
-                             boolean usingStartTLS) throws VaSolSimException
-    {
-        Properties smtpProperties = new Properties();
+		Session session = Session.getInstance(smtpProperties, null);
+		try
+		{
+			Transport transport = session.getTransport("smtp");
+			transport.connect(new String(statsSenderSMTPAddress),
+			                  statsSenderSMTPPort,
+			                  new String(statsSenderEmail),
+			                  new String(statsSenderPassword));
 
-        if (usingStartTLS)
-            smtpProperties.put("mail.smtp.starttls.enable", "true");
+			Message emailMessage = new MimeMessage(session);
+			emailMessage.setFrom(new InternetAddress(new String(statsSenderEmail)));
+			emailMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destination));
+			emailMessage.setSubject(title);
+			emailMessage.setText(body);
 
-        smtpProperties.put("mail.smtp.auth", "true");
-
-        Session session = Session.getInstance(smtpProperties, null);
-        try
-        {
-            Transport transport = session.getTransport("smtp");
-            transport.connect(new String(decryptedStatsSenderSMTPAddress),
-                    decryptedStatsSenderSMTPPort,
-                    new String(decryptedStatsSenderEmail),
-                    new String(decryptedStatsSenderEmailPassword));
-
-            Message emailMessage = new MimeMessage(session);
-            emailMessage.setFrom(new InternetAddress(new String(decryptedStatsSenderEmail)));
-            emailMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destination));
-            emailMessage.setSubject(title);
-            emailMessage.setText(body);
-
-            transport.sendMessage(emailMessage, new Address[]{new InternetAddress(statsDestinationEmail)});
-        } catch (MessagingException e)
-        {
-            throw new VaSolSimException("EMAIL ERROR", e);
-        }
+			transport.sendMessage(emailMessage, new Address[]{new InternetAddress(statsDestinationEmail)});
+		}
+		catch (MessagingException e)
+		{
+			throw new VaSolSimException("EMAIL ERROR", e);
+		}
 
 
 		/*
-        smtpProperties.put("mail.smtp.host", decryptedStatsSenderSMTPAddress);
-		smtpProperties.put("mail.smtp.port", Integer.toString(decryptedStatsSenderSMTPPort));
+	    smtpProperties.put("mail.smtp.host", statsSenderSMTPAddress);
+		smtpProperties.put("mail.smtp.port", Integer.toString(statsSenderSMTPPort));
 
 		Session smtpSession = Session.getInstance(smtpProperties,
 				new Authenticator() {
 					@Override
 					protected PasswordAuthentication getPasswordAuthentication() {
 						return new PasswordAuthentication(
-								new String(decryptedStatsSenderEmail),
-								new String(decryptedStatsSenderEmailPassword));
+								new String(statsSenderEmail),
+								new String(statsSenderPassword));
 					}
 				});
 
 		try
 		{
 			Message emailMessage = new MimeMessage(smtpSession);
-			emailMessage.setFrom(new InternetAddress(new String(decryptedStatsSenderEmail)));
+			emailMessage.setFrom(new InternetAddress(new String(statsSenderEmail)));
 			emailMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destination));
 			emailMessage.setSubject(title);
 			emailMessage.setText(body);
@@ -162,140 +136,144 @@ public class Exam
 		}
 		*/
 
-        return true;
-    }
+		return true;
+	}
 
-    public byte[] getEncryptedValidationHash()
-    {
-        return encryptedValidationHash;
-    }
+	public boolean isInitializedFromFile()
+	{
+		return initializedFromFile;
+	}
 
-    public byte[] getParametricIV()
-    {
-        return parametricIV;
-    }
+	public boolean isReportingStats()
+	{
+		return reportingStats;
+	}
 
-    public Cipher getEncryptionCipher()
-    {
-        return encryptionCipher;
-    }
+	public void setReportingStats(boolean reportingStats)
+	{
+		this.reportingStats = reportingStats;
+	}
 
-    public final Cipher getDecryptionCipher()
-    {
-        if (!initializedFromFile)
-            return decryptionCipher;
+	public boolean isReportingStatsStandalone()
+	{
+		return reportingStatsStandalone;
+	}
 
-        return null;
-    }
+	public void setReportingStatsStandalone(boolean reportingStatsStandalone)
+	{
+		this.reportingStatsStandalone = reportingStatsStandalone;
+	}
 
-    public boolean isReportingStats()
-    {
-        return reportingStats;
-    }
+	public String getStatsSenderEmail()
+	{
+		return statsSenderEmail;
+	}
 
-    public boolean isReportingStatsStandalone()
-    {
-        return reportingStatsStandalone;
-    }
+	public void setStatsSenderEmail(String statsSenderEmail)
+	{
+		this.statsSenderEmail = statsSenderEmail;
+	}
 
-    public byte[] getEncryptedStatsSenderEmail()
-    {
-        return encryptedStatsSenderEmail;
-    }
+	public String getStatsSenderPassword()
+	{
+		if (!initializedFromFile)
+			return statsSenderPassword;
 
-    public byte[] getEncryptedStatsSenderEmailPassword()
-    {
-        return encryptedStatsSenderEmailPassword;
-    }
+		return null;
+	}
 
-    public byte[] getDecryptedStatsSenderSMTPAddress()
-    {
-        return decryptedStatsSenderSMTPAddress;
-    }
+	public void setStatsSenderPassword(String statsSenderPassword)
+	{
+		this.statsSenderPassword = statsSenderPassword;
+	}
 
-    public byte[] getEncryptedStatsSenderSMTPAddress()
-    {
-        return encryptedStatsSenderSMTPAddress;
-    }
+	public String getStatsSenderSMTPAddress()
+	{
+		return statsSenderSMTPAddress;
+	}
 
-    public byte[] getEncryptedStatsSenderSMTPPort()
-    {
-        return encryptedStatsSenderSMTPPort;
-    }
+	public void setStatsSenderSMTPAddress(String statsSenderSMTPAddress)
+	{
+		this.statsSenderSMTPAddress = statsSenderSMTPAddress;
+	}
 
-    public int getDecryptedStatsSenderSMTPPort()
-    {
-        return decryptedStatsSenderSMTPPort;
-    }
+	public int getStatsSenderSMTPPort()
+	{
+		return statsSenderSMTPPort;
+	}
 
-    public String getStatsDestinationEmail()
-    {
-        return statsDestinationEmail;
-    }
+	public void setStatsSenderSMTPPort(int statsSenderSMTPPort)
+	{
+		this.statsSenderSMTPPort = statsSenderSMTPPort;
+	}
 
-    public ArrayList<QuestionSet> getQuestionSets()
-    {
-        return questionSets;
-    }
+	public String getStatsDestinationEmail()
+	{
+		return statsDestinationEmail;
+	}
 
-    public final void setQuestionSets(ArrayList<QuestionSet> questionSets)
-    {
-        if (!initializedFromFile)
-            this.questionSets = questionSets;
-    }
+	public void setStatsDestinationEmail(String statsDestinationEmail)
+	{
+		this.statsDestinationEmail = statsDestinationEmail;
+	}
 
-    public String getTestName()
-    {
-        return testName;
-    }
+	public String getTestName()
+	{
+		return testName;
+	}
 
-    public final void setTestName(String testName)
-    {
-        if (!initializedFromFile)
-            this.testName = testName;
-    }
+	public void setTestName(String testName)
+	{
+		this.testName = testName;
+	}
 
-    public String getAuthorName()
-    {
-        return authorName;
-    }
+	public String getAuthorName()
+	{
+		return authorName;
+	}
 
-    public final void setAuthorName(String authorName)
-    {
-        if (!initializedFromFile)
-            this.authorName = authorName;
-    }
+	public void setAuthorName(String authorName)
+	{
+		this.authorName = authorName;
+	}
 
-    public String getSchoolName()
-    {
-        return schoolName;
-    }
+	public String getSchoolName()
+	{
+		return schoolName;
+	}
 
-    public final void setSchoolName(String schoolName)
-    {
-        if (!initializedFromFile)
-            this.schoolName = schoolName;
-    }
+	public void setSchoolName(String schoolName)
+	{
+		this.schoolName = schoolName;
+	}
 
-    public String getPeriodName()
-    {
-        return periodName;
-    }
+	public String getPeriodName()
+	{
+		return periodName;
+	}
 
-    public final void setPeriodName(String periodName)
-    {
-        if (!initializedFromFile)
-            this.periodName = periodName;
-    }
+	public void setPeriodName(String periodName)
+	{
+		this.periodName = periodName;
+	}
 
-    public String getDate()
-    {
-        return date;
-    }
+	public String getDate()
+	{
+		return date;
+	}
 
-    public final void setDate(String date)
-    {
-        if (!initializedFromFile)
-            this.date = date;
-    }
+	public void setDate(String date)
+	{
+		this.date = date;
+	}
+
+	public ArrayList<QuestionSet> getQuestionSets()
+	{
+		return questionSets;
+	}
+
+	public void setQuestionSets(ArrayList<QuestionSet> questionSets)
+	{
+		this.questionSets = questionSets;
+	}
 }

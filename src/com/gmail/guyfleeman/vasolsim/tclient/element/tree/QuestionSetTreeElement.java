@@ -83,9 +83,9 @@ public class QuestionSetTreeElement extends TreeElement
 			{
 				CenterNode.removeScrollRoot();
 				CenterNode.addScrollRoot();
-				QuestionSetInfoNode.boundTreeElement = instance;
-				QuestionSetInfoNode.qSet = instance.qSet;
-				CenterNode.getScrollRoot().setContent(QuestionSetInfoNode.getQuestionSetNode());
+				TeacherClient.questionSetInfoNode.boundTreeElement = instance;
+				TeacherClient.questionSetInfoNode.qSet = instance.qSet;
+				CenterNode.getScrollRoot().setContent(TeacherClient.questionSetInfoNode.getNode());
 			}
 		});
 	}

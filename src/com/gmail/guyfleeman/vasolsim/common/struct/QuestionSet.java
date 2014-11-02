@@ -1,5 +1,8 @@
 package com.gmail.guyfleeman.vasolsim.common.struct;
 
+import javafx.scene.image.Image;
+
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,71 +17,67 @@ import static com.gmail.guyfleeman.vasolsim.common.GenericUtils.*;
  */
 public class QuestionSet
 {
-    private final boolean initializedFromFile;
-    private byte[] resource = NO_RESOURCE_DATA.getBytes();
-    private ResourceType resourceType = ResourceType.NONE;
-    private String name;
+	private final boolean initializedFromFile;
+	private BufferedImage[] resources    = null;
+	private Image[] fxResources = null;
+	private ResourceType    resourceType = ResourceType.NONE;
+	private String name;
 
-    private ArrayList<Question> questions = new ArrayList<Question>();
+	private ArrayList<Question> questions = new ArrayList<Question>();
 
 	public QuestionSet()
 	{
 		this("New Question Set", new ArrayList<Question>(), false);
 	}
 
-    public QuestionSet(final String name, final ArrayList<Question> questions, boolean initializedFromFile)
-    {
-        this.name = name;
-        this.questions = questions;
-        this.initializedFromFile = initializedFromFile;
-    }
+	public QuestionSet(final String name, final ArrayList<Question> questions, boolean initializedFromFile)
+	{
+		this.name = name;
+		this.questions = questions;
+		this.initializedFromFile = initializedFromFile;
+	}
 
-    public boolean loadResource(ResourceType type, File resource)
-    {
-        if (!resource.isFile())
-            return false;
+	public boolean loadPDFResource(String file)
+	{
+		return loadPDFResource(new File(file));
+	}
 
-        try
-        {
-            return loadResource(type, Files.readAllBytes(resource.toPath()));
-        }
-        catch (IOException e)
-        {
-            return false;
-        }
+	public boolean loadPDFResource(File file)
+	{
+		try
+		{
+			resources = renderPDF(file);
+			resourceType = ResourceType.PDF;
+		}
+		catch (IOException e)
+		{
+			resourceType = ResourceType.NONE;
+			resources = null;
+			return false;
+		}
 
-    }
-
-    public boolean loadResource(String resource)
-    {
-        return loadResource(ResourceType.TXT, resource.getBytes());
-    }
-
-    public boolean loadResource(ResourceType type, byte[] raw)
-    {
-        if (initializedFromFile)
-            return false;
-
-        this.resourceType = type;
-        this.resource = raw;
-
-        return true;
-    }
-
-    public byte[] getResource()
-    {
-        return resource;
-    }
-
-    public ResourceType getResourceType()
-    {
-        return resourceType;
-    }
+		return true;
+	}
 
 	public void removeResource()
 	{
 		this.resourceType = ResourceType.NONE;
-		this.resource = NO_RESOURCE_DATA.getBytes();
+		this.resources = null;
+	}
+
+	public BufferedImage[] getResources()
+	{
+		return resources;
+	}
+
+	public void setResources(BufferedImage[] images)
+	{
+		this.resources = images;
+	}
+
+	public ResourceType getResourceType()
+	{
+		return resourceType;
 	}
 
     public String getName()
@@ -102,4 +101,14 @@ public class QuestionSet
         if (!initializedFromFile)
             this.questions = questions;
     }
+
+	public Image[] getFxResources()
+	{
+		return fxResources;
+	}
+
+	public void setFxResources(Image[] fxResources)
+	{
+		this.fxResources = fxResources;
+	}
 }

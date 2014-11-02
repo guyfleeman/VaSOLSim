@@ -1,6 +1,7 @@
 package com.gmail.guyfleeman.vasolsim.tclient.element.tree;
 
 import com.gmail.guyfleeman.vasolsim.common.file.Exam;
+import com.gmail.guyfleeman.vasolsim.common.file.__NONUSEDREFERENCE_OldExam;
 import com.gmail.guyfleeman.vasolsim.common.notification.PopupManager;
 import com.gmail.guyfleeman.vasolsim.tclient.TeacherClient;
 import com.gmail.guyfleeman.vasolsim.tclient.element.ImageButton;
@@ -58,13 +59,17 @@ public class ExamTreeElement extends TreeElement
 
 				TreeItem<TreeElement> element = createTreeItem(TeacherClient.class,
 				                                               newQuestionSet,
-			            TeacherClient.pathToQuestionSetIcon,
+				                                               TeacherClient.pathToQuestionSetIcon,
 			            24);
 	            newQuestionSet.treeElementReference = element;
 	            newQuestionSet.parent = thisInstance;
 	            thisInstance.treeElementReference.getChildren().add(element);
 	            newQuestionSet.initListeners();
 	            qSets.add(newQuestionSet);
+
+				CenterNode.addScrollRoot();
+				TeacherClient.questionSetInfoNode.boundTreeElement = newQuestionSet;
+				CenterNode.getScrollRoot().setContent(TeacherClient.questionSetInfoNode.getNode());
             }
         });
 
@@ -87,9 +92,9 @@ public class ExamTreeElement extends TreeElement
 	        public void handle(MouseEvent mouseEvent) {
 		        CenterNode.removeScrollRoot();
 		        CenterNode.addScrollRoot();
-		        ExamInfoNode.setExam(exam);
-		        ExamInfoNode.boundTreeElement = thisInstance;
-		        CenterNode.getScrollRoot().setContent(ExamInfoNode.getExamInfoNode());
+		        TeacherClient.examInfoNode.setExam(exam);
+		        TeacherClient.examInfoNode.boundTreeElement = thisInstance;
+		        CenterNode.getScrollRoot().setContent(TeacherClient.examInfoNode.getNode());
 	        }
         });
     }

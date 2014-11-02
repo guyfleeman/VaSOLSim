@@ -121,3 +121,8 @@
 {
 	-fx-background-color: rgba(51, 173, 255, 0.0);
 }
+
+.pic
+{
+	-fx-spacing: 10;
+}

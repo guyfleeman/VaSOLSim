@@ -9,18 +9,38 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.NullCipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import javax.imageio.ImageIO;
 import javax.mail.Session;
 import javax.mail.Transport;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -77,6 +97,8 @@ public class GenericUtils
 	public static final String ERROR_MESSAGE_CREATE_FILE_EXCEPTION                        =
 			"File creation internal exception. Do you have permission to create a file on your machine? Could this " +
 					"be a bug? (try running the jar as admin)";
+	public static final String ERROR_MESSAGE_BAD_CIPHER_MODE                              = "The provided cipher " +
+			"initialization mode is invalid. Use class defined constant Cipher.ENCRYPT_MODE or Cipher.DECRYPT_MODE";
 	public static final String ERROR_MESSAGE_GENERIC_CRYPTO                               =
 			"This message being shown for debugging purposes. If the problem persists, please paste the following " +
 					"information into an email for the project manager.";
@@ -212,7 +234,6 @@ public class GenericUtils
 	{
 		NONE,
 		TXT,
-		DOCX,
 		PDF,
 		PNG,
 		JPG,
@@ -270,7 +291,8 @@ public class GenericUtils
 	public static final String statsDestAddrLabelText      = "The destination email address for reported statistics.";
 	public static final String statsVerifyButtonText       = "Verify ->";
 
-	public static final String statsSAInfoLabelText                       = "If you'd prefer students not enter their" +
+	public static final String statsSAInfoLabelText                       = "If you'd prefer students not enter " +
+			"their" +
 			" " +
 			"own emails, " +
 			"you can report stats in \"standalone mode.\" In this mode, you will provide the address and password " +
@@ -367,7 +389,7 @@ public class GenericUtils
 			return new byte[]{-1};
 
 		/*
-	     * Create 16byte quarters from the 64 byte hash
+		 * Create 16byte quarters from the 64 byte hash
 		 */
 		byte[] lowerQuarterOne = new byte[16];
 		byte[] lowerQuarterTwo = new byte[16];
@@ -399,7 +421,7 @@ public class GenericUtils
 	}
 
 	/**
-	 * Converts a byte array hash to a character representation for storage and comparison
+	 * Converts a byte array hash to a character representation
 	 *
 	 * @param hash the hash to convert to plain text
 	 *
@@ -415,10 +437,103 @@ public class GenericUtils
 	}
 
 	/**
+	 * Converts a hex string to a byte array
+	 *
+	 * @param hex the hex string
+	 *
+	 * @return byte array
+	 */
+	public static byte[] convertHexStringToBytes(String hex)
+	{
+		int length = hex.length();
+		byte[] data = new byte[length / 2];
+		for (int i = 0; i < length; i += 2)
+			data[i / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4) + Character.digit(hex.charAt(i + 1), 16));
+
+		return data;
+	}
+
+	/**
+	 * initializes a cipher
+	 * @param key the key
+	 * @param mode the mode (Cipher.ENCRYPT_MODE or Cipher.DECRYPT_MODE)
+	 * @return an initialized cipher
+	 * @throws VaSolSimException for all the usual crypto stuff
+	 */
+	public static Cipher initCrypto(byte[] key, int mode) throws VaSolSimException
+	{
+		if (mode != Cipher.ENCRYPT_MODE && mode != Cipher.DECRYPT_MODE)
+			throw new VaSolSimException(ERROR_MESSAGE_BAD_CIPHER_MODE);
+
+		byte[] parametricIV = new byte[16];
+		Cipher cipher;
+		try
+		{
+			//create an IV
+			SecureRandom random = new SecureRandom();
+			random.nextBytes(parametricIV);
+			random = null;
+
+			//initialize the crypto
+			cipher = Cipher.getInstance(DEFAULT_SERVICE_PROVIDER_INTERFACE, DEFAULT_SERVICE_PROVIDER);
+			cipher.init(
+					mode,
+					new SecretKeySpec(key, DEFAULT_ENCRYPTION_ALGORITHM),
+					new IvParameterSpec(parametricIV));
+
+			//clear the password from memory
+			//for (byte b : key)
+			//	b = (byte) 0x00;
+		}
+		catch (NoSuchAlgorithmException e)
+		{
+			throw new VaSolSimException(ERROR_MESSAGE_GENERIC_CRYPTO + "\n\nBAD ALGORITHM\n" +
+					                            e.toString() + "\n" +
+					                            e.getCause() + "\n" +
+					                            ExceptionUtils.getStackTrace(e),
+			                            e);
+		}
+		catch (NoSuchProviderException e)
+		{
+			throw new VaSolSimException(ERROR_MESSAGE_GENERIC_CRYPTO + "\n\nBAD PROVIDER\n" +
+					                            e.toString() + "\n" +
+					                            e.getCause() + "\n" +
+					                            ExceptionUtils.getStackTrace(e),
+			                            e);
+		}
+		catch (NoSuchPaddingException e)
+		{
+			throw new VaSolSimException(ERROR_MESSAGE_GENERIC_CRYPTO + "\n\nNO SUCH PADDING\n" +
+					                            e.toString() + "\n" +
+					                            e.getCause() + "\n" +
+					                            ExceptionUtils.getStackTrace(e),
+			                            e);
+		}
+		catch (InvalidKeyException e)
+		{
+			throw new VaSolSimException(ERROR_MESSAGE_GENERIC_CRYPTO + "\n\nBAD KEY\n" +
+					                            e.toString() + "\n" +
+					                            e.getCause() + "\n" +
+					                            ExceptionUtils.getStackTrace(e),
+			                            e);
+		}
+		catch (InvalidAlgorithmParameterException e)
+		{
+			throw new VaSolSimException(ERROR_MESSAGE_GENERIC_CRYPTO + "\n\nBAD ALGORITHM PARAMS\n" +
+					                            e.toString() + "\n" +
+					                            e.getCause() + "\n" +
+					                            ExceptionUtils.getStackTrace(e),
+			                            e);
+		}
+
+		return cipher;
+	}
+
+	/**
 	 * Applies a cipher to bytes.
 	 *
 	 * @param message the bytes to be ciphered
-	 * @param cipher  the *initialized* cipher
+	 * @param cipher  the initialized cipher
 	 *
 	 * @return the new bytes, or -1 if ya done fucked up
 	 */
@@ -444,17 +559,6 @@ public class GenericUtils
 	public static boolean isCipherProperlyInitialized(Cipher cipher)
 	{
 		return !(cipher instanceof NullCipher);
-
-		/*
-		try {
-			cipher.doFinal("Picard>>ThanKirk".getBytes());
-			return true;
-		} catch (Exception e)
-		{
-			System.out.println(e.toString());
-			return false;
-		}
-		*/
 	}
 
 	/**
@@ -656,6 +760,81 @@ public class GenericUtils
 
 		return true;
 	}
+
+	/**
+	 * gets the number of pages in a pdf
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	public static int getPDFPages(File file) throws IOException
+	{
+		PDDocument doc = PDDocument.load(file);
+		int pages = doc.getNumberOfPages();
+		doc.close();
+		return pages;
+	}
+
+	/**
+	 * renders a pdf to images
+	 * @param file pdf file
+	 * @return images
+	 * @throws IOException
+	 */
+	public static BufferedImage[] renderPDF(File file) throws IOException
+	{
+		PDDocument doc = PDDocument.load(file);
+		@SuppressWarnings("unchecked")
+		List<PDPage> pages = doc.getDocumentCatalog().getAllPages();
+		Iterator<PDPage> iterator = pages.iterator();
+		BufferedImage[] images = new BufferedImage[pages.size()];
+		for (int i = 0; iterator.hasNext(); i++)
+			images[i] = iterator.next().convertToImage();
+
+		doc.close();
+
+		return images;
+	}
+
+	/**
+	 * converts an awt image to a javafx image
+	 * @param image
+	 * @return
+	 * @throws VaSolSimException
+	 */
+	public static Image convertBufferedImageToFXImage(BufferedImage image) throws VaSolSimException
+	{
+		try
+		{
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			ImageIO.write(image, "png", out);
+			out.flush();
+
+			ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+			return new Image(in);
+		}
+		catch (IOException e)
+		{
+			//TODO field message out
+			throw new VaSolSimException("image error");
+		}
+	}
+
+	/**
+	 * converts awt images to fx images
+	 * @param images
+	 * @return
+	 * @throws VaSolSimException
+	 */
+	public static Image[] convertBufferedImagesToFXImages(BufferedImage[] images) throws VaSolSimException
+	{
+		Image[] fxImages = new Image[images.length];
+		for (int i = 0; i < images.length; i++)
+			fxImages[i] = convertBufferedImageToFXImage(images[i]);
+
+		return fxImages;
+	}
+
 
 	////////////////////////
 	//  YAY JAVAFX UTILS  //

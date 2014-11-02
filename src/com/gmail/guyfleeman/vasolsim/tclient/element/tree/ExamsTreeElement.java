@@ -1,9 +1,9 @@
 package com.gmail.guyfleeman.vasolsim.tclient.element.tree;
 
 import com.gmail.guyfleeman.vasolsim.tclient.TeacherClient;
-import com.gmail.guyfleeman.vasolsim.tclient.element.form.ExamPasswordNode;
 import com.gmail.guyfleeman.vasolsim.tclient.element.ImageButton;
 import com.gmail.guyfleeman.vasolsim.tclient.element.core.CenterNode;
+import com.gmail.guyfleeman.vasolsim.tclient.element.form.ExamStatsInfoNode;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -36,7 +36,8 @@ public class ExamsTreeElement extends TreeElement
             public void handle(MouseEvent mouseEvent)
             {
                 CenterNode.getStyledRoot().getChildren().clear();
-                CenterNode.getStyledRoot().getChildren().add(ExamPasswordNode.getExamPasswordPromptNode());
+	            CenterNode.addScrollRoot();
+	            CenterNode.getScrollRoot().setContent(TeacherClient.examStatsInfoNode.getNode());
             }
         });
     }

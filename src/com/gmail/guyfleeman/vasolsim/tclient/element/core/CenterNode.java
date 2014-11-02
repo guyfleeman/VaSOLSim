@@ -52,6 +52,7 @@ public class CenterNode
         scrollRoot.setPrefViewportHeight(1200);
         scrollRoot.setPrefViewportWidth(2000);
         scrollRoot.setFitToWidth(true);
+	    scrollRoot.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         styledRoot.getChildren().add(getScrollRoot());
     }
 
