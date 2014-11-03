@@ -121,7 +121,6 @@ public class QuestionNode implements DrawableNode
 			charDisplay.setPrefWidth(2000);
 			charDisplay.setAlignment(Pos.TOP_LEFT);
 
-
 			for (final AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
 			{
 				System.out.println(ac.getAnswerText());

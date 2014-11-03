@@ -140,7 +140,7 @@ public class TeacherClient extends Application
 		questionInitNode = new QuestionInitNode();
 		questionTypeNode = new QuestionTypeNode();
 
-		charset = new ArrayList<Character>(Arrays.asList(',', '.', '?', '!', ';', ':', '-', '\u2013', '\u2014'));
+		charset = new ArrayList<Character>(Arrays.asList(',', '.', '?', '!', ';', ':', '-', '\u2013', '\u2014', ' '));
 	}
 
 	public static void main(String[] args)

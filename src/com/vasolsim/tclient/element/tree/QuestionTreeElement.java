@@ -1,17 +1,13 @@
 package com.vasolsim.tclient.element.tree;
 
-import com.vasolsim.common.GenericUtils;
-import com.vasolsim.common.file.AnswerChoice;
 import com.vasolsim.common.file.Question;
 import com.vasolsim.tclient.TeacherClient;
-import com.vasolsim.tclient.element.ImageButton;
+import com.vasolsim.common.node.ImageButton;
 import com.vasolsim.tclient.element.core.CenterNode;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 
-import java.security.acl.AclNotFoundException;
-import java.util.ArrayList;
 import java.util.Vector;
 
 /**

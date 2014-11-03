@@ -2,7 +2,7 @@ package com.vasolsim.tclient.element.tree;
 
 import com.vasolsim.common.file.AnswerChoice;
 import com.vasolsim.tclient.TeacherClient;
-import com.vasolsim.tclient.element.ImageButton;
+import com.vasolsim.common.node.ImageButton;
 import com.vasolsim.tclient.element.core.CenterNode;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;

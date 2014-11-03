@@ -1,4 +1,4 @@
-package com.vasolsim.tclient.element;
+package com.vasolsim.common.node;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
