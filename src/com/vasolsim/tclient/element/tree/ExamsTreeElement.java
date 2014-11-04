@@ -23,8 +23,8 @@ public class ExamsTreeElement extends TreeElement
 		      new ImageButton(
 				      TeacherClient.class,
 				      TeacherClient.pathToAddIcon,
-				      "btnconfirmhover",
 				      "btnnormal",
+				      "btnconfirmhover",
 				      12),
 		      null);
 

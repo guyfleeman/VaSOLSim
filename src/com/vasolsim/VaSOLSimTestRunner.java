@@ -2,6 +2,7 @@ package com.vasolsim;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import static com.vasolsim.common.GenericUtils.*;
@@ -15,7 +16,7 @@ public class VaSOLSimTestRunner
 	public static void main(String[] args) throws Exception
 	{
 		//System.out.println(Character.getName('-'));
-		printProjectBuildSize();
+		//printProjectBuildSize();
 		//docGen();
 	}
 

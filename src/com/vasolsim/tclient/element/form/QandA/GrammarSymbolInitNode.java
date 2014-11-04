@@ -154,11 +154,9 @@ public class GrammarSymbolInitNode
 				for (char c : chars)
 				{
 					AnswerTreeElement newAnswer = new AnswerTreeElement();
-					newAnswer.answerChoice = new AnswerChoice(c != '.' ? Character.getName(c).toLowerCase() : "period",
-					                                          String.valueOf(asciiCharCode++),
+					newAnswer.answerChoice = new AnswerChoice(String.valueOf(asciiCharCode++),
 					                                          String.valueOf(c),
 					                                          true,
-					                                          false,
 					                                          false);
 					newAnswer.label.setText(c != '.' ? Character.getName(c).toLowerCase() : "period");
 					newAnswer.initListeners();

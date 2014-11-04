@@ -29,14 +29,14 @@ public class QuestionSetTreeElement extends TreeElement
 		      new ImageButton(
 				      TeacherClient.class,
 				      TeacherClient.pathToAddIcon,
-				      "btnconfirmhover",
 				      "btnnormal",
+				      "btnconfirmhover",
 				      12),
 		      new ImageButton(
 				      TeacherClient.class,
 				      TeacherClient.pathToRemoveIcon,
-				      "btndenyhover",
 				      "btnnormal",
+				      "btndenyhover",
 				      12)
 		);
 

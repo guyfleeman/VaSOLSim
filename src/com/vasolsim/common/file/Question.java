@@ -1,5 +1,7 @@
 package com.vasolsim.common.file;
 
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import com.vasolsim.common.GenericUtils;
 import com.vasolsim.tclient.TeacherClient;
 
@@ -8,40 +10,62 @@ import java.util.ArrayList;
 import static com.vasolsim.common.GenericUtils.*;
 
 /**
- * @author guyfleeman
- * @date 7/1/14 <p></p>
+ * @author willstuckey
+ * @date 7/1/14
+ * <p>This class represents a question and its enclosed answer choices and data.</p>
  */
 public class Question
 {
-	private final boolean                 initializedFromFile;
+	private final boolean                 isLocked;
 	private       boolean                 scrambleAnswers;
 	private       boolean                 answerOrderMatters;
+	@NotNull
 	private       String                  name;
+	@Nullable
 	private       String                  question;
+	@NotNull
 	private       QuestionType            questionType;
+	@NotNull
 	private       ArrayList<AnswerChoice> correctAnswerChoices;
+	@NotNull
 	private       ArrayList<AnswerChoice> answerChoices;
 
+	/**
+	 * Default constructor. Initializes an unlocked question. Questions must be locked before they will be accepted by
+	 * the viewer.
+	 */
 	public Question()
 	{
 		this("New Question",
-		     "No Question Defined",
+		     null,
 		     QuestionType.MULTIPLE_CHOICE,
 		     new ArrayList<AnswerChoice>(),
 		     new ArrayList<AnswerChoice>(),
 		     false,
-		     false,
 		     false);
 	}
 
-	public Question(final String name,
-	                final String question,
-	                final QuestionType questionType,
-	                final ArrayList<AnswerChoice> answerChoices,
-	                final ArrayList<AnswerChoice> correctAnswerChoices,
-	                final boolean scrambleAnswers,
-	                final boolean answerOrderMatters,
-	                final boolean initializedFromFile)
+	/**
+	 * Advanced constructor. Initializes an unlocked question. Questions must be locked before they will be accepted by
+	 * the viewer.
+	 *
+	 * @param name                 the name of the question
+	 * @param question             the text of the question
+	 * @param questionType         the type of question (how the question will be rendered)
+	 * @param answerChoices        the answer choices
+	 * @param correctAnswerChoices the correct answer choices
+	 * @param scrambleAnswers      if the order of the answers will be scrambled when the test viewer renders the
+	 *                             question
+	 * @param answerOrderMatters   if the order of the answers is needed for a correct answer. Only applies to certain
+	 *                             question types.
+	 */
+	public Question(@NotNull String name,
+	                @Nullable String question,
+	                @NotNull QuestionType questionType,
+	                @NotNull ArrayList<AnswerChoice> answerChoices,
+	                @NotNull ArrayList<AnswerChoice> correctAnswerChoices,
+	                boolean scrambleAnswers,
+	                boolean answerOrderMatters)
 	{
 		this.name = name;
 		this.question = question;
@@ -50,37 +74,96 @@ public class Question
 		this.correctAnswerChoices = correctAnswerChoices;
 		this.scrambleAnswers = scrambleAnswers;
 		this.answerOrderMatters = answerOrderMatters;
-		this.initializedFromFile = initializedFromFile;
+		this.isLocked = false;
 	}
 
+	/**
+	 * Advanced constructor. Initializes a question. Questions must be locked before they will be accepted by the
+	 * viewer.
+	 *
+	 * @param name                 the name of the question
+	 * @param question             the text of the question
+	 * @param questionType         the type of question (how the question will be rendered)
+	 * @param answerChoices        the answer choices
+	 * @param correctAnswerChoices the correct answer choices
+	 * @param scrambleAnswers      if the order of the answers will be scrambled when the test viewer renders the
+	 *                             question
+	 * @param answerOrderMatters   if the order of the answers is needed for a correct answer. Only applies to certain
+	 *                             question types.
+	 * @param isLocked             denotes if the question is locked
+	 */
+	Question(@NotNull String name,
+	         @Nullable String question,
+	         @NotNull QuestionType questionType,
+	         @NotNull final ArrayList<AnswerChoice> answerChoices,
+	         @NotNull final ArrayList<AnswerChoice> correctAnswerChoices,
+	         boolean scrambleAnswers,
+	         boolean answerOrderMatters,
+	         boolean isLocked)
+	{
+		this.name = name;
+		this.question = question;
+		this.questionType = questionType;
+		this.answerChoices = (ArrayList<AnswerChoice>) answerChoices.clone();
+		this.correctAnswerChoices = (ArrayList<AnswerChoice>) correctAnswerChoices.clone();
+		this.scrambleAnswers = scrambleAnswers;
+		this.answerOrderMatters = answerOrderMatters;
+		this.isLocked = isLocked;
+	}
+
+	/**
+	 * Initialize answer blanks based on type, used to prevent null pointers in questions that have not been
+	 * initialized
+	 * by the teacher client. Will only work if the question is unlocked.
+	 */
 	public void initializeAnswers()
 	{
-		initializeAnswers(questionType);
+		if (!isLocked)
+			initializeAnswers(questionType);
 	}
 
+	/**
+	 * Initialize answer blanks based on type, used to prevent null pointers in questions that have not been
+	 * initialized
+	 * by the teacher client. Will only work if the question is unlocked.
+	 *
+	 * @param questionType type
+	 */
 	public void initializeAnswers(GenericUtils.QuestionType questionType)
 	{
-		if (questionType == GenericUtils.QuestionType.TE_D_AND_D_GRAMMAR_MULTIPLE_RESPONSE)
+		if (!isLocked)
 		{
-			ArrayList<AnswerChoice> answers = new ArrayList<AnswerChoice>();
-			for (Character c : TeacherClient.charset)
+			if (questionType == GenericUtils.QuestionType.TE_D_AND_D_GRAMMAR_MULTIPLE_RESPONSE)
 			{
-				AnswerChoice ac = new AnswerChoice();
-				ac.setActive(false);
-				ac.setText("" + c);
-				answers.add(ac);
+				ArrayList<AnswerChoice> answers = new ArrayList<AnswerChoice>();
+				for (Character c : TeacherClient.charset)
+				{
+					AnswerChoice ac = new AnswerChoice();
+					ac.setActive(false);
+					ac.setText("" + c);
+					answers.add(ac);
+				}
+				answerChoices = answers;
 			}
-			answerChoices = answers;
-		}
-		else
-		{
-			ArrayList<AnswerChoice> answers = new ArrayList<AnswerChoice>();
-			for (int i = 0; i < 8; i++)
-				answers.add(new AnswerChoice());
-			answerChoices = answers;
+			else
+			{
+				ArrayList<AnswerChoice> answers = new ArrayList<AnswerChoice>();
+				for (int i = 0; i < 8; i++)
+					answers.add(new AnswerChoice());
+				answerChoices = answers;
+			}
 		}
 	}
 
+	/**
+	 * Basic answer checker. Designed to give immediate correct/incorrect feedback. Analysis of choice and
+	 * statistics to
+	 * be computed by a more comprehensive algorithm elsewhere.
+	 *
+	 * @param uncheckedAnswers the students selected responses.
+	 *
+	 * @return if the provided answer is a correct one
+	 */
 	public boolean checkAnswer(ArrayList<AnswerChoice> uncheckedAnswers)
 	{
 		@SuppressWarnings("unchecked")
@@ -91,6 +174,9 @@ public class Question
 		if (guesses.size() != correctAnswers.size())
 			return false;
 
+		/*
+		 * if the order matters, check directly
+		 */
 		if (answerOrderMatters)
 		{
 			for (int index = 0; index < correctAnswers.size(); index++)
@@ -99,6 +185,9 @@ public class Question
 
 			return true;
 		}
+		/*
+		 * if the order does not matter iterate though everything looking for matched removing duplicates
+		 */
 		else
 		{
 			for (int index = 0; index < guesses.size(); index++)
@@ -124,72 +213,135 @@ public class Question
 		}
 	}
 
+	/**
+	 * gets answer choices
+	 * @return answer choices
+	 */
+	@NotNull
 	public ArrayList<AnswerChoice> getAnswerChoices()
 	{
 		return answerChoices;
 	}
 
-	public final void setAnswerChoices(ArrayList<AnswerChoice> answerChoices)
+	/**
+	 * set answer choices, only if the question is unlocked
+	 * @param answerChoices answer choices
+	 */
+	public final void setAnswerChoices(@NotNull ArrayList<AnswerChoice> answerChoices)
 	{
-		if (!initializedFromFile)
+		if (!isLocked)
 			this.answerChoices = answerChoices;
 	}
 
+	/**
+	 * gets if answers are being scrambled
+	 * @return if scramble answers
+	 */
 	public boolean getScrambleAnswers()
 	{
 		return scrambleAnswers;
 	}
 
-	public boolean isInitializedFromFile()
+	/**
+	 * gets if the question is locked
+	 * @return if is locked
+	 */
+	public final boolean isLocked()
 	{
-		return initializedFromFile;
+		return isLocked;
 	}
 
+	/**
+	 * gets if answer order matters
+	 * @return if order matters
+	 */
 	public boolean getAnswerOrderMatters()
 	{
 		return answerOrderMatters;
 	}
 
+	/**
+	 * gets name
+	 * @return name
+	 */
+	@NotNull
 	public String getName()
 	{
 		return name;
 	}
 
-	public final void setName(final String name)
+	/**
+	 * sets the name, only if the question is unlocked
+	 * @param name name
+	 */
+	public final void setName(@NotNull String name)
 	{
-		if (!initializedFromFile)
+		if (!isLocked)
 			this.name = name;
 	}
 
-	public ArrayList<AnswerChoice> getCorrectAnswerChoices()
+	/**
+	 * gets the correct answer choices
+	 * @return correct answers
+	 */
+	@NotNull
+	public final ArrayList<AnswerChoice> getCorrectAnswerChoices()
 	{
-		return correctAnswerChoices;
+		if (!isLocked)
+		{
+			return correctAnswerChoices;
+		}
+
+		return null;
 	}
 
-	public void setCorrectAnswerChoices(ArrayList<AnswerChoice> correctAnswerChoices)
+	/**
+	 * sets the correct answer choices, only if the question is unlocked
+	 * @param correctAnswerChoices correct answers
+	 */
+	public final void setCorrectAnswerChoices(@NotNull ArrayList<AnswerChoice> correctAnswerChoices)
 	{
-		if (!initializedFromFile)
+		if (!isLocked)
 			this.correctAnswerChoices = correctAnswerChoices;
 	}
 
+	/**
+	 * gets the question text
+	 * @return question text
+	 */
+	@Nullable
 	public String getQuestion()
 	{
 		return question;
 	}
 
-	public final void setQuestion(final String question)
+	/**
+	 * sets the question text, only if the question is unlocked
+	 * @param question the question
+	 */
+	public final void setQuestion(@Nullable String question)
 	{
-		if (!initializedFromFile)
+		if (!isLocked)
 			this.question = question;
 	}
 
+	/**
+	 * gets the question type
+	 * @return type
+	 */
+	@NotNull
 	public QuestionType getQuestionType()
 	{
 		return questionType;
 	}
 
-	public void setQuestionType(QuestionType questionType)
+	/**
+	 * sets the question type, only if the question is unlocked
+	 * @param questionType type
+	 */
+	public final void setQuestionType(@NotNull QuestionType questionType)
 	{
-		this.questionType = questionType;
+		if (!isLocked)
+			this.questionType = questionType;
 	}
 }

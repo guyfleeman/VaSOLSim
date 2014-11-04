@@ -390,7 +390,7 @@ public class ExamInitNode implements DrawableNode
 					}
 				}
 
-				Exam tmp = new Exam(false);
+				Exam tmp = new Exam();
 				if (!foundError)
 				{
 					if (reportingStatsStandaloneCB.isSelected() &&

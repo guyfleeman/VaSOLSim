@@ -24,18 +24,12 @@ public class QuestionTreeElement extends TreeElement
 	public QuestionTreeElement()
 	{
 		super(new Label("New Question"),
-		      /*new ImageButton(
-				      TeacherClient.class,
-				      TeacherClient.pathToAddIcon,
-				      "btnconfirmhover",
-				      "btnnormal",
-				      12),*/
 		      null,
 		      new ImageButton(
 				      TeacherClient.class,
 				      TeacherClient.pathToRemoveIcon,
-				      "btndenyhover",
 				      "btnnormal",
+				      "btndenyhover",
 				      12)
 		);
 

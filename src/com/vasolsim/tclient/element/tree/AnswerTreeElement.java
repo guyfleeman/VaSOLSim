@@ -31,8 +31,8 @@ public class AnswerTreeElement extends TreeElement
 		      new ImageButton(
 				      TeacherClient.class,
 				      TeacherClient.pathToRemoveIcon,
-				      "btndenyhover",
 				      "btnnormal",
+				      "btndenyhover",
 				      12)
 		);
 
