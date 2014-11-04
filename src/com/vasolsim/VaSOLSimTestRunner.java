@@ -150,6 +150,7 @@ public class VaSOLSimTestRunner
 						lineCt++;
 						charCt += line.length();
 					}
+					fileScanner.close();
 				}
 				catch (FileNotFoundException e)
 				{
