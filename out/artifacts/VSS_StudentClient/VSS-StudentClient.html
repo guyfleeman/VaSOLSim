@@ -1,0 +1,43 @@
+<html><head>
+  <SCRIPT src="http://java.com/js/dtjava.js"></SCRIPT>
+<script>
+    function launchApplication(jnlpfile) {
+        dtjava.launch(            {
+                url : 'VSS-StudentClient.jnlp'
+            },
+            {
+                javafx : '2.2+'
+            },
+            {}
+        );
+        return false;
+    }
+</script>
+
+<script>
+    function javafxEmbed_VSS-StudentClient_id() {
+        dtjava.embed(
+            {
+                id : 'VSS-StudentClient_id',
+                url : 'VSS-StudentClient.jnlp',
+                placeholder : 'javafx-app-placeholder',
+                width : 960,
+                height : 720
+            },
+            {
+                javafx : '2.2+'
+            },
+            {}
+        );
+    }
+    <!-- Embed FX application into web page once page is loaded -->
+    dtjava.addOnloadCallback(javafxEmbed_VSS-StudentClient_id);
+</script>
+
+</head><body>
+<h2>Test page for <b>VSS-StudentClient</b></h2>
+  <b>Webstart:</b> <a href='VSS-StudentClient.jnlp' onclick="return launchApplication('VSS-StudentClient.jnlp');">click to launch this app as webstart</a><br><hr><br>
+
+  <!-- Applet will be inserted here -->
+  <div id='javafx-app-placeholder'></div>
+</body></html>
