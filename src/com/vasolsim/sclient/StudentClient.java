@@ -4,19 +4,23 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
- * @author guyfleeman
- * @date 7/17/14 <p></p>
+ * Runner class for student user interface.
+ * @author optimalpandemic
+ * @date 11/3/14 <p></p>
  */
 public class StudentClient extends Application
 {
+	public static Stage stage;
+	
 	@Override
 	public void start(Stage primaryStage)
 	{
-
+		stage = primaryStage;
 	}
-
-	public static void main(String[] args)
+	
+	//If I decide later that I hate myself
+	public StudentClient()
 	{
-
+		
 	}
 }
