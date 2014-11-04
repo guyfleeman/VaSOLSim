@@ -10,6 +10,7 @@ import com.vasolsim.tclient.element.form.QuestionTypeNode;
 import com.vasolsim.tclient.element.tree.ExamsTreeElement;
 import com.vasolsim.tclient.element.tree.TreeElement;
 import javafx.application.Application;
+import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
@@ -145,6 +146,8 @@ public class TeacherClient extends Application
 
 	public static void main(String[] args)
 	{
+		new JFXPanel();
+		System.setProperty("javafx.userAgentStylesheetUrl", "caspian");
 		initializeStaticAssets();
 		launch(args);
 	}

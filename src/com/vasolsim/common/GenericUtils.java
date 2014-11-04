@@ -274,7 +274,7 @@ public class GenericUtils
 	public static final String passwordInvalidMessage   = "Password cannot be of zero length or all whitespace.";
 	public static final String passwordNoMatch          = "Passwords do not match.";
 
-	public static final String statsReportingInfoLabelText = "This form will take the information needed to report " +
+	public static final String statsReportingInfoLabelText = "This form will take. The information needed to report " +
 			"the answers given by students. The answers can be read and compiled into class statistics. \n\n" +
 			"If you want to report statistics please check the box and enter the email address you want the " +
 			"statistics to be sent. DO NOT SEND STATISTICS TO YOUR PERSONAL EMAIL; you will get a bulky email for " +

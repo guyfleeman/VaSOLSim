@@ -5,8 +5,11 @@
 
 .charPaneDefaultSuper:hover
 {
+	-fx-background-color: transparent;
 	-fx-border-width: 3;
 	-fx-border-color: #0C14F2;
+	/*-fx-border-color:  linear-gradient(#0C14F2, rgba(255, 255, 255, 0));*/
+	/*-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);*/
     -fx-border-radius: 3;
 }
 

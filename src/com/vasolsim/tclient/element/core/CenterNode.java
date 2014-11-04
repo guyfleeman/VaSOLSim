@@ -1,5 +1,7 @@
 package com.vasolsim.tclient.element.core;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -14,6 +16,8 @@ public class CenterNode
 	protected static VBox       styledRoot;
 	protected static ScrollPane scrollRoot;
 
+	private static double lastKnownCenterRootPos = 0.0;
+
 	static
 	{
 		centerRoot = new HBox();
@@ -24,8 +28,10 @@ public class CenterNode
 		styledRoot.getStyleClass().add("centervbox");
 		styledRoot.setPrefHeight(1200);
 		styledRoot.setPrefWidth(2000);
-		styledRoot.setMinWidth(500);
+		styledRoot.setMinWidth(300);
 		centerRoot.getChildren().add(styledRoot);
+
+
 	}
 
 	public static HBox getCenterRoot()
@@ -52,7 +58,7 @@ public class CenterNode
 		scrollRoot.setPrefViewportWidth(2000);
 		scrollRoot.setFitToWidth(true);
 		scrollRoot.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-		styledRoot.getChildren().add(getScrollRoot());
+		styledRoot.getChildren().add(scrollRoot);
 	}
 
 	public static void removeScrollRoot()

@@ -19,8 +19,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
@@ -34,8 +36,10 @@ import static com.vasolsim.common.GenericUtils.*;
  */
 public class QuestionNode implements DrawableNode
 {
-	protected Node                questionInfoNode;
+
 	public    QuestionTreeElement boundTreeElement;
+	protected Node                questionInfoNode;
+	private double lastKnownVval = 0.0;
 
 	public QuestionNode()
 	{
@@ -117,14 +121,17 @@ public class QuestionNode implements DrawableNode
 		if (boundTreeElement != null
 				&& boundTreeElement.question.getQuestionType() == QuestionType.TE_D_AND_D_GRAMMAR_MULTIPLE_RESPONSE)
 		{
+			Label chooseCharsLabel = new Label("Choose characters:\n");
+			chooseCharsLabel.getStyleClass().add("lbltext");
+
 			TilePane charDisplay = new TilePane();
 			charDisplay.setPrefWidth(2000);
-			charDisplay.setAlignment(Pos.TOP_LEFT);
+			charDisplay.setVgap(15);
+			charDisplay.setHgap(15);
+			charDisplay.setAlignment(Pos.CENTER);
 
 			for (final AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
 			{
-				System.out.println(ac.getAnswerText());
-				System.out.println(ac.isActive());
 				StringPane sp = new StringPane(ac.getAnswerText());
 				sp.getActiveProperty().setValue(ac.isActive());
 				charDisplay.getChildren().add(sp);
@@ -136,20 +143,77 @@ public class QuestionNode implements DrawableNode
 					                    Boolean newValue)
 					{
 						ac.setActive(newValue);
+						redrawNode(true);
 					}
 				});
 			}
 
 			HBox spacerTwo = new HBox();
-			spacer.setPrefHeight(1);
-			spacer.setPrefWidth(2000);
-			spacer.getStyleClass().add("lblspacer");
+			spacerTwo.setPrefHeight(1);
+			spacerTwo.setPrefWidth(2000);
+			spacerTwo.getStyleClass().add("lblspacer");
 
-			verticalRoot.getChildren().addAll(charDisplay,
-			                               spacerTwo);
+			verticalRoot.getChildren().addAll(chooseCharsLabel,
+			                                  charDisplay,
+			                                  spacerTwo);
 
-			//StringPane stringPane = new StringPane(":");
-			//verticalRoot.getChildren().add(stringPane);
+			if (boundTreeElement.question.getQuestion() != null && !boundTreeElement.question.getQuestion().equals(""))
+			{
+				Label title = new Label("Answer:\n\n");
+				title.getStyleClass().add("lbltext");
+
+				FlowPane paragraphFlowPane = new FlowPane();
+				paragraphFlowPane.setHgap(8);
+				paragraphFlowPane.setVgap(8);
+				paragraphFlowPane.setAlignment(Pos.TOP_LEFT);
+
+				for (String s : boundTreeElement.question.getQuestion().split(" "))
+				{
+					Label label = new Label(s);
+					label.getStyleClass().add("lbltext");
+					label.setWrapText(false);
+
+					StackPane sp = new StackPane();
+					sp.setMinSize(20, 20);
+					sp.getStyleClass().add("grammarSpace");
+
+					paragraphFlowPane.getChildren().addAll(label, sp);
+				}
+
+				FlowPane choicesFlowPane = new FlowPane();
+				choicesFlowPane.setPrefWidth(2000);
+				choicesFlowPane.setVgap(15);
+				choicesFlowPane.setHgap(15);
+				choicesFlowPane.setAlignment(Pos.CENTER);
+
+				for (AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
+					if (ac.isActive())
+					{
+						StringPane sp = new StringPane(ac.getAnswerText(),
+						                               null,
+						                               "charPaneDefault",
+						                               "charPaneDefaultActive",
+						                               "charPaneDefaultText",
+						                               60,
+						                               60,
+						                               3);
+						sp.getActiveProperty().setValue(false);
+						choicesFlowPane.getChildren().add(sp);
+					}
+
+				verticalRoot.getChildren().addAll(title,
+				                                  paragraphFlowPane,
+				                                  choicesFlowPane);
+			}
+			else
+			{
+				Label title = new Label("Answer: none");
+				title.getStyleClass().add("lbltext");
+
+				verticalRoot.getChildren().add(title);
+			}
+
+
 
 //			HBox symbolButtonRoot = new HBox();
 //			symbolButtonRoot.getStyleClass().add("helementspacing");
@@ -587,6 +651,17 @@ public class QuestionNode implements DrawableNode
 		{
 			CenterNode.addScrollRoot();
 			CenterNode.getScrollRoot().setContent(questionInfoNode);
+			CenterNode.getScrollRoot().setVvalue(0);
+
+			CenterNode.getScrollRoot().vvalueProperty().addListener(new ChangeListener<Number>()
+			{
+				@Override
+				public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2)
+				{
+					lastKnownVval = (Double) number2;
+					System.out.println(number2);
+				}
+			});
 		}
 	}
 

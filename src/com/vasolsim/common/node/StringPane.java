@@ -12,14 +12,20 @@ import javafx.scene.layout.StackPane;
 
 /**
  * @author willstuckey
- * @date 11/2/14 <p></p>
+ * @date 11/2/14
+ * <p>This class wraps text in layered stack panes to allow styling of an internal and external border. This
+ * functionality mimics the same element that is prolific in actual testing program. NOTE: each pane is duplicated
+ * internally because of a JavaFX bug preventing stylesheet class dereferencing when that style is being hovered over,
+ * regardless of if that style has a hover sub-class. Because of this, style elements may need to be duplicated in
+ * the parameters subStyleClass and subStyleActiveClass.</p>
  */
 public class StringPane extends StackPane
 {
 	protected BooleanProperty active = new SimpleBooleanProperty(false);
 
 	/**
-	 * creates a layered pane to allow internal and external border styles and sizes
+	 * creates a layered pane to allow internal and external border styles and sizes. Styled by default to look like
+	 * VaSOLSim's bounding boxes
 	 * @param overlay the string in the box
 	 */
 	public StringPane(String overlay)
@@ -32,6 +38,29 @@ public class StringPane extends StackPane
 		     60,
 		     60,
 		     3);
+	}
+
+	/**
+	 * creates a layered pane to allow internal and external border styles and sizes. Styled by default to look like
+	 * VaSOLSim's bounding boxes
+	 * @param overlay the string in the box
+	 * @param width the width of the box
+	 * @param height the height of the box
+	 * @param inset the inset between the external and internal panes
+	 */
+	public StringPane(String overlay,
+	                  int width,
+	                  int height,
+	                  int inset)
+	{
+		this(overlay,
+		     "charPaneDefaultSuper",
+		     "charPaneDefault",
+		     "charPaneDefaultActive",
+		     "charPaneDefaultText",
+		     width,
+		     height,
+		     inset);
 	}
 
 	/**
@@ -95,24 +124,20 @@ public class StringPane extends StackPane
 		this.getChildren().add(subInactive);
 
 		/*
-		 * swap different styled copies
+		 * toggle state
 		 */
 		super.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
 			@Override
 			public void handle(MouseEvent mouseEvent)
 			{
-
 				active.setValue(!active.getValue());
-//				getChildren().clear();
-//
-//				if (active.get())
-//					getChildren().add(subActive);
-//				else
-//					getChildren().add(subInactive);
 			}
 		});
 
+		/*
+		 * on state toggle, swap panes. Separated from mouse event so external listeners can function as well
+		 */
 		active.addListener(new ChangeListener<Boolean>()
 		{
 			@Override
@@ -129,6 +154,10 @@ public class StringPane extends StackPane
 		});
 	}
 
+	/**
+	 * the active state is bound by BooleanProperty and is accessible to attach listeners
+	 * @return active property
+	 */
 	public BooleanProperty getActiveProperty()
 	{
 		return active;
