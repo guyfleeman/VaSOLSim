@@ -38,8 +38,8 @@ public class AnswerChoice
 	 *                 inactive answers.
 	 * @param isCorrect denotes if the answer is correct
 	 */
-	public AnswerChoice(final String visibleChoiceID,
-	                    final String text,
+	public AnswerChoice(@Nullable String visibleChoiceID,
+	                    @Nullable String text,
 	                    boolean isActive,
 	                    boolean isCorrect)
 	{
@@ -62,8 +62,8 @@ public class AnswerChoice
 	 * @param isCorrect denotes if the answer is correct
 	 * @param isLocked denotes if the answer is locked
 	 */
-	AnswerChoice(final String visibleChoiceID,
-	                       final String text,
+	AnswerChoice(@Nullable String visibleChoiceID,
+	                       @Nullable String text,
 	                       boolean isActive,
 	                       boolean isCorrect,
 	                       boolean isLocked)
