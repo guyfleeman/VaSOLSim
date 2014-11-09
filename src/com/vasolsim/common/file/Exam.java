@@ -207,7 +207,7 @@ public class Exam
 			emailMessage.setFrom(new InternetAddress(new String(statsSenderEmail)));
 			emailMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destination));
 			emailMessage.setSubject(title);
-			emailMessage.setText(body);
+			emailMessage.setOverlay(body);
 
 			Transport.send(emailMessage);
 		}

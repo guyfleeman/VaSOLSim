@@ -22,6 +22,9 @@ import javafx.scene.layout.StackPane;
 public class StringPane extends StackPane
 {
 	protected BooleanProperty active = new SimpleBooleanProperty(false);
+	protected String overlay;
+	protected final Label textActive;
+	protected final Label textInactive;
 
 	/**
 	 * creates a layered pane to allow internal and external border styles and sizes. Styled by default to look like
@@ -103,6 +106,8 @@ public class StringPane extends StackPane
 		subActive.setMaxWidth(width - inset * 2);
 		subActive.setMaxHeight(height - inset * 2);
 		subActive.getStyleClass().add(subStyleActiveClass);
+		subActive.setPickOnBounds(false);
+		subActive.setMouseTransparent(true);
 
 		final StackPane subInactive = new StackPane();
 		subInactive.setPrefWidth(width - inset * 2);
@@ -110,11 +115,18 @@ public class StringPane extends StackPane
 		subInactive.setMaxWidth(width - inset * 2);
 		subInactive.setMaxHeight(height - inset * 2);
 		subInactive.getStyleClass().add(subStyleClass);
+		subInactive.setPickOnBounds(false);
+		subInactive.setMouseTransparent(true);
 
-		final Label textActive = new Label(overlay);
-		textActive.getStyleClass().add(textStyleClass);
-		final Label textInactive = new Label(overlay);
-		textInactive.getStyleClass().add(textStyleClass);
+		this.overlay = overlay;
+		this.textActive = new Label(overlay);
+		this.textActive.getStyleClass().add(textStyleClass);
+		this.textActive.setPickOnBounds(false);
+		this.textActive.setMouseTransparent(true);
+		this.textInactive = new Label(overlay);
+		this.textInactive.getStyleClass().add(textStyleClass);
+		this.textInactive.setPickOnBounds(false);
+		this.textInactive.setMouseTransparent(true);
 
 		subActive.getChildren().add(textActive);
 		subActive.setAlignment(Pos.CENTER);
@@ -161,5 +173,25 @@ public class StringPane extends StackPane
 	public BooleanProperty getActiveProperty()
 	{
 		return active;
+	}
+
+	/**
+	 * sets the text of the StringPane
+	 * @param overlay text
+	 */
+	public void setOverlay(String overlay)
+	{
+		this.overlay = overlay;
+		this.textActive.setText(overlay);
+		this.textInactive.setText(overlay);
+	}
+
+	/**
+	 * gets the text of the StringPane
+	 * @return text
+	 */
+	public String getOverlay()
+	{
+		return this.overlay;
 	}
 }

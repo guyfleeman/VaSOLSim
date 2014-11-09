@@ -28,8 +28,8 @@ public class QuestionTreeElement extends TreeElement
 		      new ImageButton(
 				      TeacherClient.class,
 				      TeacherClient.pathToRemoveIcon,
-				      "btnnormal",
-				      "btndenyhover",
+				      TeacherClient.treeButtonDefaultStyleClass,
+				      TeacherClient.treeButtonDestroyStyleClass,
 				      12)
 		);
 
@@ -40,44 +40,6 @@ public class QuestionTreeElement extends TreeElement
 
 	public void initListeners()
 	{
-		/*
-		super.addButton.setOnMouseClicked(new EventHandler<MouseEvent>()
-		{
-			@Override
-			public void handle(MouseEvent mouseEvent)
-			{
-				switch (question.getQuestionType())
-				{
-					case TE_D_AND_D_VENN_DIAGRAM:
-					//TODO
-					 break;
-					case TE_D_AND_D_GRAMMAR_MULTIPLE_RESPONSE:
-					{
-						CenterNode.removeScrollRoot();
-						CenterNode.addScrollRoot();
-						CenterNode.getScrollRoot().setContent(GrammarSymbolInitNode.getGrammarQuestionSymbolInitNode
-						());
-						break;
-					}
-					case MULTIPLE_RESPONSE:
-					case TE_MULTIPLE_RESPONSE:
-					case TE_D_AND_D_MULTIPLE_RESPONSE:
-					{
-
-						break;
-					}
-					case MULTIPLE_CHOICE:
-					case TE_MULTIPLE_CHOICE:
-					case TE_D_AND_D_MULTIPLE_CHOICE:
-					{
-
-						break;
-					}
-				}
-			}
-		});
-				*/
-
 		super.removeButton.setOnMouseClicked(new EventHandler<MouseEvent>()
 		{
 			@Override
@@ -99,7 +61,6 @@ public class QuestionTreeElement extends TreeElement
 
 				TeacherClient.questionNode.boundTreeElement = instance;
 				TeacherClient.questionNode.redrawNode(true);
-				//CenterNode.getScrollRoot().setContent(TeacherClient.questionInfoNode.getNode());
 			}
 		});
 	}

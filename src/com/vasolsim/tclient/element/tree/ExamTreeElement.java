@@ -30,14 +30,14 @@ public class ExamTreeElement extends TreeElement
 		      new ImageButton(
 				      TeacherClient.class,
 				      TeacherClient.pathToAddIcon,
-				      "btnnormal",
-				      "btnconfirmhover",
+				      TeacherClient.treeButtonDefaultStyleClass,
+				      TeacherClient.treeButtonCreateStyleClass,
 				      12),
 		      new ImageButton(
 				      TeacherClient.class,
 				      TeacherClient.pathToRemoveIcon,
-				      "btnnormal",
-				      "btndenyhover",
+				      TeacherClient.treeButtonDefaultStyleClass,
+				      TeacherClient.treeButtonDestroyStyleClass,
 				      12)
 		);
 
@@ -52,7 +52,6 @@ public class ExamTreeElement extends TreeElement
 			public void handle(MouseEvent mouseEvent)
 			{
 				QuestionSetTreeElement newQuestionSet = new QuestionSetTreeElement();
-				//newQuestionSet.exam = thisInstance.exam;
 
 				TreeItem<TreeElement> element = createTreeItem(TeacherClient.class,
 				                                               newQuestionSet,

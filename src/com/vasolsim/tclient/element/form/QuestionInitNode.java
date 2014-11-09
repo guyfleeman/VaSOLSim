@@ -14,6 +14,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.HTMLEditor;
 
 import static com.vasolsim.common.GenericUtils.*;
 import static com.vasolsim.common.GenericUtils.createTreeItem;
@@ -49,6 +50,8 @@ public class QuestionInitNode implements DrawableNode
 		questionTextArea.setPrefHeight(280);
 		questionTextArea.setWrapText(true);
 
+		final HTMLEditor questionHtmlTextArea = new HTMLEditor();
+
 		Button continueButton = new Button(continueButtonText);
 
 		verticalRoot.getChildren().addAll(questionInitInfoLabel, questionTextArea, continueButton);
@@ -78,7 +81,7 @@ public class QuestionInitNode implements DrawableNode
 					{
 						QuestionTreeElement newQuestion = new QuestionTreeElement();
 						newQuestion.parent = QuestionInitNode.parent;
-						newQuestion.label.setText(
+						newQuestion.label.setOverlay(
 								"New " + QuestionTypeNode.questionType.toString().replaceAll("_", " ").toLowerCase());
 						newQuestion.question.setQuestionType(QuestionTypeNode.questionType);
 
@@ -102,8 +105,7 @@ public class QuestionInitNode implements DrawableNode
 				QuestionTreeElement newQuestion = new QuestionTreeElement();
 				newQuestion.question.setQuestion(questionTextArea.getText());
 				newQuestion.parent = TeacherClient.questionInitNode.parent;
-				newQuestion.label.setText(
-						"New " + QuestionTypeNode.questionType.toString().replaceAll("_", " ").toLowerCase());
+				newQuestion.label.setText(questionTypeToString(QuestionTypeNode.questionType));
 				newQuestion.question.setQuestionType(QuestionTypeNode.questionType);
 				newQuestion.question.initializeAnswers();
 

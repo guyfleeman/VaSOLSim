@@ -13,6 +13,7 @@ import javafx.scene.input.MouseEvent;
  * @author guyfleeman
  * @date 7/23/14 <p></p>
  */
+@Deprecated
 public class AnswerTreeElement extends TreeElement
 {
 	public QuestionTreeElement parent;
@@ -31,12 +32,10 @@ public class AnswerTreeElement extends TreeElement
 		      new ImageButton(
 				      TeacherClient.class,
 				      TeacherClient.pathToRemoveIcon,
-				      "btnnormal",
-				      "btndenyhover",
+				      TeacherClient.treeButtonDefaultStyleClass,
+				      TeacherClient.treeButtonDestroyStyleClass,
 				      12)
 		);
-
-		//setCorrectIcon(correct);
 
 		instance = this;
 	}

@@ -2,6 +2,9 @@ package com.vasolsim.common.file;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 
 /**
  * @author willstuckey
@@ -17,6 +20,8 @@ public class AnswerChoice
 	private       String  visibleChoiceID;
 	@Nullable
 	private       String  text;
+	@Nullable
+	private ObservableList<? extends Node> visualPersistence = null;
 
 	/**
 	 * Default constructor. Initializes an unlocked answer choice. Answer choice must be locked at time of creation to
@@ -210,5 +215,31 @@ public class AnswerChoice
 		                        isActive,
 		                        false,
 		                        false);
+	}
+
+	/**
+	 * gets the answer choice's persistent data
+	 * @return data
+	 */
+	public @Nullable ObservableList<? extends Node> getVisualPersistence()
+	{
+		return visualPersistence;
+	}
+
+	/**
+	 * sets the answer choice's persistent data
+	 * @param visualPersistence data
+	 */
+	public void setVisualPersistence(@Nullable ObservableList<? extends Node> visualPersistence)
+	{
+		this.visualPersistence = visualPersistence;
+	}
+
+	/**
+	 * clears the visualPersistence
+	 */
+	public void clearVisualPersistence()
+	{
+		this.visualPersistence = null;
 	}
 }

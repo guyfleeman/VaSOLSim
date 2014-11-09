@@ -29,14 +29,14 @@ public class QuestionSetTreeElement extends TreeElement
 		      new ImageButton(
 				      TeacherClient.class,
 				      TeacherClient.pathToAddIcon,
-				      "btnnormal",
-				      "btnconfirmhover",
+				      TeacherClient.treeButtonDefaultStyleClass,
+				      TeacherClient.treeButtonCreateStyleClass,
 				      12),
 		      new ImageButton(
 				      TeacherClient.class,
 				      TeacherClient.pathToRemoveIcon,
-				      "btnnormal",
-				      "btndenyhover",
+				      TeacherClient.treeButtonDefaultStyleClass,
+				      TeacherClient.treeButtonDestroyStyleClass,
 				      12)
 		);
 
@@ -52,7 +52,7 @@ public class QuestionSetTreeElement extends TreeElement
 			{
 				TeacherClient.questionInitNode.parent = instance;
 
-				CenterNode.removeScrollRoot();
+				//CenterNode.removeScrollRoot();
 				CenterNode.addScrollRoot();
 				CenterNode.getScrollRoot().setContent(TeacherClient.questionTypeNode.getNode());
 			}

@@ -16,8 +16,6 @@ public class CenterNode
 	protected static VBox       styledRoot;
 	protected static ScrollPane scrollRoot;
 
-	private static double lastKnownCenterRootPos = 0.0;
-
 	static
 	{
 		centerRoot = new HBox();
@@ -30,8 +28,6 @@ public class CenterNode
 		styledRoot.setPrefWidth(2000);
 		styledRoot.setMinWidth(300);
 		centerRoot.getChildren().add(styledRoot);
-
-
 	}
 
 	public static HBox getCenterRoot()

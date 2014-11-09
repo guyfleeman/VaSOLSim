@@ -1,6 +1,6 @@
 .root
 {
-	-fx-background-image: url("../img/background.jpg");
+	-fx-background-image: url("../img/background2.jpg");
 }
 
 .borders
@@ -102,4 +102,11 @@
 	-fx-background-color: transparent;
 	-fx-border-width: 2;
 	-fx-border-color: #000000;
+}
+
+.grammarSpaceActive
+{
+	-fx-background-color: transparent;
+    -fx-border-width: 2;
+    -fx-border-color: rgba(0, 255, 0, 0.8);
 }

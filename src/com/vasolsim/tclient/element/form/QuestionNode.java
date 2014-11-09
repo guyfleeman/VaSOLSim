@@ -1,16 +1,20 @@
 package com.vasolsim.tclient.element.form;
 
+import com.sun.istack.internal.NotNull;
 import com.vasolsim.common.file.AnswerChoice;
 import com.vasolsim.common.node.StringPane;
-import com.vasolsim.tclient.TeacherClient;
+import com.vasolsim.common.notification.PopupManager;
 import com.vasolsim.tclient.element.core.CenterNode;
 import com.vasolsim.tclient.element.tree.QuestionTreeElement;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -18,13 +22,16 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
@@ -39,7 +46,11 @@ public class QuestionNode implements DrawableNode
 
 	public    QuestionTreeElement boundTreeElement;
 	protected Node                questionInfoNode;
-	private double lastKnownVval = 0.0;
+	protected Pane                styledRootNode;
+	@NotNull
+	private StringPane draggablePane = new StringPane("",
+	                                                  null, "charPaneDefault", null, "charPaneSmallText",
+	                                                  40, 40, 3);
 
 	public QuestionNode()
 	{
@@ -53,7 +64,42 @@ public class QuestionNode implements DrawableNode
 		VBox verticalRoot = new VBox();
 		verticalRoot.getStyleClass().add("borders");
 		horizontalRoot.getChildren().add(verticalRoot);
+		styledRootNode = verticalRoot;
 
+		draggablePane.setMouseTransparent(true);
+		draggablePane.setPickOnBounds(false);
+
+		drawHeaderNode(verticalRoot);
+		if (boundTreeElement != null
+				&& boundTreeElement.question.getQuestionType() == QuestionType.TE_D_AND_D_GRAMMAR_MULTIPLE_RESPONSE)
+			drawGrammarNode(verticalRoot);
+		else if (boundTreeElement != null &&
+				(boundTreeElement.question.getQuestionType() == QuestionType.MULTIPLE_CHOICE ||
+						boundTreeElement.question.getQuestionType() == QuestionType.TE_MULTIPLE_CHOICE ||
+						boundTreeElement.question.getQuestionType() == QuestionType.TE_D_AND_D_MULTIPLE_CHOICE))
+			drawMultipleChoiceNode(verticalRoot);
+		else if (boundTreeElement != null &&
+				(boundTreeElement.question.getQuestionType() == QuestionType.MULTIPLE_RESPONSE ||
+						boundTreeElement.question.getQuestionType() == QuestionType.TE_MULTIPLE_RESPONSE ||
+						boundTreeElement.question.getQuestionType() == QuestionType.TE_D_AND_D_MULTIPLE_RESPONSE))
+			drawMultipleResponseNode(verticalRoot);
+
+		questionInfoNode = horizontalRoot;
+
+		if (apply)
+		{
+			CenterNode.addScrollRoot();
+			CenterNode.getScrollRoot().setContent(questionInfoNode);
+		}
+	}
+
+	public Node getNode()
+	{
+		return questionInfoNode;
+	}
+
+	protected Node drawHeaderNode(Pane root)
+	{
 		Label infoLabel = new Label("Question Information Overview");
 		infoLabel.getStyleClass().add("lbltext");
 		infoLabel.setWrapText(true);
@@ -65,16 +111,14 @@ public class QuestionNode implements DrawableNode
 		typeLabel.getStyleClass().add("lbltext");
 		typeLabel.setWrapText(true);
 
-		final Label questionTextInfoLabel = new Label("Question Text:\n" + (boundTreeElement == null
-				                                                                    || boundTreeElement.question ==
-				null
-				                                                                    || boundTreeElement.question
-				.getQuestion() == null
-				                                                                    || boundTreeElement.question
-				.getQuestion().equals("")
-		                                                                    ? "none"
-		                                                                    : boundTreeElement.question.getQuestion
-				                                                                    ()));
+		final Label questionTextInfoLabel = new Label(
+				"Question Text:\n" + (boundTreeElement == null
+						                      || boundTreeElement.question == null
+						                      || boundTreeElement.question.getQuestion() == null
+						                      || boundTreeElement.question.getQuestion()
+						                                                  .equals("")
+				                      ? "none"
+				                      : boundTreeElement.question.getQuestion()));
 		questionTextInfoLabel.getStyleClass().add("lbltext");
 		questionTextInfoLabel.setWrapText(true);
 
@@ -105,36 +149,66 @@ public class QuestionNode implements DrawableNode
 			public void handle(MouseEvent mouseEvent)
 			{
 				if (questionTextArea.getText() != null && !questionTextArea.getText().equals(""))
+				{
 					boundTreeElement.question.setQuestion(questionTextArea.getText());
+					questionTextInfoLabel.setText(questionTextArea.getText());
 
-				redrawNode(true);
+					if (boundTreeElement.question.getQuestionType()
+							== QuestionType.TE_D_AND_D_GRAMMAR_MULTIPLE_RESPONSE)
+					{
+						redrawNode(true);
+						for (AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
+							if (ac.isCorrect())
+								ac.clearVisualPersistence();
+					}
+				}
 			}
 		});
 
-		verticalRoot.getChildren().addAll(infoLabel,
-		                                  typeLabel,
-		                                  questionTextInfoLabel,
-		                                  questionTextArea,
-		                                  applyQuestionButton,
-		                                  spacer);
+		root.getChildren().addAll(infoLabel,
+		                          typeLabel,
+		                          questionTextInfoLabel,
+		                          questionTextArea,
+		                          applyQuestionButton,
+		                          spacer);
 
-		if (boundTreeElement != null
-				&& boundTreeElement.question.getQuestionType() == QuestionType.TE_D_AND_D_GRAMMAR_MULTIPLE_RESPONSE)
-		{
-			Label chooseCharsLabel = new Label("Choose characters:\n");
-			chooseCharsLabel.getStyleClass().add("lbltext");
+		return root;
+	}
 
-			TilePane charDisplay = new TilePane();
-			charDisplay.setPrefWidth(2000);
-			charDisplay.setVgap(15);
-			charDisplay.setHgap(15);
-			charDisplay.setAlignment(Pos.CENTER);
+	/////////////////////////////////
+	//  begin grammar node methods //
+	/////////////////////////////////
 
-			for (final AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
+	protected Node drawGrammarNode(Pane root)
+	{
+		Label chooseCharsLabel = new Label("Choose characters:\n");
+		chooseCharsLabel.getStyleClass().add("lbltext");
+
+		/*
+		 * this will draw the set of character tiles that allow the selection of the symbol set, then it will draw
+		 * the paragraph with draggable docks, and lastly it will draw the draggables
+		 */
+		TilePane charSelectionFlowPane = new TilePane();
+		final FlowPane paragraphFlowPane = new FlowPane();
+		final FlowPane draggableCharsFlowPane = new FlowPane();
+
+		/*
+		 * style the char selection section
+		 */
+		charSelectionFlowPane.setPrefWidth(2000);
+		charSelectionFlowPane.setVgap(15);
+		charSelectionFlowPane.setHgap(15);
+		charSelectionFlowPane.setAlignment(Pos.CENTER);
+
+		/*
+		 * initialize the choice tiles
+		 */
+		for (final AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
+			if (!ac.isCorrect())
 			{
-				StringPane sp = new StringPane(ac.getAnswerText());
+				final StringPane sp = new StringPane(ac.getAnswerText());
 				sp.getActiveProperty().setValue(ac.isActive());
-				charDisplay.getChildren().add(sp);
+				charSelectionFlowPane.getChildren().add(sp);
 
 				sp.getActiveProperty().addListener(new ChangeListener<Boolean>()
 				{
@@ -143,30 +217,183 @@ public class QuestionNode implements DrawableNode
 					                    Boolean newValue)
 					{
 						ac.setActive(newValue);
-						redrawNode(true);
+						draggableCharsFlowPane.getChildren().clear();
+						initDraggableChoices(draggableCharsFlowPane);
+
+						if (!newValue)
+							for (int index = 0; index < paragraphFlowPane.getChildren().size(); index++)
+								if (paragraphFlowPane.getChildren().get(index) instanceof StringPane
+										&& ((StringPane) paragraphFlowPane.getChildren().get(index)).getOverlay().equals(
+
+										sp.getOverlay()))
+								{
+									StackPane rect = new StackPane();
+									rect.setMinSize(40, 40);
+									rect.setMaxSize(40, 40);
+									rect.getStyleClass().add("grammarSpace");
+									initDragTargetRoutine(rect, paragraphFlowPane);
+
+									paragraphFlowPane.getChildren().set(index, rect);
+								}
+
 					}
 				});
 			}
 
-			HBox spacerTwo = new HBox();
-			spacerTwo.setPrefHeight(1);
-			spacerTwo.setPrefWidth(2000);
-			spacerTwo.getStyleClass().add("lblspacer");
+		/*
+		 * create a spacer between the selection tiles and the draggable section
+		 */
+		HBox spacerTwo = new HBox();
+		spacerTwo.setPrefHeight(1);
+		spacerTwo.setPrefWidth(2000);
+		spacerTwo.getStyleClass().add("lblspacer");
 
-			verticalRoot.getChildren().addAll(chooseCharsLabel,
-			                                  charDisplay,
-			                                  spacerTwo);
+		/*
+		 * add the current data
+		 */
+		root.getChildren().addAll(chooseCharsLabel,
+		                          charSelectionFlowPane,
+		                          spacerTwo);
 
-			if (boundTreeElement.question.getQuestion() != null && !boundTreeElement.question.getQuestion().equals(""))
+		if (boundTreeElement.question.getQuestion() != null && !boundTreeElement.question.getQuestion().equals(""))
+		{
+			/*
+			 * create the labels
+			 */
+			Label title = new Label("Answer:\n\n");
+			title.getStyleClass().add("lbltext");
+
+			/*
+			 * style the paragraph flow pane, then create it
+			 */
+			paragraphFlowPane.setHgap(8);
+			paragraphFlowPane.setVgap(8);
+			paragraphFlowPane.setAlignment(Pos.TOP_LEFT);
+			initParagraphSection(paragraphFlowPane);
+
+			/*
+			 * style draggable chars flow pane, then create them
+			 */
+			draggableCharsFlowPane.setPrefWidth(2000);
+			draggableCharsFlowPane.setVgap(15);
+			draggableCharsFlowPane.setHgap(15);
+			draggableCharsFlowPane.setAlignment(Pos.CENTER);
+			initDraggableChoices(draggableCharsFlowPane);
+
+			Button applyButton = new Button("Apply");
+			applyButton.setOnMouseClicked(new EventHandler<MouseEvent>()
 			{
-				Label title = new Label("Answer:\n\n");
-				title.getStyleClass().add("lbltext");
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					AnswerChoice correctHolder = null;
+					for (AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
+						if (ac.isCorrect())
+						{
+							correctHolder = ac;
+							break;
+						}
 
-				FlowPane paragraphFlowPane = new FlowPane();
-				paragraphFlowPane.setHgap(8);
-				paragraphFlowPane.setVgap(8);
-				paragraphFlowPane.setAlignment(Pos.TOP_LEFT);
+					if (correctHolder == null)
+					{
+						PopupManager.showMessage("Internal answer handler error");
+						return;
+					}
 
+					correctHolder.setVisualPersistence(paragraphFlowPane.getChildren());
+				}
+			});
+
+			/*
+			 * append everything
+			 */
+			root.getChildren().addAll(title,
+			                          paragraphFlowPane,
+			                          draggableCharsFlowPane,
+			                          applyButton);
+		}
+		else
+		{
+			Label title = new Label("Answer: none");
+			title.getStyleClass().add("lbltext");
+
+			root.getChildren().add(title);
+		}
+
+		return root;
+	}
+
+	/*
+	 * creates the nodes that are draggable
+	 */
+	private Node initDraggableChoices(FlowPane draggableCharsFlowPane)
+	{
+		if (boundTreeElement.question.getQuestion() != null
+				&& !boundTreeElement.question.getQuestion().equals(""))
+			for (AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
+				if (ac.isActive())
+				{
+					final StringPane sp = new StringPane(ac.getAnswerText(),
+					                                     null,
+					                                     "charPaneDefault",
+					                                     null,
+					                                     "charPaneDefaultText",
+					                                     60,
+					                                     60,
+					                                     3);
+					sp.getActiveProperty().setValue(false);
+					draggableCharsFlowPane.getChildren().add(sp);
+
+					initDragRoutine(sp);
+				}
+
+		return draggableCharsFlowPane;
+	}
+
+	/*
+	 * creates the nodes that initialize the answer
+	 */
+	private Node initParagraphSection(FlowPane paragraphFlowPane)
+	{
+
+		if (boundTreeElement.question.getQuestion() != null
+				&& !boundTreeElement.question.getQuestion().equals(""))
+		{
+			AnswerChoice correctChoice = null;
+			for (AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
+				if (ac.isCorrect() && ac.getVisualPersistence() != null)
+				{
+					correctChoice = ac;
+					break;
+				}
+
+			if (correctChoice != null)
+			{
+				paragraphFlowPane.getChildren().clear();
+				System.out.println(correctChoice.getVisualPersistence());
+				System.out.println(paragraphFlowPane.getChildren());
+				System.out.println(correctChoice.getVisualPersistence().size());
+				paragraphFlowPane.getChildren().addAll(correctChoice.getVisualPersistence());
+				for (Node n : paragraphFlowPane.getChildren())
+				{
+					if (n instanceof StringPane)
+					{
+						StackPane rect = new StackPane();
+						rect.setMinSize(40, 40);
+						rect.setMaxSize(40, 40);
+						rect.getStyleClass().add("grammarSpace");
+						initDragTargetRoutine(rect, paragraphFlowPane);
+						initDragRoutine(n, true, rect, paragraphFlowPane);
+
+						initDragTargetRoutine(n, paragraphFlowPane);
+					}
+					else if (n instanceof StackPane)
+					{
+						initDragTargetRoutine(n, paragraphFlowPane);
+					}
+				}
+			}
+			else
 				for (String s : boundTreeElement.question.getQuestion().split(" "))
 				{
 					Label label = new Label(s);
@@ -174,499 +401,527 @@ public class QuestionNode implements DrawableNode
 					label.setWrapText(false);
 
 					StackPane sp = new StackPane();
-					sp.setMinSize(20, 20);
+					sp.setMinSize(40, 40);
+					sp.setMaxSize(40, 40);
 					sp.getStyleClass().add("grammarSpace");
+					initDragTargetRoutine(sp, paragraphFlowPane);
 
 					paragraphFlowPane.getChildren().addAll(label, sp);
 				}
-
-				FlowPane choicesFlowPane = new FlowPane();
-				choicesFlowPane.setPrefWidth(2000);
-				choicesFlowPane.setVgap(15);
-				choicesFlowPane.setHgap(15);
-				choicesFlowPane.setAlignment(Pos.CENTER);
-
-				for (AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
-					if (ac.isActive())
-					{
-						StringPane sp = new StringPane(ac.getAnswerText(),
-						                               null,
-						                               "charPaneDefault",
-						                               "charPaneDefaultActive",
-						                               "charPaneDefaultText",
-						                               60,
-						                               60,
-						                               3);
-						sp.getActiveProperty().setValue(false);
-						choicesFlowPane.getChildren().add(sp);
-					}
-
-				verticalRoot.getChildren().addAll(title,
-				                                  paragraphFlowPane,
-				                                  choicesFlowPane);
-			}
-			else
-			{
-				Label title = new Label("Answer: none");
-				title.getStyleClass().add("lbltext");
-
-				verticalRoot.getChildren().add(title);
-			}
-
-
-
-//			HBox symbolButtonRoot = new HBox();
-//			symbolButtonRoot.getStyleClass().add("helementspacing");
-//			Button genAnswerSet = new Button("Generate Symbol Set");
-//			Button delAnswerSet = new Button("Delete Current Symbol Set");
-//			symbolButtonRoot.getChildren().addAll(genAnswerSet, delAnswerSet);
-//
-//			HBox answerButtonRoot = new HBox();
-//			answerButtonRoot.getStyleClass().add("helementspacing");
-//			Button genAnswer = new Button("Generate Visual Answer");
-//			Button delAnswer = new Button("Delete Visual Answer");
-//			answerButtonRoot.getChildren().addAll(genAnswer, delAnswer);
-//
-//			verticalRoot.getChildren().addAll(symbolButtonRoot,
-//			                                  answerButtonRoot);
-//
-//			/*
-//			 * Init listeners
-//		     */
-//
-//			/*
-//			 * Create answers for the selected grammar symbols
-//			 */
-//			genAnswerSet.setOnMouseClicked(new EventHandler<MouseEvent>()
-//			{
-//				@Override
-//				public void handle(MouseEvent mouseEvent)
-//				{
-//					/*
-//					 * Clear answers for the selected grammar symbols
-//			         */
-//					for (int index = 0;
-//					     index < TeacherClient.questionNode.boundTreeElement.
-//							     treeElementReference.getChildren().size();
-//					     index++)
-//					{
-//						@SuppressWarnings("unchecked")
-//						TreeItem<TreeElement> element = (TreeItem<TreeElement>)
-//								TeacherClient.questionNode.boundTreeElement.
-//										treeElementReference.getChildren().get(index);
-//						if (element.getValue() instanceof AnswerTreeElement)
-//							if (((AnswerTreeElement) element.getValue()).answerChoice.getAnswerText().length() == 1)
-//							{
-//								TeacherClient.questionNode.boundTreeElement.
-//										treeElementReference.getChildren().remove(element);
-//								index--;
-//							}
-//					}
-//					TeacherClient.questionNode.boundTreeElement.answers.clear();
-//
-//					/*
-//					 * Redirect to symbol creation node
-//					 */
-//					CenterNode.removeScrollRoot();
-//					CenterNode.addScrollRoot();
-//					GrammarSymbolInitNode.parent = boundTreeElement;
-//					CenterNode.getScrollRoot().setContent(GrammarSymbolInitNode.getGrammarQuestionSymbolInitNode());
-//				}
-//			});
-//
-//			/*
-//			 * Clear answers for the selected grammar symbols
-//			 */
-//			delAnswerSet.setOnMouseClicked(new EventHandler<MouseEvent>()
-//			{
-//				@Override
-//				public void handle(MouseEvent mouseEvent)
-//				{
-//					if (PopupManager.askYesNo("This will also delete the answer for the question if it has been set " +
-//							                          "already. Continue?"))
-//					{
-//						for (int index = 0;
-//						     index < TeacherClient.questionNode.boundTreeElement.treeElementReference.getChildren
-//								     ().size();
-//						     index++)
-//						{
-//							@SuppressWarnings("unchecked")
-//							TreeItem<TreeElement> element = (TreeItem<TreeElement>)
-//									TeacherClient.questionNode.boundTreeElement.treeElementReference.getChildren()
-//									                                                                    .get(index);
-//							if (element.getValue() instanceof AnswerTreeElement)
-//								if (((AnswerTreeElement) element.getValue()).answerChoice.getAnswerText().length()
-//										== 1)
-//								{
-//									TeacherClient.questionNode.boundTreeElement.treeElementReference.getChildren()
-//									                                                                    .remove
-//											                                                                    (element);
-//									index--;
-//								}
-//						}
-//						TeacherClient.questionNode.boundTreeElement.answers.clear();
-//					}
-//				}
-//			});
-//
-//			genAnswer.setOnMouseClicked(new EventHandler<MouseEvent>()
-//			{
-//				@Override
-//				public void handle(MouseEvent mouseEvent)
-//				{
-//
-//				}
-//			});
-		}
-		else if (boundTreeElement != null &&
-				(boundTreeElement.question.getQuestionType() == QuestionType.MULTIPLE_CHOICE ||
-						boundTreeElement.question.getQuestionType() == QuestionType.TE_MULTIPLE_CHOICE ||
-						boundTreeElement.question.getQuestionType() == QuestionType.TE_D_AND_D_MULTIPLE_CHOICE))
-		{
-			if (boundTreeElement.question.getAnswerChoices() != null)
-			{
-				final GridPane answerContainer = new GridPane();
-				answerContainer.setHgap(10);
-				answerContainer.setVgap(10);
-
-				Label activeLabel = new Label("active");
-				activeLabel.getStyleClass().add("lbltext");
-				activeLabel.setWrapText(true);
-				activeLabel.setMinWidth(80);
-				answerContainer.add(activeLabel, 0, 0);
-
-				Label correctLabel = new Label("correct");
-				correctLabel.getStyleClass().add("lbltext");
-				correctLabel.setWrapText(true);
-				correctLabel.setMinWidth(80);
-				answerContainer.add(correctLabel, 1, 0);
-
-				Label idLabel = new Label("id");
-				idLabel.getStyleClass().add("lbltext");
-				idLabel.setWrapText(true);
-				idLabel.setMinWidth(60);
-				answerContainer.add(idLabel, 2, 0);
-
-				Label choiceLabel = new Label("answer choice");
-				choiceLabel.getStyleClass().add("lbltext");
-				choiceLabel.setWrapText(true);
-				choiceLabel.setPrefWidth(2000);
-				answerContainer.add(choiceLabel, 3, 0);
-
-				ToggleGroup toggleGroup = new ToggleGroup();
-
-				int count = 1;
-				boolean hasFoundCorrect = false;
-				for (final AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
-				{
-					final CheckBox active = new CheckBox();
-					active.setAllowIndeterminate(false);
-					active.setSelected(ac.isActive());
-					answerContainer.add(active, 0, count);
-
-					if (!hasFoundCorrect && ac.isCorrect())
-						hasFoundCorrect = true;
-					else if (hasFoundCorrect && ac.isCorrect())
-					{
-						//log error
-						ac.setCorrect(false);
-					}
-
-					final RadioButton correct = new RadioButton();
-					correct.setSelected(ac.isCorrect());
-					correct.setDisable(!ac.isActive());
-					correct.setToggleGroup(toggleGroup);
-					answerContainer.add(correct, 1, count);
-
-					final TextField answerID = new TextField(
-							ac.getVisibleChoiceID() == null || ac.getVisibleChoiceID().equals("")
-							? Integer.toString(count) + "."
-							: ac.getVisibleChoiceID());
-					answerID.setPrefWidth(50);
-					answerID.setDisable(!ac.isActive());
-					answerContainer.add(answerID, 2, count);
-
-					final TextField answerText = new TextField(
-							ac.getAnswerText() == null || ac.getAnswerText().equals("")
-							? "Answer: " + Integer.toString(count)
-							: ac.getAnswerText());
-					answerText.setPrefWidth(2000);
-					answerText.setDisable(!ac.isActive());
-					answerContainer.add(answerText, 3, count);
-
-					/*
-					 *
-					 */
-					active.selectedProperty().addListener(new ChangeListener<Boolean>()
-					{
-						@Override
-						public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue,
-						                    Boolean newValue)
-						{
-							if (oldValue && !newValue)
-							{
-								ac.setActive(false);
-
-								correct.setDisable(true);
-								answerID.setDisable(true);
-								answerText.setDisable(true);
-							}
-							else if (!oldValue && newValue)
-							{
-								ac.setActive(true);
-
-								correct.setDisable(false);
-								answerID.setDisable(false);
-								answerText.setDisable(false);
-							}
-						}
-					});
-
-					/*
-					 *
-					 */
-					correct.selectedProperty().addListener(new ChangeListener<Boolean>()
-					{
-						@Override
-						public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue,
-						                    Boolean newValue)
-						{
-							if (oldValue && !newValue)
-								ac.setCorrect(false);
-							else if (!oldValue && newValue)
-								ac.setCorrect(true);
-						}
-					});
-
-					count++;
-				}
-
-				Button applyAnswersButton = new Button("Apply");
-				/*
-				 * hideously apply answer and ID updates through fields
-				 */
-				applyAnswersButton.setOnMouseClicked(new EventHandler<MouseEvent>()
-				{
-					@Override
-					public void handle(MouseEvent mouseEvent)
-					{
-						ObservableList<Node> nodes = answerContainer.getChildren();
-						ArrayList<AnswerChoice> answers = boundTreeElement.question.getAnswerChoices();
-						if (nodes.size() % 4 != 0 || (nodes.size() / 4) - 1 != answers.size())
-						{
-							//err out, malformed internal structure
-							return;
-						}
-
-						for (int i = 4; i < nodes.size(); i += 4)
-						{
-							if (nodes.get(i + 2) instanceof TextField
-									&& (((TextField) nodes.get(i + 2)).getText() != null
-									|| !((TextField) nodes.get(i + 2)).getText().equals("")))
-								answers.get((i / 4) - 1).setVisibleChoiceID(((TextField) nodes.get(i + 2)).getText());
-
-							if (nodes.get(i + 3) instanceof TextField
-									&& (((TextField) nodes.get(i + 3)).getText() != null
-									|| !((TextField) nodes.get(i + 3)).getText().equals("")))
-								answers.get((i / 4) - 1).setText(((TextField) nodes.get(i + 3)).getText());
-						}
-
-						redrawNode(true);
-					}
-				});
-
-				verticalRoot.getChildren().addAll(answerContainer,
-				                                  applyAnswersButton);
-			}
-			else
-			{
-				Label label = new Label("no answer structure defined");
-				label.getStyleClass().add("lbltext");
-				label.setWrapText(true);
-
-				verticalRoot.getChildren().add(label);
-			}
-		}
-		else if (boundTreeElement != null &&
-				(boundTreeElement.question.getQuestionType() == QuestionType.MULTIPLE_RESPONSE ||
-						boundTreeElement.question.getQuestionType() == QuestionType.TE_MULTIPLE_RESPONSE ||
-						boundTreeElement.question.getQuestionType() == QuestionType.TE_D_AND_D_MULTIPLE_RESPONSE))
-		{
-			if (boundTreeElement.question.getAnswerChoices() != null)
-			{
-				final GridPane answerContainer = new GridPane();
-				answerContainer.setHgap(10);
-				answerContainer.setVgap(10);
-
-				Label activeLabel = new Label("active");
-				activeLabel.getStyleClass().add("lbltext");
-				activeLabel.setWrapText(true);
-				activeLabel.setMinWidth(80);
-				answerContainer.add(activeLabel, 0, 0);
-
-				Label correctLabel = new Label("correct");
-				correctLabel.getStyleClass().add("lbltext");
-				correctLabel.setWrapText(true);
-				correctLabel.setMinWidth(80);
-				answerContainer.add(correctLabel, 1, 0);
-
-				Label idLabel = new Label("id");
-				idLabel.getStyleClass().add("lbltext");
-				idLabel.setWrapText(true);
-				idLabel.setMinWidth(60);
-				answerContainer.add(idLabel, 2, 0);
-
-				Label choiceLabel = new Label("answer choice");
-				choiceLabel.getStyleClass().add("lbltext");
-				choiceLabel.setWrapText(true);
-				choiceLabel.setPrefWidth(2000);
-				answerContainer.add(choiceLabel, 3, 0);
-
-				int count = 1;
-				for (final AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
-				{
-					final CheckBox active = new CheckBox();
-					active.setAllowIndeterminate(false);
-					active.setSelected(ac.isActive());
-					answerContainer.add(active, 0, count);
-
-					final CheckBox correct = new CheckBox();
-					correct.setSelected(ac.isCorrect());
-					correct.setDisable(!ac.isActive());
-					answerContainer.add(correct, 1, count);
-
-					final TextField answerID = new TextField(
-							ac.getVisibleChoiceID() == null || ac.getVisibleChoiceID().equals("")
-							? Integer.toString(count) + "."
-							: ac.getVisibleChoiceID());
-					answerID.setPrefWidth(50);
-					answerID.setDisable(!ac.isActive());
-					answerContainer.add(answerID, 2, count);
-
-					final TextField answerText = new TextField(
-							ac.getAnswerText() == null || ac.getAnswerText().equals("")
-							? "Answer: " + Integer.toString(count)
-							: ac.getAnswerText());
-					answerText.setPrefWidth(2000);
-					answerText.setDisable(!ac.isActive());
-					answerContainer.add(answerText, 3, count);
-
-					/*
-					 *
-					 */
-					active.selectedProperty().addListener(new ChangeListener<Boolean>()
-					{
-						@Override
-						public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue,
-						                    Boolean newValue)
-						{
-							if (oldValue && !newValue)
-							{
-								ac.setActive(false);
-
-								correct.setDisable(true);
-								answerID.setDisable(true);
-								answerText.setDisable(true);
-							}
-							else if (!oldValue && newValue)
-							{
-								ac.setActive(true);
-
-								correct.setDisable(false);
-								answerID.setDisable(false);
-								answerText.setDisable(false);
-							}
-						}
-					});
-
-					/*
-					 *
-					 */
-					correct.selectedProperty().addListener(new ChangeListener<Boolean>()
-					{
-						@Override
-						public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue,
-						                    Boolean newValue)
-						{
-							if (oldValue && !newValue)
-								ac.setCorrect(false);
-							else if (!oldValue && newValue)
-								ac.setCorrect(true);
-						}
-					});
-
-					count++;
-				}
-
-				Button applyAnswersButton = new Button("Apply");
-				/*
-				 * hideously apply answer and ID updates through fields
-				 */
-				applyAnswersButton.setOnMouseClicked(new EventHandler<MouseEvent>()
-				{
-					@Override
-					public void handle(MouseEvent mouseEvent)
-					{
-						ObservableList<Node> nodes = answerContainer.getChildren();
-						ArrayList<AnswerChoice> answers = boundTreeElement.question.getAnswerChoices();
-						if (nodes.size() % 4 != 0 || (nodes.size() / 4) - 1 != answers.size())
-						{
-							//err out, malformed internal structure
-							return;
-						}
-
-						for (int i = 4; i < nodes.size(); i += 4)
-						{
-							if (nodes.get(i + 2) instanceof TextField
-									&& (((TextField) nodes.get(i + 2)).getText() != null
-									|| !((TextField) nodes.get(i + 2)).getText().equals("")))
-								answers.get((i / 4) - 1).setVisibleChoiceID(((TextField) nodes.get(i + 2)).getText());
-
-							if (nodes.get(i + 3) instanceof TextField
-									&& (((TextField) nodes.get(i + 3)).getText() != null
-									|| !((TextField) nodes.get(i + 3)).getText().equals("")))
-								answers.get((i / 4) - 1).setText(((TextField) nodes.get(i + 3)).getText());
-						}
-
-						redrawNode(true);
-					}
-				});
-
-				verticalRoot.getChildren().addAll(answerContainer,
-				                                  applyAnswersButton);
-			}
-			else
-			{
-				Label label = new Label("no answer structure defined");
-				label.getStyleClass().add("lbltext");
-				label.setWrapText(true);
-
-				verticalRoot.getChildren().add(label);
-			}
 		}
 
-		questionInfoNode = horizontalRoot;
 
-		if (apply)
-		{
-			CenterNode.addScrollRoot();
-			CenterNode.getScrollRoot().setContent(questionInfoNode);
-			CenterNode.getScrollRoot().setVvalue(0);
 
-			CenterNode.getScrollRoot().vvalueProperty().addListener(new ChangeListener<Number>()
-			{
-				@Override
-				public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2)
-				{
-					lastKnownVval = (Double) number2;
-					System.out.println(number2);
-				}
-			});
-		}
+
+		return paragraphFlowPane;
 	}
 
-	public Node getNode()
+	/**
+	 * created a drag routine linked to a floating StringPane
+	 *
+	 * @param source the source of the init of the drag routine
+	 */
+	private void initDragRoutine(final Node source)
 	{
-		return questionInfoNode;
+		initDragRoutine(source, false, null, null);
+	}
+
+	/**
+	 * created a drag routine linked to a floating StringPane
+	 *
+	 * @param source        the source of the init of the drag routine
+	 * @param replaceSource will the source be replaced
+	 * @param replaceWith   what it will be replaced with
+	 * @param replaceFrom   the location in which it will be replaced
+	 */
+	private void initDragRoutine(final Node source,
+	                             final boolean replaceSource,
+	                             final Node replaceWith,
+	                             final Pane replaceFrom)
+	{
+		/*
+		 * add the draggable pane and create its text
+		 */
+		source.setOnDragDetected(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent mouseEvent)
+			{
+				if (mouseEvent.getSource() instanceof StringPane)
+					draggablePane.setOverlay(((StringPane) mouseEvent.getSource()).getOverlay());
+
+				Point2D localPoint = questionInfoNode.sceneToLocal(
+						new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
+				draggablePane.relocate(
+						(int) (localPoint.getX() - draggablePane.getBoundsInLocal().getWidth() / 2),
+						(int) (localPoint.getY() - draggablePane.getBoundsInLocal().getHeight() / 2)
+				);
+				styledRootNode.getChildren().add(draggablePane);
+
+				draggablePane.startFullDrag();
+
+				if (replaceSource && replaceFrom != null)
+					for (int index = 0; index < replaceFrom.getChildren().size(); index++)
+						if (replaceFrom.getChildren().get(index) == source)
+							replaceFrom.getChildren().set(index, replaceWith);
+
+				mouseEvent.consume();
+			}
+		});
+
+		/*
+		 * update the position
+		 */
+		source.setOnMouseDragged(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent mouseEvent)
+			{
+				Point2D localPoint = questionInfoNode.sceneToLocal(
+						new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
+				draggablePane.relocate(
+						(int) (localPoint.getX() - draggablePane.getBoundsInLocal().getWidth() / 2),
+						(int) (localPoint.getY() - draggablePane.getBoundsInLocal().getHeight() / 2)
+				);
+
+				source.setCursor(Cursor.NONE);
+				mouseEvent.consume();
+			}
+		});
+
+		/*
+		 * adjust cursor on entry
+		 */
+		source.setOnMouseEntered(new EventHandler<MouseEvent>()
+		{
+			public void handle(MouseEvent e)
+			{
+				source.setCursor(Cursor.HAND);
+			}
+		});
+
+		/*
+		 * adjust cursor on pressed
+		 */
+		source.setOnMousePressed(new EventHandler<MouseEvent>()
+		{
+			public void handle(MouseEvent e)
+			{
+				source.setMouseTransparent(true);
+				draggablePane.setMouseTransparent(true);
+				source.setCursor(Cursor.CLOSED_HAND);
+			}
+		});
+
+		/*
+		 * adjust cursor on released
+		 */
+		source.setOnMouseReleased(new EventHandler<MouseEvent>()
+		{
+			public void handle(MouseEvent e)
+			{
+				source.setMouseTransparent(false);
+				draggablePane.setMouseTransparent(false);
+				source.setCursor(Cursor.DEFAULT);
+				styledRootNode.getChildren().remove(draggablePane);
+			}
+		});
+	}
+
+	private void initDragTargetRoutine(final Node target, final Pane paragraphFlowPane)
+	{
+		target.setOnMouseDragEntered(new EventHandler<MouseDragEvent>()
+		{
+			public void handle(MouseDragEvent e)
+			{
+				target.getStyleClass().clear();
+				target.getStyleClass().add("grammarSpaceActive");
+				e.consume();
+			}
+		});
+
+		target.setOnMouseDragExited(new EventHandler<MouseDragEvent>()
+		{
+			public void handle(MouseDragEvent e)
+			{
+				target.getStyleClass().clear();
+
+				if (target instanceof StringPane)
+				{
+					target.getStyleClass().add("charPaneDefaultSuper");
+					target.getStyleClass().remove("grammarSpaceActive");
+				}
+				else
+					target.getStyleClass().add("grammarSpace");
+				e.consume();
+			}
+		});
+
+		target.setOnMouseDragReleased(new EventHandler<MouseDragEvent>()
+		{
+			public void handle(MouseDragEvent e)
+			{
+				if (e.getGestureSource() instanceof StringPane)
+					for (int index = 0; index < paragraphFlowPane.getChildren().size(); index++)
+						if (paragraphFlowPane.getChildren().get(index) == e.getTarget())
+							if (e.getTarget() instanceof StringPane)
+								((StringPane) e.getSource()).setOverlay(
+										((StringPane) e.getGestureSource()).getOverlay());
+							else
+							{
+								StringPane sp = new StringPane(((StringPane) e.getGestureSource()).getOverlay(),
+								                               "charPaneDefaultSuper",
+								                               "charPaneDefault",
+								                               null,
+								                               "charPaneSmallText",
+								                               40,
+								                               40,
+								                               3);
+
+								paragraphFlowPane.getChildren().set(index, sp);
+
+								StackPane rect = new StackPane();
+								rect.setMinSize(40, 40);
+								rect.setMaxSize(40, 40);
+								rect.getStyleClass().add("grammarSpace");
+								initDragTargetRoutine(rect, paragraphFlowPane);
+								initDragRoutine(sp, true, rect, paragraphFlowPane);
+
+								initDragTargetRoutine(sp, paragraphFlowPane);
+							}
+
+				e.consume();
+			}
+		});
+	}
+
+	////////////////////////////////
+	//  end grammar node methods  //
+	////////////////////////////////
+
+	protected Node drawMultipleChoiceNode(Pane root)
+	{
+		if (boundTreeElement.question.getAnswerChoices() != null)
+		{
+			final GridPane answerContainer = new GridPane();
+			answerContainer.setHgap(10);
+			answerContainer.setVgap(10);
+
+			Label activeLabel = new Label("active");
+			activeLabel.getStyleClass().add("lbltext");
+			activeLabel.setWrapText(true);
+			activeLabel.setMinWidth(80);
+			answerContainer.add(activeLabel, 0, 0);
+
+			Label correctLabel = new Label("correct");
+			correctLabel.getStyleClass().add("lbltext");
+			correctLabel.setWrapText(true);
+			correctLabel.setMinWidth(80);
+			answerContainer.add(correctLabel, 1, 0);
+
+			Label idLabel = new Label("id");
+			idLabel.getStyleClass().add("lbltext");
+			idLabel.setWrapText(true);
+			idLabel.setMinWidth(60);
+			answerContainer.add(idLabel, 2, 0);
+
+			Label choiceLabel = new Label("answer choice");
+			choiceLabel.getStyleClass().add("lbltext");
+			choiceLabel.setWrapText(true);
+			choiceLabel.setPrefWidth(2000);
+			answerContainer.add(choiceLabel, 3, 0);
+
+			ToggleGroup toggleGroup = new ToggleGroup();
+
+			int count = 1;
+			boolean hasFoundCorrect = false;
+			for (final AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
+			{
+				final CheckBox active = new CheckBox();
+				active.setAllowIndeterminate(false);
+				active.setSelected(ac.isActive());
+				answerContainer.add(active, 0, count);
+
+				if (!hasFoundCorrect && ac.isCorrect())
+					hasFoundCorrect = true;
+				else if (hasFoundCorrect && ac.isCorrect())
+				{
+					//log error
+					ac.setCorrect(false);
+				}
+
+				final RadioButton correct = new RadioButton();
+				correct.setSelected(ac.isCorrect());
+				correct.setDisable(!ac.isActive());
+				correct.setToggleGroup(toggleGroup);
+				answerContainer.add(correct, 1, count);
+
+				final TextField answerID = new TextField(
+						ac.getVisibleChoiceID() == null || ac.getVisibleChoiceID().equals("")
+						? Integer.toString(count) + "."
+						: ac.getVisibleChoiceID());
+				answerID.setPrefWidth(50);
+				answerID.setDisable(!ac.isActive());
+				answerContainer.add(answerID, 2, count);
+
+				final TextField answerText = new TextField(
+						ac.getAnswerText() == null || ac.getAnswerText().equals("")
+						? "Answer: " + Integer.toString(count)
+						: ac.getAnswerText());
+				answerText.setPrefWidth(2000);
+				answerText.setDisable(!ac.isActive());
+				answerContainer.add(answerText, 3, count);
+
+					/*
+					 *
+					 */
+				active.selectedProperty().addListener(new ChangeListener<Boolean>()
+				{
+					@Override
+					public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue,
+					                    Boolean newValue)
+					{
+						if (oldValue && !newValue)
+						{
+							ac.setActive(false);
+
+							correct.setDisable(true);
+							answerID.setDisable(true);
+							answerText.setDisable(true);
+						}
+						else if (!oldValue && newValue)
+						{
+							ac.setActive(true);
+
+							correct.setDisable(false);
+							answerID.setDisable(false);
+							answerText.setDisable(false);
+						}
+					}
+				});
+
+					/*
+					 *
+					 */
+				correct.selectedProperty().addListener(new ChangeListener<Boolean>()
+				{
+					@Override
+					public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue,
+					                    Boolean newValue)
+					{
+						if (oldValue && !newValue)
+							ac.setCorrect(false);
+						else if (!oldValue && newValue)
+							ac.setCorrect(true);
+					}
+				});
+
+				count++;
+			}
+
+			/*
+			 * apply answer and ID updates through fields
+			 */
+			Button applyAnswersButton = new Button("Apply");
+			applyAnswersButton.setOnMouseClicked(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					ObservableList<Node> nodes = answerContainer.getChildren();
+					ArrayList<AnswerChoice> answers = boundTreeElement.question.getAnswerChoices();
+					if (nodes.size() % 4 != 0 || (nodes.size() / 4) - 1 != answers.size())
+					{
+						//err out, malformed internal structure
+						return;
+					}
+
+					for (int i = 4; i < nodes.size(); i += 4)
+					{
+						if (nodes.get(i + 2) instanceof TextField
+								&& (((TextField) nodes.get(i + 2)).getText() != null
+								|| !((TextField) nodes.get(i + 2)).getText().equals("")))
+							answers.get((i / 4) - 1).setVisibleChoiceID(((TextField) nodes.get(i + 2)).getText());
+
+						if (nodes.get(i + 3) instanceof TextField
+								&& (((TextField) nodes.get(i + 3)).getText() != null
+								|| !((TextField) nodes.get(i + 3)).getText().equals("")))
+							answers.get((i / 4) - 1).setText(((TextField) nodes.get(i + 3)).getText());
+					}
+
+					redrawNode(true);
+				}
+			});
+
+			root.getChildren().addAll(answerContainer,
+			                          applyAnswersButton);
+		}
+		else
+		{
+			Label label = new Label("no answer structure defined");
+			label.getStyleClass().add("lbltext");
+			label.setWrapText(true);
+
+			root.getChildren().add(label);
+		}
+
+		return root;
+	}
+
+	protected Node drawMultipleResponseNode(Pane root)
+	{
+		if (boundTreeElement.question.getAnswerChoices() != null)
+		{
+			final GridPane answerContainer = new GridPane();
+			answerContainer.setHgap(10);
+			answerContainer.setVgap(10);
+
+			Label activeLabel = new Label("active");
+			activeLabel.getStyleClass().add("lbltext");
+			activeLabel.setWrapText(true);
+			activeLabel.setMinWidth(80);
+			answerContainer.add(activeLabel, 0, 0);
+
+			Label correctLabel = new Label("correct");
+			correctLabel.getStyleClass().add("lbltext");
+			correctLabel.setWrapText(true);
+			correctLabel.setMinWidth(80);
+			answerContainer.add(correctLabel, 1, 0);
+
+			Label idLabel = new Label("id");
+			idLabel.getStyleClass().add("lbltext");
+			idLabel.setWrapText(true);
+			idLabel.setMinWidth(60);
+			answerContainer.add(idLabel, 2, 0);
+
+			Label choiceLabel = new Label("answer choice");
+			choiceLabel.getStyleClass().add("lbltext");
+			choiceLabel.setWrapText(true);
+			choiceLabel.setPrefWidth(2000);
+			answerContainer.add(choiceLabel, 3, 0);
+
+			int count = 1;
+			for (final AnswerChoice ac : boundTreeElement.question.getAnswerChoices())
+			{
+				final CheckBox active = new CheckBox();
+				active.setAllowIndeterminate(false);
+				active.setSelected(ac.isActive());
+				answerContainer.add(active, 0, count);
+
+				final CheckBox correct = new CheckBox();
+				correct.setSelected(ac.isCorrect());
+				correct.setDisable(!ac.isActive());
+				answerContainer.add(correct, 1, count);
+
+				final TextField answerID = new TextField(
+						ac.getVisibleChoiceID() == null || ac.getVisibleChoiceID().equals("")
+						? Integer.toString(count) + "."
+						: ac.getVisibleChoiceID());
+				answerID.setPrefWidth(50);
+				answerID.setDisable(!ac.isActive());
+				answerContainer.add(answerID, 2, count);
+
+				final TextField answerText = new TextField(
+						ac.getAnswerText() == null || ac.getAnswerText().equals("")
+						? "Answer: " + Integer.toString(count)
+						: ac.getAnswerText());
+				answerText.setPrefWidth(2000);
+				answerText.setDisable(!ac.isActive());
+				answerContainer.add(answerText, 3, count);
+
+					/*
+					 *
+					 */
+				active.selectedProperty().addListener(new ChangeListener<Boolean>()
+				{
+					@Override
+					public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue,
+					                    Boolean newValue)
+					{
+						if (oldValue && !newValue)
+						{
+							ac.setActive(false);
+
+							correct.setDisable(true);
+							answerID.setDisable(true);
+							answerText.setDisable(true);
+						}
+						else if (!oldValue && newValue)
+						{
+							ac.setActive(true);
+
+							correct.setDisable(false);
+							answerID.setDisable(false);
+							answerText.setDisable(false);
+						}
+					}
+				});
+
+					/*
+					 *
+					 */
+				correct.selectedProperty().addListener(new ChangeListener<Boolean>()
+				{
+					@Override
+					public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue,
+					                    Boolean newValue)
+					{
+						if (oldValue && !newValue)
+							ac.setCorrect(false);
+						else if (!oldValue && newValue)
+							ac.setCorrect(true);
+					}
+				});
+
+				count++;
+			}
+
+			Button applyAnswersButton = new Button("Apply");
+				/*
+				 * hideously apply answer and ID updates through fields
+				 */
+			applyAnswersButton.setOnMouseClicked(new EventHandler<MouseEvent>()
+			{
+				@Override
+				public void handle(MouseEvent mouseEvent)
+				{
+					ObservableList<Node> nodes = answerContainer.getChildren();
+					ArrayList<AnswerChoice> answers = boundTreeElement.question.getAnswerChoices();
+					if (nodes.size() % 4 != 0 || (nodes.size() / 4) - 1 != answers.size())
+					{
+						//err out, malformed internal structure
+						return;
+					}
+
+					for (int i = 4; i < nodes.size(); i += 4)
+					{
+						if (nodes.get(i + 2) instanceof TextField
+								&& (((TextField) nodes.get(i + 2)).getText() != null
+								|| !((TextField) nodes.get(i + 2)).getText().equals("")))
+							answers.get((i / 4) - 1).setVisibleChoiceID(((TextField) nodes.get(i + 2)).getText());
+
+						if (nodes.get(i + 3) instanceof TextField
+								&& (((TextField) nodes.get(i + 3)).getText() != null
+								|| !((TextField) nodes.get(i + 3)).getText().equals("")))
+							answers.get((i / 4) - 1).setText(((TextField) nodes.get(i + 3)).getText());
+					}
+
+					redrawNode(true);
+				}
+			});
+
+			root.getChildren().addAll(answerContainer,
+			                          applyAnswersButton);
+		}
+		else
+		{
+			Label label = new Label("no answer structure defined");
+			label.getStyleClass().add("lbltext");
+			label.setWrapText(true);
+
+			root.getChildren().add(label);
+		}
+
+		return root;
 	}
 }

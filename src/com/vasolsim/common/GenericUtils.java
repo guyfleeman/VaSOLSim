@@ -5,14 +5,10 @@ import com.vasolsim.common.file.AnswerChoice;
 import com.vasolsim.common.file.Question;
 import com.vasolsim.common.file.QuestionSet;
 import com.vasolsim.tclient.element.tree.TreeElement;
+
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -41,6 +37,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author guyfleeman
@@ -361,8 +364,6 @@ public class GenericUtils
 	public static final String invalidFileTypeMessage    = "File type not recognized: .";
 	public static final String invalidFileTypeTitle      = "Invalid File Type";
 
-
-
 	////////////////////////////////
 	//  END CONSTANT DECLARATION  //
 	////////////////////////////////
@@ -373,6 +374,27 @@ public class GenericUtils
 	@SuppressWarnings("unused")
 	private static final boolean __BEGIN_FUNCTIONS = false;
 	//////////////////////////////////
+
+	/**
+	 * converts question type to a user friendly string
+	 * @param questionType type
+	 * @return string
+	 */
+	public static String questionTypeToString(QuestionType questionType)
+	{
+		switch (questionType)
+		{
+			case MULTIPLE_CHOICE: return "Multiple Choice";
+			case TE_MULTIPLE_CHOICE: return "Multiple Choice (TE)";
+			case TE_D_AND_D_MULTIPLE_CHOICE: return "Multiple Choice (TE/DD)";
+			case MULTIPLE_RESPONSE: return "Multiple Response";
+			case TE_MULTIPLE_RESPONSE: return "Multiple Response (TE)";
+			case TE_D_AND_D_MULTIPLE_RESPONSE: return "Multiple Response (TE/DD)";
+			case TE_D_AND_D_GRAMMAR_MULTIPLE_RESPONSE: return "Grammar (TE/DD)";
+			case TE_D_AND_D_VENN_DIAGRAM: return "Venn Diagram (TE/DD)";
+			default: return "UNK";
+		}
+	}
 
 	/**
 	 * Securely shrinks a 512bit hash to a 128bit hash
@@ -893,6 +915,30 @@ public class GenericUtils
 		examsIcon.setFitHeight(imgSize);
 		examsIcon.setFitWidth(imgSize);
 		return new TreeItem<TreeElement>(box, examsIcon);
+	}
+
+	/**
+	 * pauses a thread
+	 */
+	public static void pause()
+	{
+		pause(500);
+	}
+
+	/**
+	 * pauses a thread
+	 * @param time time
+	 */
+	public static void pause(long time)
+	{
+		try
+		{
+			Thread.sleep(500);
+		}
+		catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

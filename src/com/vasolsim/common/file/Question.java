@@ -143,6 +143,12 @@ public class Question
 					ac.setText("" + c);
 					answers.add(ac);
 				}
+
+				AnswerChoice correctAnswerHolder = new AnswerChoice();
+				correctAnswerHolder.setActive(false);
+				correctAnswerHolder.setCorrect(true);
+				correctAnswerHolder.setText("none");
+				answers.add(correctAnswerHolder);
 				answerChoices = answers;
 			}
 			else
