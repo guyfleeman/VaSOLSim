@@ -1,5 +1,6 @@
 package com.vasolsim.tclient;
 
+import com.vasolsim.common.ExternalTask;
 import com.vasolsim.common.GenericUtils;
 import com.vasolsim.common.Preload;
 import com.vasolsim.tclient.element.core.BottomNode;
@@ -8,9 +9,9 @@ import com.vasolsim.tclient.element.core.LeftNode;
 import com.vasolsim.tclient.element.core.MenuNode;
 import com.vasolsim.tclient.element.form.*;
 import com.vasolsim.tclient.element.tree.TreeElement;
+
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.EventHandler;
@@ -25,7 +26,9 @@ import javafx.stage.StageStyle;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Properties;
 
 /**
  * @author guyfleeman
@@ -48,6 +51,7 @@ public class TeacherClient extends Application
 	public static String rscPathRoot               = "/com/vasolsim/rsc/";
 	public static String pathToStyle               = rscPathRoot + "style/tClientStyle.css";
 	public static String pathToCommonStyle         = rscPathRoot + "style/commonStyle.css";
+	public static String pathToBackgroundImage     = rscPathRoot + "img/background2.jpg";
 	public static String pathToExamsIcon           = rscPathRoot + "img/exams.png";
 	public static String pathToExamIcon            = rscPathRoot + "img/exam.png";
 	public static String pathToAddIcon             = rscPathRoot + "img/add.png";
@@ -56,10 +60,13 @@ public class TeacherClient extends Application
 	public static String pathToQuestionIcon        = rscPathRoot + "img/question.png";
 	public static String pathToCorrectAnswerIcon   = rscPathRoot + "img/answerCorrect.png";
 	public static String pathToIncorrectAnswerIcon = rscPathRoot + "img/answerIncorrect.png";
+	public static String pathToMasterPropertiesFile = rscPathRoot + "persistence/teacherClient.prop";
 
 	/*
-	 * style classes
+	 * style
 	 */
+	public static String defaultStylesheets = "commonStyle.css tClientStyle.css";
+
 	public static String treeButtonDefaultStyleClass = "btnDefault";
 	public static String treeButtonCreateStyleClass  = "btnHoverCreate";
 	public static String treeButtonDestroyStyleClass = "btnHoverDestroy";
@@ -98,12 +105,18 @@ public class TeacherClient extends Application
 	 * grammar charset
 	 */
 	public static ArrayList<Character> charset = new ArrayList<Character>();
+	public static String defaultCharsetString = ". , ? ! ; : - \u2013 \u2014";
 
+	/**
+	 * JavaFX entry call
+	 * @param primaryStage stage
+	 */
 	public void start(final Stage primaryStage)
 	{
 		stage = primaryStage;
 		TeacherClient.primaryScene = new Scene(new VBox(), 960, 720);
 
+		Preload.stage = TeacherClient.stage;
 		Preload.preloadTitle = TeacherClient.preloadTitle;
 		Preload.load(getInitRoutine(),
 		             getOnSuccessRoutine(),
@@ -112,9 +125,13 @@ public class TeacherClient extends Application
 		System.out.println(com.sun.javafx.runtime.VersionInfo.getRuntimeVersion());
 	}
 
-	public static Task<Void> getInitRoutine()
+	/**
+	 * creates the initialization task for the preloader
+	 * @return the initialization task
+	 */
+	public static ExternalTask<Void> getInitRoutine()
 	{
-		return new Task<Void>()
+		return new ExternalTask<Void>()
 		{
 			@Override
 			protected Void call() throws Exception
@@ -160,31 +177,90 @@ public class TeacherClient extends Application
 					updateMessage("Checking for persistence...");
 					GenericUtils.pause();
 
-					System.out.println(System.getProperty("user.home"));
 					File vasolsimFileRoot = new File(System.getProperty("user.home") + "/.vasolsim");
-					if (vasolsimFileRoot.isFile())
-					{
-						updateMessage("Persistence found. Checking data...");
-						GenericUtils.pause();
-					}
-					else
+					File propFile         = new File(vasolsimFileRoot.getAbsolutePath() + "/teacherClient.prop");
+					File rsc              = new File(vasolsimFileRoot.getAbsolutePath() + "/rsc");
+					File data             = new File(vasolsimFileRoot.getAbsolutePath() + "/data");
+					File img              = new File(vasolsimFileRoot.getAbsolutePath() + "/img");
+
+					boolean canLoadPersistence = true;
+					if (!(vasolsimFileRoot.isDirectory()
+							&& propFile.isFile()
+							&& rsc.isDirectory()
+							&& data.isDirectory()
+							&& img.isDirectory()))
 					{
 						updateMessage("Persistence absent. Creating...");
 						GenericUtils.pause();
 
+						vasolsimFileRoot.mkdirs();
+						rsc.mkdirs();
+						data.mkdirs();
+						img.mkdirs();
 
+						/*
+						 * failure to initialize required resources for persistence
+						 */
+						if (!(vasolsimFileRoot.isDirectory()
+								&& rsc.isDirectory()
+								&& data.isDirectory()
+								&& img.isDirectory()))
+						{
+							updateMessage("Error creating persistence. Attempting to recover...");
+							GenericUtils.pause();
+							loadDefaultResources(this);
+							canLoadPersistence = false;
+						}
+						else
+						{
+							try
+							{
+								if (!(new File(vasolsimFileRoot.getAbsolutePath() + "/teacherClient.prop").isFile()))
+									GenericUtils.exportResource(pathToMasterPropertiesFile,
+									                            vasolsimFileRoot.getAbsolutePath() +
+											                            "/teacherClient.prop");
+
+								if (!(new File(rsc.getAbsolutePath() + "/commonStyle.css").isFile()))
+									GenericUtils.exportResource(pathToCommonStyle,
+									                            rsc.getAbsolutePath() + "/commonStyle.css");
+
+								if (!(new File(rsc.getAbsolutePath() + "/tClientStyle.css").isFile()))
+									GenericUtils.exportResource(pathToStyle,
+									                            rsc.getAbsolutePath() + "/tClientStyle.css");
+
+								if (!(new File(img.getAbsolutePath() + "/background2.jpg")).isFile())
+									GenericUtils.exportResource(pathToBackgroundImage,
+									                            img.getAbsolutePath() + "/background2.jpg");
+							}
+							/*
+							 * failure to copy master to visible or persistent resources
+							 */
+							catch (Exception e)
+							{
+								updateMessage("Error creating persistence. Attempting to recover...");
+								GenericUtils.pause();
+								canLoadPersistence = false;
+							}
+						}
 					}
 
-					/*
-					 * get style specified by persistence
-					 */
-					updateMessage("Loading external style...");
-					GenericUtils.pause();
+					if (canLoadPersistence)
+					{
+						updateMessage("Persistence found. Checking data...");
+						GenericUtils.pause();
 
-					TeacherClient.primaryScene.getStylesheets().add(
-							TeacherClient.class.getResource(TeacherClient.pathToStyle).toExternalForm());
-					TeacherClient.primaryScene.getStylesheets().add(
-							TeacherClient.class.getResource(TeacherClient.pathToCommonStyle).toExternalForm());
+						FileInputStream fis = new FileInputStream(propFile);
+						Properties properties = new Properties();
+						properties.load(fis);
+						fis.close();
+
+						for (String s : properties.getProperty("charset", defaultCharsetString).split(" "))
+							TeacherClient.charset.add(s.charAt(0));
+						TeacherClient.charset.add(' ');
+
+						for (String s : properties.getProperty("stylesheets", defaultStylesheets).split(" "))
+							TeacherClient.primaryScene.getStylesheets().add("file:///" + rsc.getAbsolutePath() + "/" + s);
+					}
 
 					/*
 					 * initialize assets that require a FX thread for initialization.
@@ -224,6 +300,10 @@ public class TeacherClient extends Application
 		};
 	}
 
+	/**
+	 * creates the on success EventHandler for the preloader
+	 * @return event handler
+	 */
 	public static EventHandler<WorkerStateEvent> getOnSuccessRoutine()
 	{
 		return new EventHandler<WorkerStateEvent>()
@@ -234,14 +314,14 @@ public class TeacherClient extends Application
 				/*
 				 * hide and brief pause
 				 */
-				Preload.getStage().hide();
+				TeacherClient.stage.hide();
+				GenericUtils.pause();
 
 				/*
 				 * reset stage
 				 */
 				TeacherClient.stage.setTitle(TeacherClient.title);
 				TeacherClient.stage.setScene(TeacherClient.primaryScene);
-				TeacherClient.stage.initStyle(StageStyle.DECORATED);
 
 				/*
 				 * size stage
@@ -258,6 +338,36 @@ public class TeacherClient extends Application
 		};
 	}
 
+	/**
+	 * loads default resources in the event the persistence creation fails
+	 * @param task the task to be logged to
+	 */
+	public static void loadDefaultResources(ExternalTask task)
+	{
+		/*
+		 * get default style
+		 */
+		task.updateMessage("Loading external style...");
+		GenericUtils.pause();
+
+		TeacherClient.primaryScene.getStylesheets().add(
+				TeacherClient.class.getResource(TeacherClient.pathToStyle).toExternalForm());
+		TeacherClient.primaryScene.getStylesheets().add(
+				TeacherClient.class.getResource(TeacherClient.pathToCommonStyle).toExternalForm());
+
+		/*
+		 * get default charset
+		 */
+		task.updateMessage("Loading default charset...");
+		for (String s : defaultCharsetString.split(" "))
+			TeacherClient.charset.add(s.charAt(0));
+		TeacherClient.charset.add(' ');
+	}
+
+	/**
+	 * main
+	 * @param args
+	 */
 	public static void main(String[] args)
 	{
 		new JFXPanel();

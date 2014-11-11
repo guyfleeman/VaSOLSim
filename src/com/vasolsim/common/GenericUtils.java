@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -377,22 +378,33 @@ public class GenericUtils
 
 	/**
 	 * converts question type to a user friendly string
+	 *
 	 * @param questionType type
+	 *
 	 * @return string
 	 */
 	public static String questionTypeToString(QuestionType questionType)
 	{
 		switch (questionType)
 		{
-			case MULTIPLE_CHOICE: return "Multiple Choice";
-			case TE_MULTIPLE_CHOICE: return "Multiple Choice (TE)";
-			case TE_D_AND_D_MULTIPLE_CHOICE: return "Multiple Choice (TE/DD)";
-			case MULTIPLE_RESPONSE: return "Multiple Response";
-			case TE_MULTIPLE_RESPONSE: return "Multiple Response (TE)";
-			case TE_D_AND_D_MULTIPLE_RESPONSE: return "Multiple Response (TE/DD)";
-			case TE_D_AND_D_GRAMMAR_MULTIPLE_RESPONSE: return "Grammar (TE/DD)";
-			case TE_D_AND_D_VENN_DIAGRAM: return "Venn Diagram (TE/DD)";
-			default: return "UNK";
+			case MULTIPLE_CHOICE:
+				return "Multiple Choice";
+			case TE_MULTIPLE_CHOICE:
+				return "Multiple Choice (TE)";
+			case TE_D_AND_D_MULTIPLE_CHOICE:
+				return "Multiple Choice (TE/DD)";
+			case MULTIPLE_RESPONSE:
+				return "Multiple Response";
+			case TE_MULTIPLE_RESPONSE:
+				return "Multiple Response (TE)";
+			case TE_D_AND_D_MULTIPLE_RESPONSE:
+				return "Multiple Response (TE/DD)";
+			case TE_D_AND_D_GRAMMAR_MULTIPLE_RESPONSE:
+				return "Grammar (TE/DD)";
+			case TE_D_AND_D_VENN_DIAGRAM:
+				return "Venn Diagram (TE/DD)";
+			default:
+				return "UNK";
 		}
 	}
 
@@ -495,7 +507,6 @@ public class GenericUtils
 			//create an IV
 			SecureRandom random = new SecureRandom();
 			random.nextBytes(parametricIV);
-			random = null;
 
 			//initialize the crypto
 			cipher = Cipher.getInstance(DEFAULT_SERVICE_PROVIDER_INTERFACE, DEFAULT_SERVICE_PROVIDER);
@@ -503,10 +514,6 @@ public class GenericUtils
 					mode,
 					new SecretKeySpec(key, DEFAULT_ENCRYPTION_ALGORITHM),
 					new IvParameterSpec(parametricIV));
-
-			//clear the password from memory
-			//for (byte b : key)
-			//	b = (byte) 0x00;
 		}
 		catch (NoSuchAlgorithmException e)
 		{
@@ -927,19 +934,73 @@ public class GenericUtils
 
 	/**
 	 * pauses a thread
+	 *
 	 * @param time time
 	 */
 	public static void pause(long time)
 	{
 		try
 		{
-			Thread.sleep(500);
+			Thread.sleep(300);
 		}
 		catch (InterruptedException e)
 		{
 			throw new RuntimeException(e);
 		}
 	}
+
+	/**
+	 * exports an internal resource to an external file
+	 *
+	 * @param internalResource internal resource
+	 * @param externalResource external target file
+	 *
+	 * @return if the export was successful
+	 */
+	public static boolean exportResource(String internalResource, String externalResource)
+	{
+		return exportResource(GenericUtils.class.getResource(internalResource), new File(externalResource));
+	}
+
+	/**
+	 * exports an internal resource to an external file
+	 *
+	 * @param internalResource internal resource
+	 * @param externalResource external target file
+	 *
+	 * @return if the export was successful
+	 */
+	public static boolean exportResource(URL internalResource, File externalResource)
+	{
+		try
+		{
+			FileUtils.copyURLToFile(internalResource, externalResource);
+		}
+		catch (IOException e)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/*
+	 * considering porting text formatting to html but 2.2 implementation is a pain in the ass
+	public static String getHtmlLead(String content)
+	{
+
+	}
+
+	public static String getHtmlClose(String content)
+	{
+
+	}
+
+	public static String getHtmlContent(String content)
+	{
+
+	}
+	*/
 
 	/**
 	 * Everything should be static so don't allow initialization of the class.

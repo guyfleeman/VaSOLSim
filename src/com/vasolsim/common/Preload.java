@@ -26,8 +26,8 @@ public class Preload
 {
 	public static String preloadTitle = "Title";
 	public static String pathToPreloadImage = "/com/vasolsim/rsc/img/preload.jpg";
+	public static Stage stage;
 
-	protected static Stage stage = new Stage();
 	protected static ProgressBar progressBar  = new ProgressBar();
 	protected static Label       displayLabel = new Label("");
 
@@ -45,7 +45,7 @@ public class Preload
 	{
 		stage.setTitle(preloadTitle);
 		stage.setScene(getPreloadScene());
-		stage.initStyle(StageStyle.UNDECORATED);
+		//stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
 
 		Thread loadThread = new Thread(loadRoutine);

@@ -153,43 +153,10 @@ public class VaSOLSimTestRunner
 					}
 					fileScanner.close();
 				}
-				catch (FileNotFoundException e)
-				{
-				}
+				catch (FileNotFoundException e) {}
 
 				System.out.println("AccLn: " + lineCt);
 			}
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

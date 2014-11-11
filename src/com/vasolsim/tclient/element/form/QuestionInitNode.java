@@ -50,7 +50,11 @@ public class QuestionInitNode implements DrawableNode
 		questionTextArea.setPrefHeight(280);
 		questionTextArea.setWrapText(true);
 
-		final HTMLEditor questionHtmlTextArea = new HTMLEditor();
+		/*
+		final HTMLEditor questionTextArea = new HTMLEditor();
+		questionTextArea.setPrefWidth(2000);
+		questionTextArea.setPrefHeight(280);
+		*/
 
 		Button continueButton = new Button(continueButtonText);
 
@@ -103,7 +107,7 @@ public class QuestionInitNode implements DrawableNode
 				*/
 
 				QuestionTreeElement newQuestion = new QuestionTreeElement();
-				newQuestion.question.setQuestion(questionTextArea.getText());
+				newQuestion.question.setQuestion(questionTextArea.getText()/*getHtmlText()*/);
 				newQuestion.parent = TeacherClient.questionInitNode.parent;
 				newQuestion.label.setText(questionTypeToString(QuestionTypeNode.questionType));
 				newQuestion.question.setQuestionType(QuestionTypeNode.questionType);

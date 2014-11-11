@@ -367,7 +367,7 @@ public class QuestionNode implements DrawableNode
 					break;
 				}
 
-			if (correctChoice != null)
+			if (correctChoice != null && !correctChoice.getVisualPersistence().isEmpty())
 			{
 				paragraphFlowPane.getChildren().clear();
 				System.out.println(correctChoice.getVisualPersistence());
