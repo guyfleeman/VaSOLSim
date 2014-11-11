@@ -7,5 +7,4 @@ com.vasolsim.sclient
 com.vasolsim.tclient
 com.vasolsim.tclient.element.core
 com.vasolsim.tclient.element.form
-com.vasolsim.tclient.element.form.QandA
 com.vasolsim.tclient.element.tree
