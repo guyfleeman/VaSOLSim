@@ -1,4 +1,4 @@
-package com.vasolsim.tclient.element.form;
+package com.vasolsim.tclient.form;
 
 import javafx.scene.Node;
 

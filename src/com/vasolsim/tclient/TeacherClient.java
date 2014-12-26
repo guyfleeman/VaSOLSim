@@ -3,32 +3,42 @@ package com.vasolsim.tclient;
 import com.vasolsim.common.ExternalTask;
 import com.vasolsim.common.GenericUtils;
 import com.vasolsim.common.Preload;
-import com.vasolsim.tclient.element.core.BottomNode;
-import com.vasolsim.tclient.element.core.CenterNode;
-import com.vasolsim.tclient.element.core.LeftNode;
-import com.vasolsim.tclient.element.core.MenuNode;
-import com.vasolsim.tclient.element.form.*;
-import com.vasolsim.tclient.element.tree.TreeElement;
+import com.vasolsim.common.notification.DebugWindow;
+import com.vasolsim.common.notification.PopupManager;
+import com.vasolsim.tclient.core.BottomNode;
+import com.vasolsim.tclient.core.CenterNode;
+import com.vasolsim.tclient.core.LeftNode;
+import com.vasolsim.tclient.core.MenuNode;
+import com.vasolsim.tclient.form.*;
+import com.vasolsim.tclient.tree.TreeElement;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.TreeItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
+
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.WriterAppender;
 
 /**
  * @author guyfleeman
@@ -48,18 +58,18 @@ public class TeacherClient extends Application
 	/*
 	 * resource paths
 	 */
-	public static String rscPathRoot               = "/com/vasolsim/rsc/";
-	public static String pathToStyle               = rscPathRoot + "style/tClientStyle.css";
-	public static String pathToCommonStyle         = rscPathRoot + "style/commonStyle.css";
-	public static String pathToBackgroundImage     = rscPathRoot + "img/background2.jpg";
-	public static String pathToExamsIcon           = rscPathRoot + "img/exams.png";
-	public static String pathToExamIcon            = rscPathRoot + "img/exam.png";
-	public static String pathToAddIcon             = rscPathRoot + "img/add.png";
-	public static String pathToRemoveIcon          = rscPathRoot + "img/remove.png";
-	public static String pathToQuestionSetIcon     = rscPathRoot + "img/set.png";
-	public static String pathToQuestionIcon        = rscPathRoot + "img/question.png";
-	public static String pathToCorrectAnswerIcon   = rscPathRoot + "img/answerCorrect.png";
-	public static String pathToIncorrectAnswerIcon = rscPathRoot + "img/answerIncorrect.png";
+	public static String rscPathRoot                = "/com/vasolsim/rsc/";
+	public static String pathToStyle                = rscPathRoot + "style/tClientStyle.css";
+	public static String pathToCommonStyle          = rscPathRoot + "style/commonStyle.css";
+	public static String pathToBackgroundImage      = rscPathRoot + "img/background.png";
+	public static String pathToExamsIcon            = rscPathRoot + "img/exams.png";
+	public static String pathToExamIcon             = rscPathRoot + "img/exam.png";
+	public static String pathToAddIcon              = rscPathRoot + "img/add.png";
+	public static String pathToRemoveIcon           = rscPathRoot + "img/remove.png";
+	public static String pathToQuestionSetIcon      = rscPathRoot + "img/set.png";
+	public static String pathToQuestionIcon         = rscPathRoot + "img/question.png";
+	public static String pathToCorrectAnswerIcon    = rscPathRoot + "img/answerCorrect.png";
+	public static String pathToIncorrectAnswerIcon  = rscPathRoot + "img/answerIncorrect.png";
 	public static String pathToMasterPropertiesFile = rscPathRoot + "persistence/teacherClient.prop";
 
 	/*
@@ -101,11 +111,22 @@ public class TeacherClient extends Application
 	public static QuestionInitNode questionInitNode;
 	public static QuestionTypeNode questionTypeNode;
 
+	public static ExamExportNode examExportNode;
+
 	/*
 	 * grammar charset
 	 */
-	public static ArrayList<Character> charset = new ArrayList<Character>();
-	public static String defaultCharsetString = ". , ? ! ; : - \u2013 \u2014";
+	public static ArrayList<Character> charset              = new ArrayList<Character>();
+	public static String               defaultCharsetString = ". , ? ! ; : -";// /u2013 (em dash) /u2014 (en dash)
+
+	/*
+	 * logging
+	 */
+	public static String logFormat = "%d{ISO8601} [%t] %-5p %c %x - %m%n";
+	public static Logger teacherClientLogger;
+	public static DebugWindow debugWindow = new DebugWindow(false);
+
+	public TeacherClient() {}
 
 	/**
 	 * JavaFX entry call
@@ -113,7 +134,17 @@ public class TeacherClient extends Application
 	 */
 	public void start(final Stage primaryStage)
 	{
-		stage = primaryStage;
+		TeacherClient.stage = primaryStage;
+		TeacherClient.stage.setOnCloseRequest(new EventHandler<WindowEvent>()
+		{
+			@Override
+			public void handle(WindowEvent windowEvent)
+			{
+				System.out.println("TODO: save open data");
+				Platform.exit();
+			}
+		});
+
 		TeacherClient.primaryScene = new Scene(new VBox(), 960, 720);
 
 		Preload.stage = TeacherClient.stage;
@@ -164,7 +195,7 @@ public class TeacherClient extends Application
 					/*
 					 * bind nodes to the scene root
 					 */
-					BorderPane border = new BorderPane();
+					final BorderPane border = new BorderPane();
 					border.setTop(TeacherClient.topNode);
 					border.setLeft(TeacherClient.leftNode);
 					border.setCenter(TeacherClient.centerNode);
@@ -178,17 +209,20 @@ public class TeacherClient extends Application
 					GenericUtils.pause();
 
 					File vasolsimFileRoot = new File(System.getProperty("user.home") + "/.vasolsim");
-					File propFile         = new File(vasolsimFileRoot.getAbsolutePath() + "/teacherClient.prop");
 					File rsc              = new File(vasolsimFileRoot.getAbsolutePath() + "/rsc");
 					File data             = new File(vasolsimFileRoot.getAbsolutePath() + "/data");
 					File img              = new File(vasolsimFileRoot.getAbsolutePath() + "/img");
 
+					File propFile         = new File(vasolsimFileRoot.getAbsolutePath() + "/teacherClient.prop");
+					File imgFile          = new File(img.getAbsolutePath() + "/background.png");
+
 					boolean canLoadPersistence = true;
 					if (!(vasolsimFileRoot.isDirectory()
-							&& propFile.isFile()
 							&& rsc.isDirectory()
 							&& data.isDirectory()
-							&& img.isDirectory()))
+							&& img.isDirectory()
+							&& propFile.isFile()
+							&& imgFile.isFile()))
 					{
 						updateMessage("Persistence absent. Creating...");
 						GenericUtils.pause();
@@ -228,9 +262,9 @@ public class TeacherClient extends Application
 									GenericUtils.exportResource(pathToStyle,
 									                            rsc.getAbsolutePath() + "/tClientStyle.css");
 
-								if (!(new File(img.getAbsolutePath() + "/background2.jpg")).isFile())
+								if (!(new File(img.getAbsolutePath() + "/background.png")).isFile())
 									GenericUtils.exportResource(pathToBackgroundImage,
-									                            img.getAbsolutePath() + "/background2.jpg");
+									                            img.getAbsolutePath() + "/background.png");
 							}
 							/*
 							 * failure to copy master to visible or persistent resources
@@ -239,6 +273,7 @@ public class TeacherClient extends Application
 							{
 								updateMessage("Error creating persistence. Attempting to recover...");
 								GenericUtils.pause();
+								loadDefaultResources(this);
 								canLoadPersistence = false;
 							}
 						}
@@ -280,10 +315,12 @@ public class TeacherClient extends Application
 							TeacherClient.questionNode = new QuestionNode();
 							TeacherClient.questionInitNode = new QuestionInitNode();
 							TeacherClient.questionTypeNode = new QuestionTypeNode();
+
+							TeacherClient.examExportNode = new ExamExportNode();
+
+							TeacherClient.primaryScene.setRoot(border);
 						}
 					});
-
-					TeacherClient.primaryScene.setRoot(border);
 
 					updateProgress(1, 1);
 					updateMessage("Done.");
@@ -292,7 +329,7 @@ public class TeacherClient extends Application
 				}
 				catch (Exception e)
 				{
-					System.out.println(e.getCause());
+					teacherClientLogger.fatal(GenericUtils.exceptionToString(e));
 				}
 
 				return null;
@@ -326,9 +363,9 @@ public class TeacherClient extends Application
 				/*
 				 * size stage
 				 */
-				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-				TeacherClient.stage.setWidth(screenSize.getWidth());
-				TeacherClient.stage.setHeight(screenSize.getHeight());
+				Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+				TeacherClient.stage.setWidth(bounds.getWidth());
+				TeacherClient.stage.setHeight(bounds.getHeight());
 
 				/*
 				 * show
@@ -366,13 +403,74 @@ public class TeacherClient extends Application
 
 	/**
 	 * main
-	 * @param args
+	 * @param args, program args: --disable-dep-check, --disable-fullspeed, --disable-caspian, <--debug | --trace>
 	 */
 	public static void main(String[] args)
 	{
+		if (!Arrays.asList(args).contains("--disable-dep-check"))
+		{
+			try
+			{
+				System.out.println("apache commons: " + TeacherClient.class.getClassLoader().getResources(
+						"org/apache/commons/lang3/exception/ExceptionUtils.class"));
+				System.out.println("apache io:      " + TeacherClient.class.getClassLoader().getResources(
+						"org/apache/commons/io/FileUtils.class"));
+				System.out.println("apache log4j:   " + TeacherClient.class.getClassLoader().getResources(
+						"org/apache/log4j/Logger.class"));
+				System.out.println("apache pdfbox:  " + TeacherClient.class.getClassLoader().getResources(
+						"org/apache/pdfbox/pdmodel.PDDocument.class"));
+				System.out.println("javamail:       " + TeacherClient.class.getClassLoader().getResources(
+						"javax/mail/Version.class"));
+			}
+			catch (Exception e)
+			{
+				System.out.println("error enumerating dependencies");
+				throw new RuntimeException("error enumerating dependencies");
+			}
+		}
+		else
+		{
+			System.out.println("skipped dependency link check");
+		}
+
+		ConsoleAppender console = new ConsoleAppender();
+		console.setLayout(new PatternLayout(logFormat));
+		console.setThreshold(Level.TRACE);
+		console.activateOptions();
+		Logger.getRootLogger().addAppender(console);
+
+		WriterAppender debugWindowAppender = new WriterAppender(
+				new PatternLayout(logFormat), TeacherClient.debugWindow);
+
+		debugWindowAppender.setThreshold(Level.INFO);
+		if (Arrays.asList(args).contains("--debug"))
+			debugWindowAppender.setThreshold(Level.DEBUG);
+		if (Arrays.asList(args).contains("--trace"))
+			debugWindowAppender.setThreshold(Level.TRACE);
+
+		debugWindowAppender.activateOptions();
+		Logger.getRootLogger().addAppender(debugWindowAppender);
+
+		teacherClientLogger = Logger.getLogger(TeacherClient.class.getName());
+		teacherClientLogger.setLevel(Level.ALL);
+
+		teacherClientLogger.info("starting VSS teacher client");
+		teacherClientLogger.trace("init system properties");
 		new JFXPanel();
-		System.setProperty("javafx.animation.fullspeed", Boolean.toString(true));
-		System.setProperty("javafx.userAgentStylesheetUrl", "caspian");
-		launch(args);
+		if (!Arrays.asList(args).contains("--disable-fullspeed"))
+			System.setProperty("javafx.animation.fullspeed", Boolean.toString(true));
+		if (!Arrays.asList(args).contains("--disable-caspian"))
+			System.setProperty("javafx.userAgentStylesheetUrl", "caspian");
+		teacherClientLogger.trace("launch");
+
+		try
+		{
+			launch(args);
+		}
+		catch (Exception e)
+		{
+			teacherClientLogger.fatal("unhandled root exception: " + GenericUtils.exceptionToString(e));
+			PopupManager.showMessage("unhandled root exception: " + GenericUtils.exceptionToString(e));
+		}
 	}
 }

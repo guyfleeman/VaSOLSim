@@ -1,14 +1,15 @@
-package com.vasolsim.tclient.element.tree;
+package com.vasolsim.tclient.tree;
 
 import com.vasolsim.common.file.Exam;
 import com.vasolsim.common.notification.PopupManager;
 import com.vasolsim.tclient.TeacherClient;
 import com.vasolsim.common.node.ImageButton;
-import com.vasolsim.tclient.element.core.CenterNode;
+import com.vasolsim.tclient.core.CenterNode;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseEvent;
+import org.apache.log4j.Logger;
 
 import java.util.Vector;
 
@@ -23,6 +24,8 @@ public class ExamTreeElement extends TreeElement
 	public Exam exam;
 	public Vector<QuestionSetTreeElement> qSets = new Vector<QuestionSetTreeElement>();
 	public ExamTreeElement thisInstance;
+
+	public static Logger logger = Logger.getLogger(ExamTreeElement.class.getName());
 
 	public ExamTreeElement()
 	{
@@ -51,6 +54,7 @@ public class ExamTreeElement extends TreeElement
 			@Override
 			public void handle(MouseEvent mouseEvent)
 			{
+				logger.info("question set creation invoked");
 				QuestionSetTreeElement newQuestionSet = new QuestionSetTreeElement();
 
 				TreeItem<TreeElement> element = createTreeItem(TeacherClient.class,
@@ -74,6 +78,7 @@ public class ExamTreeElement extends TreeElement
 			@Override
 			public void handle(MouseEvent mouseEvent)
 			{
+				logger.info("exam removal invoked -> " + exam.getTestName());
 				if (PopupManager.askYesNo("You are about to delete this exam. All data will be lost. Continue?"))
 				{
 					ExamsTreeElement.exams.remove(thisInstance);
@@ -88,7 +93,7 @@ public class ExamTreeElement extends TreeElement
 			@Override
 			public void handle(MouseEvent mouseEvent)
 			{
-				CenterNode.removeScrollRoot();
+				logger.info("display exam info -> " + exam.getTestName());
 				CenterNode.addScrollRoot();
 				TeacherClient.examNode.setExam(exam);
 				TeacherClient.examNode.boundTreeElement = thisInstance;

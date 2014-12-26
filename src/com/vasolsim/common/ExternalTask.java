@@ -4,7 +4,8 @@ import javafx.concurrent.Task;
 
 /**
  * @author willstuckey
- * @date 11/8/14 <p>Allows external logging to the task.</p>
+ * @date 11/8/14
+ * <p>Allows external logging to the task.</p>
  */
 public abstract class ExternalTask<E> extends Task<E>
 {

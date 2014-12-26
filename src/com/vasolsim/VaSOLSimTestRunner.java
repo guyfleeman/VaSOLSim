@@ -112,11 +112,13 @@ public class VaSOLSimTestRunner
 
 	public static void printProjectBuildSize()
 	{
-		getBuildSizeInfo(new File("/home/willstuckey/Dropbox/PROGRAMMING/Java/VaSOLSim/project/src"), 0L);
-		System.out.println("RAYBURN SCOPE STATISTICS: numFiles=" + fileCt
+		getBuildSizeInfo(new File("/home/guyfleeman/Dropbox/PROGRAMMING/Java/VaSOLSim/project/src"), 0L);
+		System.out.println("VASOLSIM SCOPE STATISTICS: numFiles=" + fileCt
 				                   + ", numLines=" + lineCt
+									/*
 				                   + ", numChars=" + charCt
-				                   + ", level=" + maxDepth);
+				                   + ", level=" + maxDepth
+				                   */);
 	}
 
 	private static void getBuildSizeInfo(File dir, long depth)
@@ -135,7 +137,7 @@ public class VaSOLSimTestRunner
 				if (depth + 1 > maxDepth)
 					maxDepth = depth + 1;
 
-				System.out.println("Found sub level at depth " + depth + ". Moving to depth " + (depth + 1));
+				//System.out.println("Found sub level at depth " + depth + ". Moving to depth " + (depth + 1));
 				getBuildSizeInfo(f, depth + 1);
 			}
 			else if (f.isFile())
@@ -155,7 +157,7 @@ public class VaSOLSimTestRunner
 				}
 				catch (FileNotFoundException e) {}
 
-				System.out.println("AccLn: " + lineCt);
+				//System.out.println("AccLn: " + lineCt);
 			}
 		}
 	}

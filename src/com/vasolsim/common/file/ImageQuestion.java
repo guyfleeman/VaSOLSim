@@ -13,7 +13,8 @@ import static com.vasolsim.common.GenericUtils.convertBufferedImageToFXImage;
 
 /**
  * @author willstuckey
- * @date 11/5/14 <p>This class represents a com.vasolsim.common.file.Question but with an associated image. See the
+ * @date 11/5/14
+ * <p>This class represents a com.vasolsim.common.file.Question but with an associated image. See the
  * Question documentation for full information on constructor parameters.</p>
  */
 public class ImageQuestion extends Question

@@ -1,9 +1,9 @@
-package com.vasolsim.tclient.element.form;
+package com.vasolsim.tclient.form;
 
 import com.vasolsim.common.file.Exam;
 import com.vasolsim.common.file.QuestionSet;
-import com.vasolsim.tclient.element.core.CenterNode;
-import com.vasolsim.tclient.element.tree.TreeElement;
+import com.vasolsim.tclient.core.CenterNode;
+import com.vasolsim.tclient.tree.TreeElement;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -46,41 +46,45 @@ public class ExamNode implements DrawableNode
 		Label testStats = new Label(testStatsLabelText);
 		testStats.getStyleClass().add("lbltext");
 
-		Label testNameDispLabel = new Label("Name: " +
-				                                    (exam == null || exam.getTestName() == null || exam.getTestName()
-				                                                                                       .equals
-						                                                                                       (NO_TEST_NAME_GIVEN)
-
-				                                     ? "none"
-				                                     : exam.getTestName()));
+		Label testNameDispLabel = new Label(
+				"Name: " + (exam == null
+						            || exam.getTestName() == null
+						            || exam.getTestName().equals(NO_TEST_NAME_GIVEN)
+				            ? "none"
+				            : exam.getTestName()));
 		testNameDispLabel.getStyleClass().add("lbltextsub");
 
-		Label testAuthorDispLabel = new Label("Author: " +
-				                                      (exam == null || exam.getAuthorName() == null || exam
-						                                      .getAuthorName().equals(NO_AUTHOR_NAME_GIVEN)
-				                                       ? "none"
-				                                       : exam.getAuthorName()));
+		Label testAuthorDispLabel = new Label(
+				"Author: " + (exam == null
+						              || exam.getAuthorName() == null
+						              || exam.getAuthorName().equals(NO_AUTHOR_NAME_GIVEN)
+				              ? "none"
+				              : exam.getAuthorName()));
 		testAuthorDispLabel.getStyleClass().add("lbltextsub");
 
-		Label testSchoolDispLabel = new Label("School: " +
-				                                      (exam == null || exam.getSchoolName() == null || exam
-						                                      .getSchoolName().equals(NO_SCHOOL_NAME_GIVEN)
-				                                       ? "none"
-				                                       : exam.getSchoolName()));
+		Label testSchoolDispLabel = new Label(
+				"School: " + (exam == null
+						              || exam.getSchoolName() == null
+						              || exam.getSchoolName().equals(NO_SCHOOL_NAME_GIVEN)
+				              ? "none"
+				              : exam.getSchoolName()));
 		testSchoolDispLabel.getStyleClass().add("lbltextsub");
 
-		Label testPeriodDispLabel = new Label("Period: " +
-				                                      (exam == null || exam.getPeriodName() == null || exam
-						                                      .getPeriodName().equals(NO_PERIOD_ID_GIVEN)
-				                                       ? "none"
-				                                       : exam.getPeriodName()));
+		Label testPeriodDispLabel = new Label(
+				"Period: " + (exam == null
+						              || exam.getPeriodName() == null
+						              || exam.getPeriodName().equals(NO_PERIOD_ID_GIVEN)
+				              ? "none"
+				              : exam.getPeriodName()));
 		testPeriodDispLabel.getStyleClass().add("lbltextsub");
 
 		Label spacerOne = new Label();
 
-		Label testQSetLabel = new Label("Question Set Count: " + (exam != null && exam.getQuestionSets() != null
-		                                                          ? exam.getQuestionSets().size()
-		                                                          : 0));
+		Label testQSetLabel = new Label(
+				"Question Set Count: " + (exam != null
+						                          && exam.getQuestionSets() != null
+				                          ? exam.getQuestionSets().size()
+				                          : 0));
 		testQSetLabel.getStyleClass().add("lbltextsub");
 
 		int qCount = 0;
@@ -103,13 +107,6 @@ public class ExamNode implements DrawableNode
 		spacerTwo.getStyleClass().add("lblspacer");
 		spacerTwo.setPrefHeight(1);
 		spacerTwo.setPrefWidth(2000);
-
-		/*
-        Rectangle line = new Rectangle(400, 2);
-		line.prefWidth(2000);
-		line.prefHeight(20);
-		line.getStyleClass().add("rectspacer");
-		*/
 
 		Label testNameLabel = new Label(testNameLabelText);
 		testNameLabel.getStyleClass().add("lbltext");
@@ -147,16 +144,15 @@ public class ExamNode implements DrawableNode
 		                                  testQNumLabel,
 		                                  testRscCount,
 		                                  spacerTwo,
-				/* line, */
-				testNameLabel,
-				testNameField,
-				authorNameLabel,
-				authorNameField,
-				schoolNameLabel,
-				schoolNameField,
-				periodNameLabel,
-				periodNameField,
-				applyButton);
+		                                  testNameLabel,
+		                                  testNameField,
+		                                  authorNameLabel,
+		                                  authorNameField,
+		                                  schoolNameLabel,
+		                                  schoolNameField,
+		                                  periodNameLabel,
+		                                  periodNameField,
+		                                  applyButton);
 
 		/*
 		 * Listeners

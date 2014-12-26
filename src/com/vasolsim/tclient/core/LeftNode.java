@@ -1,8 +1,8 @@
-package com.vasolsim.tclient.element.core;
+package com.vasolsim.tclient.core;
 
 import com.vasolsim.tclient.TeacherClient;
-import com.vasolsim.tclient.element.tree.ExamsTreeElement;
-import com.vasolsim.tclient.element.tree.TreeElement;
+import com.vasolsim.tclient.tree.ExamsTreeElement;
+import com.vasolsim.tclient.tree.TreeElement;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;

@@ -1,4 +1,4 @@
-package com.vasolsim.tclient.element.core;
+package com.vasolsim.tclient.core;
 
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;

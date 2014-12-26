@@ -25,7 +25,7 @@ import javafx.stage.StageStyle;
 public class Preload
 {
 	public static String preloadTitle = "Title";
-	public static String pathToPreloadImage = "/com/vasolsim/rsc/img/preload.jpg";
+	public static String pathToPreloadImage = "/com/vasolsim/rsc/img/preload.png";
 	public static Stage stage;
 
 	protected static ProgressBar progressBar  = new ProgressBar();
@@ -45,7 +45,6 @@ public class Preload
 	{
 		stage.setTitle(preloadTitle);
 		stage.setScene(getPreloadScene());
-		//stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
 
 		Thread loadThread = new Thread(loadRoutine);

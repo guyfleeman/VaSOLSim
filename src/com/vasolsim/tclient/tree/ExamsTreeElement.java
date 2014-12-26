@@ -1,11 +1,12 @@
-package com.vasolsim.tclient.element.tree;
+package com.vasolsim.tclient.tree;
 
 import com.vasolsim.tclient.TeacherClient;
 import com.vasolsim.common.node.ImageButton;
-import com.vasolsim.tclient.element.core.CenterNode;
+import com.vasolsim.tclient.core.CenterNode;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import org.apache.log4j.Logger;
 
 import java.util.Vector;
 
@@ -16,6 +17,7 @@ import java.util.Vector;
 public class ExamsTreeElement extends TreeElement
 {
 	public static Vector<ExamTreeElement> exams = new Vector<ExamTreeElement>();
+	public static Logger logger = Logger.getLogger(ExamsTreeElement.class.getName());
 
 	public ExamsTreeElement()
 	{
@@ -33,6 +35,7 @@ public class ExamsTreeElement extends TreeElement
 			@Override
 			public void handle(MouseEvent mouseEvent)
 			{
+				logger.info("exam creation invoked");
 				CenterNode.getStyledRoot().getChildren().clear();
 				CenterNode.addScrollRoot();
 				CenterNode.getScrollRoot().setContent(TeacherClient.examInitNode.getNode());

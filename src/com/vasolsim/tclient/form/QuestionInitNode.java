@@ -1,10 +1,10 @@
-package com.vasolsim.tclient.element.form;
+package com.vasolsim.tclient.form;
 
 import com.vasolsim.tclient.TeacherClient;
-import com.vasolsim.tclient.element.core.CenterNode;
-import com.vasolsim.tclient.element.tree.QuestionSetTreeElement;
-import com.vasolsim.tclient.element.tree.QuestionTreeElement;
-import com.vasolsim.tclient.element.tree.TreeElement;
+import com.vasolsim.tclient.core.CenterNode;
+import com.vasolsim.tclient.tree.QuestionSetTreeElement;
+import com.vasolsim.tclient.tree.QuestionTreeElement;
+import com.vasolsim.tclient.tree.TreeElement;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -14,7 +14,6 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.web.HTMLEditor;
 
 import static com.vasolsim.common.GenericUtils.*;
 import static com.vasolsim.common.GenericUtils.createTreeItem;

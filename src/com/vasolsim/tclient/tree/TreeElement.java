@@ -1,4 +1,4 @@
-package com.vasolsim.tclient.element.tree;
+package com.vasolsim.tclient.tree;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

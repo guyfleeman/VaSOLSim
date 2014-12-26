@@ -1,7 +1,5 @@
-package com.vasolsim.tclient.element.core;
+package com.vasolsim.tclient.core;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;

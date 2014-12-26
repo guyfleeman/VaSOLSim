@@ -1,11 +1,11 @@
-package com.vasolsim.tclient.element.form;
+package com.vasolsim.tclient.form;
 
 import com.sun.istack.internal.NotNull;
 import com.vasolsim.common.file.AnswerChoice;
 import com.vasolsim.common.node.StringPane;
 import com.vasolsim.common.notification.PopupManager;
-import com.vasolsim.tclient.element.core.CenterNode;
-import com.vasolsim.tclient.element.tree.QuestionTreeElement;
+import com.vasolsim.tclient.core.CenterNode;
+import com.vasolsim.tclient.tree.QuestionTreeElement;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -14,7 +14,6 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -31,7 +30,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 
@@ -43,6 +42,7 @@ import static com.vasolsim.common.GenericUtils.*;
  */
 public class QuestionNode implements DrawableNode
 {
+	public static Logger logger = Logger.getLogger(QuestionNode.class.getName());
 
 	public    QuestionTreeElement boundTreeElement;
 	protected Node                questionInfoNode;
@@ -59,6 +59,8 @@ public class QuestionNode implements DrawableNode
 
 	public void redrawNode(boolean apply)
 	{
+		logger.info("displaying question -> " + (boundTreeElement == null ? "none" : boundTreeElement.question.getName()));
+
 		HBox horizontalRoot = new HBox();
 
 		VBox verticalRoot = new VBox();
@@ -370,6 +372,7 @@ public class QuestionNode implements DrawableNode
 			if (correctChoice != null && !correctChoice.getVisualPersistence().isEmpty())
 			{
 				paragraphFlowPane.getChildren().clear();
+				//TODO remove
 				System.out.println(correctChoice.getVisualPersistence());
 				System.out.println(paragraphFlowPane.getChildren());
 				System.out.println(correctChoice.getVisualPersistence().size());
@@ -447,23 +450,26 @@ public class QuestionNode implements DrawableNode
 			@Override
 			public void handle(MouseEvent mouseEvent)
 			{
+				System.out.println("drag initialized");
+
+				//update the content of the draggable instance with that of the fixed position source
 				if (mouseEvent.getSource() instanceof StringPane)
 					draggablePane.setOverlay(((StringPane) mouseEvent.getSource()).getOverlay());
 
-				Point2D localPoint = questionInfoNode.sceneToLocal(
-						new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
-				draggablePane.relocate(
-						(int) (localPoint.getX() - draggablePane.getBoundsInLocal().getWidth() / 2),
-						(int) (localPoint.getY() - draggablePane.getBoundsInLocal().getHeight() / 2)
-				);
+				//add to scene
 				styledRootNode.getChildren().add(draggablePane);
 
 				draggablePane.startFullDrag();
 
+				//replace source
 				if (replaceSource && replaceFrom != null)
 					for (int index = 0; index < replaceFrom.getChildren().size(); index++)
 						if (replaceFrom.getChildren().get(index) == source)
-							replaceFrom.getChildren().set(index, replaceWith);
+						{
+							replaceFrom.getChildren().get(index).setManaged(false);
+							replaceFrom.getChildren().get(index).setVisible(false);
+							replaceFrom.getChildren().add(index + 1, replaceWith);
+						}
 
 				mouseEvent.consume();
 			}
@@ -477,14 +483,20 @@ public class QuestionNode implements DrawableNode
 			@Override
 			public void handle(MouseEvent mouseEvent)
 			{
+				System.out.println("dragged");
+
+				//update position
 				Point2D localPoint = questionInfoNode.sceneToLocal(
 						new Point2D(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
-				draggablePane.relocate(
-						(int) (localPoint.getX() - draggablePane.getBoundsInLocal().getWidth() / 2),
-						(int) (localPoint.getY() - draggablePane.getBoundsInLocal().getHeight() / 2)
-				);
+				draggablePane.setTranslateX(localPoint.getX() -
+						                            draggablePane.getLayoutX() -
+						                            draggablePane.getBoundsInLocal().getWidth() / 2);
+				draggablePane.setTranslateY(localPoint.getY() -
+						                            draggablePane.getLayoutY() -
+						                            draggablePane.getBoundsInLocal().getHeight() / 2);
 
-				source.setCursor(Cursor.NONE);
+
+				//source.setCursor(Cursor.NONE);
 				mouseEvent.consume();
 			}
 		});
@@ -497,6 +509,7 @@ public class QuestionNode implements DrawableNode
 			public void handle(MouseEvent e)
 			{
 				source.setCursor(Cursor.HAND);
+				e.consume();
 			}
 		});
 
@@ -507,9 +520,15 @@ public class QuestionNode implements DrawableNode
 		{
 			public void handle(MouseEvent e)
 			{
+				System.out.println("mouse pressed");
+
 				source.setMouseTransparent(true);
 				draggablePane.setMouseTransparent(true);
 				source.setCursor(Cursor.CLOSED_HAND);
+
+				e.consume();
+
+				System.out.println("mouse pressed done");
 			}
 		});
 
@@ -520,10 +539,22 @@ public class QuestionNode implements DrawableNode
 		{
 			public void handle(MouseEvent e)
 			{
+				System.out.println("mouse released");
+
 				source.setMouseTransparent(false);
 				draggablePane.setMouseTransparent(false);
 				source.setCursor(Cursor.DEFAULT);
 				styledRootNode.getChildren().remove(draggablePane);
+
+				//replace source
+				if (replaceSource && replaceFrom != null)
+					for (int index = 0; index < replaceFrom.getChildren().size(); index++)
+						if (replaceFrom.getChildren().get(index) == source)
+							replaceFrom.getChildren().remove(index);
+
+				e.consume();
+
+				System.out.println("mouse released done");
 			}
 		});
 	}
@@ -534,6 +565,7 @@ public class QuestionNode implements DrawableNode
 		{
 			public void handle(MouseDragEvent e)
 			{
+
 				target.getStyleClass().clear();
 				target.getStyleClass().add("grammarSpaceActive");
 				e.consume();
@@ -544,6 +576,7 @@ public class QuestionNode implements DrawableNode
 		{
 			public void handle(MouseDragEvent e)
 			{
+
 				target.getStyleClass().clear();
 
 				if (target instanceof StringPane)
@@ -553,6 +586,7 @@ public class QuestionNode implements DrawableNode
 				}
 				else
 					target.getStyleClass().add("grammarSpace");
+
 				e.consume();
 			}
 		});
@@ -561,6 +595,8 @@ public class QuestionNode implements DrawableNode
 		{
 			public void handle(MouseDragEvent e)
 			{
+
+				System.out.println("target drag released");
 				if (e.getGestureSource() instanceof StringPane)
 					for (int index = 0; index < paragraphFlowPane.getChildren().size(); index++)
 						if (paragraphFlowPane.getChildren().get(index) == e.getTarget())

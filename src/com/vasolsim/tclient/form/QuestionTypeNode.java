@@ -1,7 +1,7 @@
-package com.vasolsim.tclient.element.form;
+package com.vasolsim.tclient.form;
 
 import com.vasolsim.tclient.TeacherClient;
-import com.vasolsim.tclient.element.core.CenterNode;
+import com.vasolsim.tclient.core.CenterNode;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;

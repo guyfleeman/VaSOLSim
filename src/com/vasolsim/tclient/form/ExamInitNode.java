@@ -1,12 +1,12 @@
-package com.vasolsim.tclient.element.form;
+package com.vasolsim.tclient.form;
 
 import com.vasolsim.common.file.Exam;
 import com.vasolsim.common.notification.PopupManager;
 import com.vasolsim.tclient.TeacherClient;
-import com.vasolsim.tclient.element.core.CenterNode;
-import com.vasolsim.tclient.element.tree.ExamTreeElement;
-import com.vasolsim.tclient.element.tree.ExamsTreeElement;
-import com.vasolsim.tclient.element.tree.TreeElement;
+import com.vasolsim.tclient.core.CenterNode;
+import com.vasolsim.tclient.tree.ExamTreeElement;
+import com.vasolsim.tclient.tree.ExamsTreeElement;
+import com.vasolsim.tclient.tree.TreeElement;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;

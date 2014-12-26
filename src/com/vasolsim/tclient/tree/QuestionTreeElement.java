@@ -1,12 +1,13 @@
-package com.vasolsim.tclient.element.tree;
+package com.vasolsim.tclient.tree;
 
 import com.vasolsim.common.file.Question;
 import com.vasolsim.tclient.TeacherClient;
 import com.vasolsim.common.node.ImageButton;
-import com.vasolsim.tclient.element.core.CenterNode;
+import com.vasolsim.tclient.core.CenterNode;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import org.apache.log4j.Logger;
 
 import java.util.Vector;
 
@@ -20,6 +21,8 @@ public class QuestionTreeElement extends TreeElement
 	public QuestionTreeElement    instance;
 	public Question                  question = new Question();
 	public Vector<AnswerTreeElement> answers  = new Vector<AnswerTreeElement>();
+
+	public static Logger logger = Logger.getLogger(QuestionTreeElement.class.getName());
 
 	public QuestionTreeElement()
 	{
@@ -45,6 +48,7 @@ public class QuestionTreeElement extends TreeElement
 			@Override
 			public void handle(MouseEvent mouseEvent)
 			{
+				logger.info("question removal invoked -> " + question.getName());
 				parent.questions.remove(instance);
 				parent.treeElementReference.getChildren().remove(treeElementReference);
 				CenterNode.getStyledRoot().getChildren().clear();
@@ -56,7 +60,7 @@ public class QuestionTreeElement extends TreeElement
 			@Override
 			public void handle(MouseEvent mouseEvent)
 			{
-				CenterNode.removeScrollRoot();
+				logger.info("display question info -> " + question.getName());
 				CenterNode.addScrollRoot();
 
 				TeacherClient.questionNode.boundTreeElement = instance;

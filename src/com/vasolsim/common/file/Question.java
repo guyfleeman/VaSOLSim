@@ -141,6 +141,7 @@ public class Question
 					AnswerChoice ac = new AnswerChoice();
 					ac.setActive(false);
 					ac.setText("" + c);
+					ac.setVisibleChoiceID("" + c);
 					answers.add(ac);
 				}
 
@@ -148,6 +149,7 @@ public class Question
 				correctAnswerHolder.setActive(false);
 				correctAnswerHolder.setCorrect(true);
 				correctAnswerHolder.setText("none");
+				correctAnswerHolder.setVisibleChoiceID("!@!NONE!@!");
 				answers.add(correctAnswerHolder);
 				answerChoices = answers;
 			}

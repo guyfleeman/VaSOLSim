@@ -1,10 +1,12 @@
 package com.vasolsim.common;
 
+import com.sun.istack.internal.NotNull;
+import com.vasolsim.common.file.Exam;
 import com.vasolsim.common.notification.PopupManager;
 import com.vasolsim.common.file.AnswerChoice;
 import com.vasolsim.common.file.Question;
 import com.vasolsim.common.file.QuestionSet;
-import com.vasolsim.tclient.element.tree.TreeElement;
+import com.vasolsim.tclient.tree.TreeElement;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
@@ -757,6 +759,7 @@ public class GenericUtils
 	 *
 	 * @return
 	 */
+	@Deprecated
 	public static boolean verifyQuestionSetsIntegrity(ArrayList<QuestionSet> questionSets)
 	{
 		if (questionSets == null
@@ -789,6 +792,99 @@ public class GenericUtils
 		}
 
 		return true;
+	}
+
+	/**
+	 *
+	 * @param exam
+	 * @return
+	 */
+	public static ArrayList<String> checkExamIntegrity(Exam exam)
+	{
+		ArrayList<String> errors = new ArrayList<String>();
+
+		if (exam.getTestName() == null)
+			errors.add("INTERNAL: Test name is null and is not Nullable.");
+
+		if (exam.getAuthorName() == null)
+			errors.add("INTERNAL: Author name is null and is not Nullable.");
+
+		if (exam.getSchoolName() == null)
+			errors.add("INTERNAL: School name is null and is not Nullable.");
+
+		if (exam.getPeriodName() == null)
+			errors.add("INTERNAL: Period is null and is not Nullable.");
+
+		if (exam.isReportingStats())
+		{
+			if (exam.getStatsDestinationEmail() == null || !isValidEmail(exam.getStatsDestinationEmail()))
+				errors.add("Statistics reporting is selected but is not accompanied by a valid email address.");
+
+			if (exam.isReportingStatsStandalone())
+			{
+				if (exam.getStatsSenderEmail() == null || !isValidEmail(exam.getStatsSenderEmail()))
+					errors.add("Standalone statistics is selected but is not accompanied by a valid sender email " +
+							           "address.");
+
+				if (exam.getStatsSenderPassword() == null)
+					errors.add("Standalone statistics is selected but the sender address does not have a valid " +
+							           "password.");
+
+				if (exam.getStatsSenderSMTPAddress() == null || !isValidAddress(exam.getStatsSenderSMTPAddress()))
+					errors.add("Standalone statistics is selected but the SMTP address is not valid.");
+
+				if (!isValidPort(exam.getStatsSenderSMTPPort()))
+					errors.add("Standalone statistics is selected but the SMTP port is not valid.");
+
+				//TODO check smtp configuration
+			}
+		}
+
+		for (QuestionSet questionSet : exam.getQuestionSets())
+			for (Question question : questionSet.getQuestions())
+			{
+				boolean hasFoundCorrect = false;
+				for (AnswerChoice answerChoice : question.getAnswerChoices())
+					if (answerChoice.isCorrect())
+					{
+						hasFoundCorrect = true;
+						break;
+					}
+
+				if (!hasFoundCorrect)
+					errors.add("Question " + question.getName() +
+							           " in " + questionSet.getName() +
+							           " does not have a correct answer selected.");
+			}
+
+		return errors;
+	}
+
+	/**
+	 *
+	 * @param errors
+	 * @return
+	 */
+	public static String errorsToOutput(@NotNull ArrayList<String> errors)
+	{
+		StringBuilder errorBuilder = new StringBuilder();
+		errorBuilder.append("Found ").append(errors.size()).append(" errors that require attention.\n\n");
+		for (String error : errors)
+			errorBuilder.append(error).append("\n");
+
+		return errorBuilder.toString();
+	}
+
+	public static String exceptionToString(@NotNull Throwable t)
+	{
+		StringBuilder out = new StringBuilder();
+		out.append("Ex: ").append(t.toString()).append("\n");
+		out.append("Cause: ").append(t.getCause()).append("\n");
+		out.append("Message: ").append(t.getMessage()).append("\n\n");
+		out.append("StackTrace:\n").append(ExceptionUtils.getStackTrace(t));
+		out.append("---------- END ----------");
+
+		return out.toString();
 	}
 
 	/**
