@@ -32,6 +32,7 @@ public class DebugWindow extends ByteArrayOutputStream
 			initialize();
 	}
 
+	@Override
 	public void flush() throws IOException
 	{
 		if (textArea != null)

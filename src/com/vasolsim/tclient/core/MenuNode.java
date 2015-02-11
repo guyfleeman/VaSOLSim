@@ -2,7 +2,7 @@ package com.vasolsim.tclient.core;
 
 import com.vasolsim.tclient.TeacherClient;
 import com.vasolsim.tclient.form.ExamExportNode;
-import com.vasolsim.tclient.support.SystemInformationNode;
+import com.vasolsim.common.support.SystemInformationNode;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Menu;

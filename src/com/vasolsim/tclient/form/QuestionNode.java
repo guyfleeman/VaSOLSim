@@ -2,6 +2,7 @@ package com.vasolsim.tclient.form;
 
 import com.sun.istack.internal.NotNull;
 import com.vasolsim.common.file.AnswerChoice;
+import com.vasolsim.common.node.DrawableNode;
 import com.vasolsim.common.node.StringPane;
 import com.vasolsim.common.notification.PopupManager;
 import com.vasolsim.tclient.core.CenterNode;
@@ -736,9 +737,9 @@ public class QuestionNode implements DrawableNode
 					}
 				});
 
-					/*
-					 *
-					 */
+				/*
+				 *
+				 */
 				correct.selectedProperty().addListener(new ChangeListener<Boolean>()
 				{
 					@Override
@@ -746,9 +747,15 @@ public class QuestionNode implements DrawableNode
 					                    Boolean newValue)
 					{
 						if (oldValue && !newValue)
+						{
 							ac.setCorrect(false);
+							boundTreeElement.question.getCorrectAnswerChoices().remove(ac);
+						}
 						else if (!oldValue && newValue)
+						{
 							ac.setCorrect(true);
+							boundTreeElement.question.getCorrectAnswerChoices().add(ac);
+						}
 					}
 				});
 

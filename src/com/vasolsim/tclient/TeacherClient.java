@@ -1,5 +1,6 @@
 package com.vasolsim.tclient;
 
+import com.sun.istack.internal.NotNull;
 import com.vasolsim.common.ExternalTask;
 import com.vasolsim.common.GenericUtils;
 import com.vasolsim.common.Preload;
@@ -47,6 +48,145 @@ import org.apache.log4j.WriterAppender;
  */
 public class TeacherClient extends Application
 {
+	///////////////////////////////////
+	//  TEACHER CLIENT UI CONSTANTS  //
+	@SuppressWarnings("unused")
+	private static final boolean __BEGIN_TEACHER_CLIENT_UI_CONSTANTS = false;
+	///////////////////////////////////
+
+	public static final String PASSWORD_DESCRIPTION_LABEL = "Please provide and confirm the exam's password prior to" +
+			" " +
+			"creation. This password will be used to prevent students from modifying the contents and the exam. The " +
+			"students will enter this password when they go to take the exam, so please do not use your personal " +
+			"information. Some good choices might be \"class period\" (e.g \"4y\") or \"your name\" (e.g. \"Karen\")" +
+			"." +
+			"You do not need to include the quotation marks, however symbols are valid. Students must enter the " +
+			"*EXACT* same password that you enter here in order to access the exam. Once you set the exam's " +
+			"password," +
+			"it may not be changed for security reasons; please double check your password prior to continuing.";
+	public static final String PASSWORD_PROMPT_ONE        = "Please enter the password: ";
+	public static final String PASSWORD_PROMPT_TWO             = "Please confirm the password: ";
+	public static final String CONTINUE_BUTTON_TEXT            = "Continue";
+	public static final String PASSWORD_INVALID_TITLE          = "Invalid Password";
+	public static final String PASSWORD_INVALID_MESSAGE        = "Password cannot be of zero length or all " +
+			"whitespace.";
+	public static final String PASSWORD_NO_MATCH               = "Passwords do not match.";
+	public static final String STATS_REPORTING_INFO_LABEL_TEXT = "This form will take. The information needed to " +
+			"report " +
+			"the answers given by students. The answers can be read and compiled into class statistics. \n\n" +
+			"If you want to report statistics please check the box and enter the email address you want the " +
+			"statistics to be sent. DO NOT SEND STATISTICS TO YOUR PERSONAL EMAIL; you will get a bulky email for " +
+			"every student that completes the test. It is strongly recommended that you establish a gmail account " +
+			"for the sole purpose of reporting statistics. Once you create the email account, you will never have " +
+			"to read it again, the program will do it for you and compile the stats. When the student completes the " +
+			"test, he/she will be prompted to enter his/her email address. The program will automatically send an " +
+			"email from their account to the destination address you provide. \n\nIf you have any more concerns, " +
+			"or need help filling out the form, please visit my youtube channel. (!!LINK COMING SOON!!)";
+	public static final String STATS_REPORTING_LABEL_TEXT = "Check this box to enable statistics reporting.";
+	public static final String STATS_REPORTING_CB_TEXT    = "reporting statistics";
+	public static final String STATS_DEST_ADDR_LABEL_TEXT = "The destination email address for reported " +
+			"statistics.";
+	public static final String STATS_VERIFY_BUTTON_TEXT = "Verify ->";
+	public static final String STATS_SA_INFO_LABEL_TEXT = "If you'd prefer students not " +
+			"enter" +
+			" " +
+			"their" +
+			" " +
+			"own emails, " +
+			"you can report stats in \"standalone mode.\" In this mode, you will provide the address and password " +
+			"of an email account, which will send the answer data for all students. DO NOT USE YOUR PERSONAL EMAIL. " +
+			"The email and password will be encrypted using the industry standard for credit card data " +
+			"(SHA-512 -> AES-256 -> StartTLS). ";
+	public static final String STATS_SA_LABEL_TEXT = "Check this box to enable " +
+			"standalone" +
+			" " +
+			"stats" +
+			" reporting.";
+	public static final String STATS_SACB_TEXT     = "reporting statistics standalone";
+	public static final String STATS_SA_ADDR_LABEL_TEXT     = "The sender email address.";
+	public static final String STATS_SA_PASSWORD_LABEL_TEXT = "The sender email address password.";
+	public static final String STATS_SASMTP_ADDR_LABEL_TEXT = "The SMTP address for the email " +
+			"provider" +
+			" " +
+			"(should " +
+			"auto-complete).";
+	public static final String STATS_SASMTP_PORT_LABEL_TEXT = "The port for the SMTP address " +
+			"(should " +
+			"auto-complete).";
+	public static final String ADDRESS_INVALID_TITLE        = "Invalid Address";
+	public static final String EMAIL_INVALID_MESSAGE = "Email cannot be of zero length or" +
+			" " +
+			"all " +
+			"whitespace.";
+	public static final String EMAIL_INVALID_REGEX_MESSAGE = "Email is not of valid form.";
+	public static final String VERIFIED_TITLE   = "Information Verified";
+	public static final String VERIFIED_MESSAGE = "All required information has been" +
+			" " +
+			"verified.";
+	public static final String ADDRESS_INVALID_MESSAGE       = "The address cannot be of zero " +
+			"length or" +
+			" " +
+			"all whitespace.";
+	public static final String ADDRESS_INVALID_REGEX_MESSAGE = "The address is not of valid form.";
+	public static final String PORT_INVALID_TITLE   = "Invalid Port";
+	public static final String PORT_INVALID_MESSAGE = "The port cannot be nothing or all" +
+			" " +
+			"whitespace";
+	public static final String PORT_INVALID_CHARS_MESSAGE = "The port must be a numeric " +
+			"integer.";
+	public static final String PORT_INVALID_RANGE         = "The port must be between 0 and " +
+			"65536.";
+	public static final String SMTP_BAD_CONFIG            = "The SMTP configuration was " +
+			"invalid.";
+	public static final String SMTP_BAD_TITLE             = "Invalid SMTP";
+	public static final String INTERNAL_EXCEPTION_ON_EXAM_BUILDER_INSTANCE_INIT = "A problem internal to VaSOLSim " +
+			"has" +
+			" " +
+			"occurred.\nI apologize for the inconvenience.\n\n";
+	public static final String INTERNAL_EXCEPTION_TITLE = "Internal Exception";
+	public static final String TEST_STATS_LABEL_TEXT              = "Exam Information Overview";
+	public static final String TEST_NAME_LABEL_TEXT               = "Test Name:";
+	public static final String AUTHOR_NAME_LABEL_TEXT             = "Author Name:";
+	public static final String SCHOOL_NAME_LABEL_TEXT             = "School Name:";
+	public static final String PERIOD_NAME_LABEL_TEXT             = "Period:";
+	public static final String MULTIPLE_CHOICE_TEXT               = "multiple choice (1 answer)";
+	public static final String MULTIPLE_RESPONSE_TEXT             = "multiple response (0-8 answers)";
+	public static final String TECH_ENHANCED_MULTIPLE_CHOICE_TEXT = "multiple choice, technology enhanced " +
+			"format" +
+			" " +
+			"(1" +
+			" " +
+			"answer)";
+	public static final String TECH_ENHANCED_MULTIPLE_RESPONSE_TEXT    = "multiple response, technology enhanced " +
+			"format" +
+			" " +
+			"(0-8 answers)";
+	public static final String TECH_ENHANCED_DD_MULTIPLE_CHOICE_TEXT   = "multiple choice, drag and drop format (1 " +
+			"answer)";
+	public static final String TECH_ENHANCED_DD_MULTIPLE_RESPONSE_TEXT = "multiple response, drag and drop format, " +
+			"predefined (1-8 answers)";
+	public static final String TECH_ENCHANCED_DD_GRAMMAR_TEXT          = "grammar multiple response (punctuation), " +
+			"drag and drop " +
+			"format (udf answer count)";
+	public static final String TECH_ENCHANCED_VENN_DIAGRAM_TEXT        = "venn diagram, multiple response " +
+			"(avaliable in a future release)";
+	public static final String QUESTION_SET_INFO_LABEL_TEXT            = "Question Set Information Overview";
+	public static final String QUESTION_SET_NAME_LABEL_TEXT  = "Question Set Name:";
+	public static final String RESOURCE_FILE_INFO_LABEL_TEXT = "Use this section to attach a resource file. The " +
+			"resource" +
+			" " +
+			"will be visible to the student as he/she works through every QandA in the section. Valid files are " +
+			"text (.txt), MS Word (.docx), PDF (.pdf), and images (.jpg, .png, .gif).";
+	public static final String INVALID_FILE_TYPE_MESSAGE = "File type not recognized: .";
+	public static final String INVALID_FILE_TYPE_TITLE = "Invalid File Type";
+
+	///////////////////////////////////////
+	//  END TEACHER CLIENT UI CONSTANTS  //
+	///////////////////////////////////////
+
+	/*
+	 * helper text
+	 */
 	public static boolean showExtendedInfo = false;
 
 	/*
@@ -126,7 +266,96 @@ public class TeacherClient extends Application
 	public static Logger teacherClientLogger;
 	public static DebugWindow debugWindow = new DebugWindow(false);
 
+	/*
+	 * file system compliance
+	 */
+	public static String illegalFileCharacters   = "/ ? < > \\ : * | ^ .";
+	public static String reservedSystemFileNames = "com1 com2 com3 com4 com5 com6 com7 com 8 com9 " +
+			"lpt1 lpt2 lpt3 lpt4 lpt5 lpt6 lpt7 lpt8 lpt9 " +
+			"con nul prn";
+	public static String[] illegalFileCharactersList;
+	public static String[] reservedSystemFileNamesList;
+
+	static
+	{
+		illegalFileCharactersList = illegalFileCharacters.split(" ");
+		reservedSystemFileNamesList = reservedSystemFileNames.split(" ");
+	}
+
 	public TeacherClient() {}
+
+	/**
+	 * main
+	 * @param args, program args: --disable-dep-check, --disable-fullspeed, --disable-caspian, <--debug | --trace>
+	 */
+	public static void main(String[] args)
+	{
+		if (!Arrays.asList(args).contains("--disable-dep-check"))
+		{
+			try
+			{
+				System.out.println("apache commons: " + TeacherClient.class.getClassLoader().getResources(
+						"org/apache/commons/lang3/exception/ExceptionUtils.class"));
+				System.out.println("apache io:      " + TeacherClient.class.getClassLoader().getResources(
+						"org/apache/commons/io/FileUtils.class"));
+				System.out.println("apache log4j:   " + TeacherClient.class.getClassLoader().getResources(
+						"org/apache/log4j/Logger.class"));
+				System.out.println("apache pdfbox:  " + TeacherClient.class.getClassLoader().getResources(
+						"org/apache/pdfbox/pdmodel.PDDocument.class"));
+				System.out.println("javamail:       " + TeacherClient.class.getClassLoader().getResources(
+						"javax/mail/Version.class"));
+			}
+			catch (Exception e)
+			{
+				System.out.println("error enumerating dependencies");
+				throw new RuntimeException("error enumerating dependencies");
+			}
+		}
+		else
+		{
+			System.out.println("skipped dependency link check");
+		}
+
+		ConsoleAppender console = new ConsoleAppender();
+		console.setLayout(new PatternLayout(logFormat));
+		console.setThreshold(Level.TRACE);
+		console.activateOptions();
+		Logger.getRootLogger().addAppender(console);
+
+		WriterAppender debugWindowAppender = new WriterAppender(
+				new PatternLayout(logFormat), TeacherClient.debugWindow);
+
+		debugWindowAppender.setThreshold(Level.INFO);
+		if (Arrays.asList(args).contains("--debug"))
+			debugWindowAppender.setThreshold(Level.DEBUG);
+		if (Arrays.asList(args).contains("--trace"))
+			debugWindowAppender.setThreshold(Level.TRACE);
+
+		debugWindowAppender.activateOptions();
+		Logger.getRootLogger().addAppender(debugWindowAppender);
+
+		teacherClientLogger = Logger.getLogger(TeacherClient.class.getName());
+		teacherClientLogger.setLevel(Level.ALL);
+
+		teacherClientLogger.info("starting VSS teacher client");
+		teacherClientLogger.trace("init system properties");
+		new JFXPanel();
+		if (!Arrays.asList(args).contains("--disable-fullspeed"))
+			System.setProperty("javafx.animation.fullspeed", Boolean.toString(true));
+		if (!Arrays.asList(args).contains("--disable-caspian"))
+			System.setProperty("javafx.userAgentStylesheetUrl", "caspian");
+		teacherClientLogger.trace("launch");
+
+		try
+		{
+			launch(args);
+		}
+		catch (Exception e)
+		{
+			teacherClientLogger.fatal("unhandled root exception: " + GenericUtils.exceptionToString(e));
+			PopupManager.showMessage("unhandled root exception: " + GenericUtils.exceptionToString(e));
+		}
+	}
 
 	/**
 	 * JavaFX entry call
@@ -152,14 +381,13 @@ public class TeacherClient extends Application
 		Preload.load(getInitRoutine(),
 		             getOnSuccessRoutine(),
 		             Preload.getDefaultOnFailHandler());
-
-		System.out.println(com.sun.javafx.runtime.VersionInfo.getRuntimeVersion());
 	}
 
 	/**
 	 * creates the initialization task for the preloader
 	 * @return the initialization task
 	 */
+	@NotNull
 	public static ExternalTask<Void> getInitRoutine()
 	{
 		return new ExternalTask<Void>()
@@ -399,78 +627,5 @@ public class TeacherClient extends Application
 		for (String s : defaultCharsetString.split(" "))
 			TeacherClient.charset.add(s.charAt(0));
 		TeacherClient.charset.add(' ');
-	}
-
-	/**
-	 * main
-	 * @param args, program args: --disable-dep-check, --disable-fullspeed, --disable-caspian, <--debug | --trace>
-	 */
-	public static void main(String[] args)
-	{
-		if (!Arrays.asList(args).contains("--disable-dep-check"))
-		{
-			try
-			{
-				System.out.println("apache commons: " + TeacherClient.class.getClassLoader().getResources(
-						"org/apache/commons/lang3/exception/ExceptionUtils.class"));
-				System.out.println("apache io:      " + TeacherClient.class.getClassLoader().getResources(
-						"org/apache/commons/io/FileUtils.class"));
-				System.out.println("apache log4j:   " + TeacherClient.class.getClassLoader().getResources(
-						"org/apache/log4j/Logger.class"));
-				System.out.println("apache pdfbox:  " + TeacherClient.class.getClassLoader().getResources(
-						"org/apache/pdfbox/pdmodel.PDDocument.class"));
-				System.out.println("javamail:       " + TeacherClient.class.getClassLoader().getResources(
-						"javax/mail/Version.class"));
-			}
-			catch (Exception e)
-			{
-				System.out.println("error enumerating dependencies");
-				throw new RuntimeException("error enumerating dependencies");
-			}
-		}
-		else
-		{
-			System.out.println("skipped dependency link check");
-		}
-
-		ConsoleAppender console = new ConsoleAppender();
-		console.setLayout(new PatternLayout(logFormat));
-		console.setThreshold(Level.TRACE);
-		console.activateOptions();
-		Logger.getRootLogger().addAppender(console);
-
-		WriterAppender debugWindowAppender = new WriterAppender(
-				new PatternLayout(logFormat), TeacherClient.debugWindow);
-
-		debugWindowAppender.setThreshold(Level.INFO);
-		if (Arrays.asList(args).contains("--debug"))
-			debugWindowAppender.setThreshold(Level.DEBUG);
-		if (Arrays.asList(args).contains("--trace"))
-			debugWindowAppender.setThreshold(Level.TRACE);
-
-		debugWindowAppender.activateOptions();
-		Logger.getRootLogger().addAppender(debugWindowAppender);
-
-		teacherClientLogger = Logger.getLogger(TeacherClient.class.getName());
-		teacherClientLogger.setLevel(Level.ALL);
-
-		teacherClientLogger.info("starting VSS teacher client");
-		teacherClientLogger.trace("init system properties");
-		new JFXPanel();
-		if (!Arrays.asList(args).contains("--disable-fullspeed"))
-			System.setProperty("javafx.animation.fullspeed", Boolean.toString(true));
-		if (!Arrays.asList(args).contains("--disable-caspian"))
-			System.setProperty("javafx.userAgentStylesheetUrl", "caspian");
-		teacherClientLogger.trace("launch");
-
-		try
-		{
-			launch(args);
-		}
-		catch (Exception e)
-		{
-			teacherClientLogger.fatal("unhandled root exception: " + GenericUtils.exceptionToString(e));
-			PopupManager.showMessage("unhandled root exception: " + GenericUtils.exceptionToString(e));
-		}
 	}
 }

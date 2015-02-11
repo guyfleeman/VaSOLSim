@@ -1,4 +1,4 @@
-package com.vasolsim.tclient.support;
+package com.vasolsim.common.support;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;

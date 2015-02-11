@@ -1,4 +1,4 @@
-package com.vasolsim.tclient.support;
+package com.vasolsim.common.support;
 
 /**
  * @author willstuckey

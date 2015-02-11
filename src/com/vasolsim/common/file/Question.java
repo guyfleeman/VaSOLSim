@@ -140,8 +140,8 @@ public class Question
 				{
 					AnswerChoice ac = new AnswerChoice();
 					ac.setActive(false);
-					ac.setText("" + c);
-					ac.setVisibleChoiceID("" + c);
+					ac.setText(Character.toString(c));
+					ac.setVisibleChoiceID(Character.toString(c));
 					answers.add(ac);
 				}
 
@@ -149,7 +149,7 @@ public class Question
 				correctAnswerHolder.setActive(false);
 				correctAnswerHolder.setCorrect(true);
 				correctAnswerHolder.setText("none");
-				correctAnswerHolder.setVisibleChoiceID("!@!NONE!@!");
+				correctAnswerHolder.setVisibleChoiceID(GenericUtils.NO_DATA);
 				answers.add(correctAnswerHolder);
 				answerChoices = answers;
 			}

@@ -39,7 +39,7 @@ public class DraggablePane<E extends Node> extends StackPane
 	/**
 	 * @param activeOverlay the active overlay
 	 * @param inactiveOverlay the inactive overlay
-	 * @param classDef the wildcard class type
+	 * @param classDef the template class type
 	 * @param updateCallName the name of the method used by the update call
 	 * @throws VaSolSimException if updateCallName is not a declared method of classDef
 	 */
@@ -62,7 +62,7 @@ public class DraggablePane<E extends Node> extends StackPane
 	/**
 	 * @param activeOverlay the active overlay
 	 * @param inactiveOverlay the inactive overlay
-	 * @param classDef the wildcard class type
+	 * @param classDef the template class type
 	 * @param updateCallName the name of the method used by the update call
 	 * @param width the width of the pane
 	 * @param height the height of the pane
@@ -95,7 +95,7 @@ public class DraggablePane<E extends Node> extends StackPane
 	 *
 	 * @param activeOverlay the active overlay
 	 * @param inactiveOverlay the inactive overlay
-	 * @param classDef the wildcard class type
+	 * @param classDef the template class type
 	 * @param updateCallName the name of the method used by the update call
 	 * @param styleClass the style class of the parent
 	 * @param subStyleActiveClass the style class of the active pane's child
@@ -217,9 +217,13 @@ public class DraggablePane<E extends Node> extends StackPane
 				getChildren().clear();
 
 				if (newValue)
+				{
 					getChildren().add(subActive);
+				}
 				else
+				{
 					getChildren().add(subInactive);
+				}
 			}
 		});
 	}

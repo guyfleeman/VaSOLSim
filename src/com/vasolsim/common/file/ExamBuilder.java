@@ -1,7 +1,6 @@
 package com.vasolsim.common.file;
 
 import com.sun.istack.internal.NotNull;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.vasolsim.common.GenericUtils;
 import com.vasolsim.common.VaSolSimException;
 import com.vasolsim.common.notification.PopupManager;
@@ -41,43 +40,8 @@ import static com.vasolsim.common.GenericUtils.ERROR_MESSAGE_GENERIC_CRYPTO;
 import static com.vasolsim.common.GenericUtils.ERROR_MESSAGE_INTERNAL_TRANSFORMER_CONFIGURATION;
 import static com.vasolsim.common.GenericUtils
 		.ERROR_MESSAGE_INTERNAL_XML_PARSER_INITIALIZATION_EXCEPTION;
-import static com.vasolsim.common.GenericUtils.INDENTATION_KEY;
-import static com.vasolsim.common.GenericUtils.XML_ANSWER_CHOICE_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_ANSWER_CHOICE_ID_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_ANSWER_CHOICE_VISIBLE_ID_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_ANSWER_TEXT_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_AUTHOR_NAME_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_DATE_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_ENCRYPTED_VALIDATION_HASH_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_INFO_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_IS_REPORTING_STATISTICS_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_IS_REPORTING_STATISTICS_STANDALONE_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_PARAMETRIC_INITIALIZATION_VECTOR_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_PERIOD_NAME_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_QUESTION_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_QUESTION_ENCRYPTED_ANSWER_HASH;
-import static com.vasolsim.common.GenericUtils.XML_QUESTION_ID_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_QUESTION_NAME_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_QUESTION_REATIAN_ANSWER_ORDER_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_QUESTION_SCRAMBLE_ANSWERS_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_QUESTION_SET_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_QUESTION_SET_ID_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_QUESTION_SET_NAME_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_QUESTION_SET_RESOURCE_DATA_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_QUESTION_SET_RESOURCE_TYPE_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_QUESTION_TEXT_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_ROOT_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_SCHOOL_NAME_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_SECURITY_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_STATISTICS_DESTINATION_EMAIL_ADDRESS_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_STATISTICS_SENDER_EMAIL_ADDRESS_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_STATISTICS_SENDER_EMAIL_PASSWORD_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_STATISTICS_SENDER_SMTP_ADDRESS_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_STATISTICS_SENDER_SMTP_PORT_ELEMENT_NAME;
-import static com.vasolsim.common.GenericUtils.XML_TEST_NAME_ELEMENT_NAME;
 import static com.vasolsim.common.GenericUtils.convertBytesToHexString;
 import static com.vasolsim.common.GenericUtils.errorsToOutput;
-import static com.vasolsim.common.GenericUtils.questionTypeToString;
 
 /**
  * @author willstuckey
@@ -85,6 +49,59 @@ import static com.vasolsim.common.GenericUtils.questionTypeToString;
  */
 public class ExamBuilder
 {
+
+	//////////////////////////////
+	//  XML STRUCTURE CONSTANTS //
+	@SuppressWarnings("unused")
+	private static final boolean __BEGIN_XML_STRUCTURE_CONSTANTS = false;
+	//////////////////////////////
+
+	//system keys
+	public static final String INDENTATION_KEY            = "{http://xml.apache.org/xslt}indent-amount";
+	//root depth
+	public static final String XML_ROOT_ELEMENT_NAME      = "vssroot";
+	//root+ depth
+	public static final String XML_INFO_ELEMENT_NAME      = "info";
+	//root++ depth (information+)
+	public static final String XML_TEST_NAME_ELEMENT_NAME = "testName";
+	public static final String XML_AUTHOR_NAME_ELEMENT_NAME = "author";
+	public static final String XML_SCHOOL_NAME_ELEMENT_NAME = "school";
+	public static final String XML_PERIOD_NAME_ELEMENT_NAME = "class";
+	public static final String XML_DATE_ELEMENT_NAME        = "date";
+	//root+ depth
+	public static final String XML_SECURITY_ELEMENT_NAME                  = "sec";
+	//root++ depth (sec+)
+	public static final String XML_ENCRYPTED_VALIDATION_HASH_ELEMENT_NAME = "encValHash";
+	public static final String XML_PARAMETRIC_INITIALIZATION_VECTOR_ELEMENT_NAME     = "paramIV";
+	public static final String XML_IS_REPORTING_STATISTICS_ELEMENT_NAME              = "statsReporting";
+	public static final String XML_IS_REPORTING_STATISTICS_STANDALONE_ELEMENT_NAME   = "statsStandalone";
+	public static final String XML_IS_ENCRYPTING_STATISTICS_ELEMENT_NAME             = "statsEnc";
+	public static final String XML_STATISTICS_DESTINATION_EMAIL_ADDRESS_ELEMENT_NAME = "statsDestEmail";
+	public static final String XML_STATISTICS_SENDER_EMAIL_ADDRESS_ELEMENT_NAME      = "statsSender";
+	public static final String XML_STATISTICS_SENDER_EMAIL_PASSWORD_ELEMENT_NAME     = "statsSenderPw";
+	public static final String XML_STATISTICS_SENDER_SMTP_ADDRESS_ELEMENT_NAME       = "statsSenderSMTPAddr";
+	public static final String XML_STATISTICS_SENDER_SMTP_PORT_ELEMENT_NAME          = "statsSenderSMTPPort";
+	//root+ depth
+	public static final String XML_QUESTION_SET_ELEMENT_NAME    = "questionSet";
+	//root++ depth (questionSet+)
+	public static final String XML_QUESTION_SET_ID_ELEMENT_NAME = "setID";
+	public static final String XML_QUESTION_SET_NAME_ELEMENT_NAME          = "setName";
+	public static final String XML_QUESTION_SET_RESOURCE_TYPE_ELEMENT_NAME = "rscType";
+	public static final String XML_QUESTION_SET_RESOURCE_DATA_ELEMENT_NAME = "rscData";
+	public static final String XML_QUESTION_ELEMENT_NAME                   = "question";
+	//root+++ depth (questionSet++, questionGrouping+)
+	public static final String XML_QUESTION_ID_ELEMENT_NAME = "questionID";
+	public static final String XML_QUESTION_NAME_ELEMENT_NAME                 = "questionName";
+	public static final String XML_QUESTION_TEXT_ELEMENT_NAME                 = "questionText";
+	public static final String XML_QUESTION_SCRAMBLE_ANSWERS_ELEMENT_NAME     = "scramAns";
+	public static final String XML_QUESTION_REATIAN_ANSWER_ORDER_ELEMENT_NAME = "retOrder";
+	public static final String XML_QUESTION_ENCRYPTED_ANSWER_HASH             = "encAnsHash";
+	public static final String XML_ANSWER_CHOICE_ELEMENT_NAME                 = "answerChoice";
+	//root++++ depth (questionSet+++, questionGrouping++, answer+)
+	public static final String XML_ANSWER_CHOICE_ID_ELEMENT_NAME = "answerID";
+	public static final String XML_ANSWER_CHOICE_VISIBLE_ID_ELEMENT_NAME = "answerVisibleID";
+	public static final String XML_ANSWER_TEXT_ELEMENT_NAME              = "answer";
+
 	public static Logger logger = Logger.getLogger(ExamBuilder.class.getName());
 
 	static
@@ -300,28 +317,28 @@ public class ExamBuilder
 		GenericUtils.appendSubNode(XML_STATISTICS_DESTINATION_EMAIL_ADDRESS_ELEMENT_NAME,
 		                           GenericUtils.convertBytesToHexString(GenericUtils.applyCryptographicCipher(
 				                           exam.getStatsDestinationEmail() == null
-				                           ? "!@!none!@!".getBytes()
+				                           ? GenericUtils.NO_EMAIL.getBytes()
 				                           : exam.getStatsDestinationEmail().getBytes(), encryptionCipher)),
 		                           security,
 		                           examDoc);
 		GenericUtils.appendSubNode(XML_STATISTICS_SENDER_EMAIL_ADDRESS_ELEMENT_NAME,
 		                           GenericUtils.convertBytesToHexString(GenericUtils.applyCryptographicCipher(
 				                           exam.getStatsSenderEmail() == null
-				                           ? "!@!none!@!".getBytes()
+				                           ? GenericUtils.NO_EMAIL.getBytes()
 				                           : exam.getStatsSenderEmail().getBytes(), encryptionCipher)),
 		                           security,
 		                           examDoc);
 		GenericUtils.appendSubNode(XML_STATISTICS_SENDER_EMAIL_PASSWORD_ELEMENT_NAME,
 		                           GenericUtils.convertBytesToHexString(GenericUtils.applyCryptographicCipher(
 				                           exam.getStatsSenderPassword() == null
-				                           ? "!@!none!@!".getBytes()
+				                           ? GenericUtils.NO_DATA.getBytes()
 				                           : exam.getStatsSenderPassword().getBytes(), encryptionCipher)),
 		                           security,
 		                           examDoc);
 		GenericUtils.appendSubNode(XML_STATISTICS_SENDER_SMTP_ADDRESS_ELEMENT_NAME,
 		                           GenericUtils.convertBytesToHexString(GenericUtils.applyCryptographicCipher(
 				                           exam.getStatsSenderSMTPAddress() == null
-				                           ? "!@!none!@!".getBytes()
+				                           ? GenericUtils.NO_SMTP.getBytes()
 				                           : exam.getStatsSenderSMTPAddress().getBytes(), encryptionCipher)),
 		                           security,
 		                           examDoc);
@@ -499,7 +516,7 @@ public class ExamBuilder
 	 *
 	 * @throws VaSolSimException
 	 */
-	public static Exam readExam(File examFile, String password) throws VaSolSimException
+	public static Exam readExam(@NotNull File examFile, @NotNull String password) throws VaSolSimException
 	{
 
 
@@ -516,7 +533,7 @@ public class ExamBuilder
 	 *
 	 * @throws VaSolSimException
 	 */
-	public static boolean writeRaw(Exam exam, File examFile) throws VaSolSimException
+	public static boolean writeRaw(@NotNull Exam exam, @NotNull File examFile) throws VaSolSimException
 	{
 		return writeRaw(exam, examFile, true);
 	}
@@ -532,7 +549,9 @@ public class ExamBuilder
 	 *
 	 * @throws VaSolSimException
 	 */
-	public static boolean writeRaw(Exam exam, File examFile, boolean overwrite) throws VaSolSimException
+	public static boolean writeRaw(@NotNull Exam exam,
+	                               @NotNull File examFile,
+	                               boolean overwrite) throws VaSolSimException
 	{
 		/*
 		 * check the file creation status and handle it
@@ -770,7 +789,7 @@ public class ExamBuilder
 	 *
 	 * @return the initialized exam
 	 */
-	public static Exam readRaw(File examFile)
+	public static Exam readRaw(@NotNull File examFile)
 	{
 		return null;
 	}

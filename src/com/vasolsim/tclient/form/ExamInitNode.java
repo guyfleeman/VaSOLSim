@@ -1,6 +1,7 @@
 package com.vasolsim.tclient.form;
 
 import com.vasolsim.common.file.Exam;
+import com.vasolsim.common.node.DrawableNode;
 import com.vasolsim.common.notification.PopupManager;
 import com.vasolsim.tclient.TeacherClient;
 import com.vasolsim.tclient.core.CenterNode;
@@ -45,18 +46,18 @@ public class ExamInitNode implements DrawableNode
 		/*
 		 * Stats stuff
 		 */
-		Label infoLabel = new Label(statsReportingInfoLabelText);
+		Label infoLabel = new Label(TeacherClient.STATS_REPORTING_INFO_LABEL_TEXT);
 		infoLabel.getStyleClass().add("lbltext");
 		infoLabel.setWrapText(true);
 
-		Label reportingStatsLabel = new Label(statsReportingLabelText);
+		Label reportingStatsLabel = new Label(TeacherClient.STATS_REPORTING_LABEL_TEXT);
 		reportingStatsLabel.getStyleClass().add("lbltext");
 
-		final CheckBox reportingStatsCB = new CheckBox(statsReportingCBText);
+		final CheckBox reportingStatsCB = new CheckBox(TeacherClient.STATS_REPORTING_CB_TEXT);
 		reportingStatsCB.getStyleClass().add("cbtext");
 		reportingStatsCB.setIndeterminate(false);
 
-		final Label statsDestinationAddrLabel = new Label(statsDestAddrLabelText);
+		final Label statsDestinationAddrLabel = new Label(TeacherClient.STATS_DEST_ADDR_LABEL_TEXT);
 		statsDestinationAddrLabel.getStyleClass().add("lbltext");
 		statsDestinationAddrLabel.setDisable(true);
 
@@ -64,26 +65,26 @@ public class ExamInitNode implements DrawableNode
 		statsDestinationAddrField.setMaxWidth(400);
 		statsDestinationAddrField.setDisable(true);
 
-		final Button verifyDestinationEmailButton = new Button(statsVerifyButtonText);
+		final Button verifyDestinationEmailButton = new Button(TeacherClient.STATS_VERIFY_BUTTON_TEXT);
 		verifyDestinationEmailButton.setDisable(true);
 
 		/*
 		 * Standalone ui stuff
 		 */
-		Label standaloneInfoLabel = new Label(statsSAInfoLabelText);
+		Label standaloneInfoLabel = new Label(TeacherClient.STATS_SA_INFO_LABEL_TEXT);
 		standaloneInfoLabel.getStyleClass().add("lbltext");
 		standaloneInfoLabel.setWrapText(true);
 
-		final Label reportingStatsStandaloneLabel = new Label(statsSALabelText);
+		final Label reportingStatsStandaloneLabel = new Label(TeacherClient.STATS_SA_LABEL_TEXT);
 		reportingStatsStandaloneLabel.getStyleClass().add("lbltext");
 		reportingStatsStandaloneLabel.setDisable(true);
 
-		final CheckBox reportingStatsStandaloneCB = new CheckBox(statsSACBText);
+		final CheckBox reportingStatsStandaloneCB = new CheckBox(TeacherClient.STATS_SACB_TEXT);
 		reportingStatsStandaloneCB.getStyleClass().add("cbtext");
 		reportingStatsStandaloneCB.setIndeterminate(false);
 		reportingStatsStandaloneCB.setDisable(true);
 
-		final Label senderAddrLabel = new Label(statsSAAddrLabelText);
+		final Label senderAddrLabel = new Label(TeacherClient.STATS_SA_ADDR_LABEL_TEXT);
 		senderAddrLabel.getStyleClass().add("lbltext");
 		senderAddrLabel.setDisable(true);
 
@@ -91,7 +92,7 @@ public class ExamInitNode implements DrawableNode
 		senderAddrField.setMaxWidth(400);
 		senderAddrField.setDisable(true);
 
-		final Label senderPasswordLabel = new Label(statsSAPasswordLabelText);
+		final Label senderPasswordLabel = new Label(TeacherClient.STATS_SA_PASSWORD_LABEL_TEXT);
 		senderPasswordLabel.getStyleClass().add("lbltext");
 		senderPasswordLabel.setDisable(true);
 
@@ -99,7 +100,7 @@ public class ExamInitNode implements DrawableNode
 		senderPasswordField.setMaxWidth(400);
 		senderPasswordField.setDisable(true);
 
-		final Label senderSMTPAddrLabel = new Label(statsSASMTPAddrLabelText);
+		final Label senderSMTPAddrLabel = new Label(TeacherClient.STATS_SASMTP_ADDR_LABEL_TEXT);
 		senderSMTPAddrLabel.getStyleClass().add("lbltext");
 		senderSMTPAddrLabel.setDisable(true);
 
@@ -107,7 +108,7 @@ public class ExamInitNode implements DrawableNode
 		senderSMTPAddrField.setMaxWidth(400);
 		senderSMTPAddrField.setDisable(true);
 
-		final Label senderSMTPPortLabel = new Label(statsSASMTPPortLabelText);
+		final Label senderSMTPPortLabel = new Label(TeacherClient.STATS_SASMTP_PORT_LABEL_TEXT);
 		senderSMTPPortLabel.getStyleClass().add("lbltext");
 		senderSMTPPortLabel.setDisable(true);
 
@@ -115,10 +116,10 @@ public class ExamInitNode implements DrawableNode
 		senderSMTPPortField.setMaxWidth(80);
 		senderSMTPPortField.setDisable(true);
 
-		final Button verifySMTPInfoButton = new Button(statsVerifyButtonText);
+		final Button verifySMTPInfoButton = new Button(TeacherClient.STATS_VERIFY_BUTTON_TEXT);
 		verifySMTPInfoButton.setDisable(true);
 
-		final Button continueButton = new Button(continueButtonText);
+		final Button continueButton = new Button(TeacherClient.CONTINUE_BUTTON_TEXT);
 
 		/*
 		 * add everything
@@ -228,11 +229,11 @@ public class ExamInitNode implements DrawableNode
 			{
 				if (statsDestinationAddrField.getText() == null
 						|| statsDestinationAddrField.getText().trim().length() <= 0)
-					PopupManager.showMessage(emailInvalidMessage, addressInvalidTitle);
+					PopupManager.showMessage(TeacherClient.EMAIL_INVALID_MESSAGE, TeacherClient.ADDRESS_INVALID_TITLE);
 				else if (!isValidEmail(statsDestinationAddrField.getText()))
-					PopupManager.showMessage(emailInvalidRegexMessage, addressInvalidTitle);
+					PopupManager.showMessage(TeacherClient.EMAIL_INVALID_REGEX_MESSAGE, TeacherClient.ADDRESS_INVALID_TITLE);
 				else
-					PopupManager.showMessage(verifiedMessage, verifiedTitle);
+					PopupManager.showMessage(TeacherClient.VERIFIED_MESSAGE, TeacherClient.VERIFIED_TITLE);
 			}
 		});
 
@@ -247,38 +248,38 @@ public class ExamInitNode implements DrawableNode
 						|| senderAddrField.getText().trim().length() <= 0)
 				{
 					foundError = true;
-					PopupManager.showMessage(emailInvalidMessage, addressInvalidTitle);
+					PopupManager.showMessage(TeacherClient.EMAIL_INVALID_MESSAGE, TeacherClient.ADDRESS_INVALID_TITLE);
 				}
 				else if (!isValidEmail(senderAddrField.getText()))
 				{
 					foundError = true;
-					PopupManager.showMessage(emailInvalidRegexMessage, addressInvalidTitle);
+					PopupManager.showMessage(TeacherClient.EMAIL_INVALID_REGEX_MESSAGE, TeacherClient.ADDRESS_INVALID_TITLE);
 				}
 
 				if (senderPasswordField.getText() == null
 						|| senderAddrField.getText().trim().length() <= 0)
 				{
 					foundError = true;
-					PopupManager.showMessage(passwordInvalidMessage, passwordInvalidTitle);
+					PopupManager.showMessage(TeacherClient.PASSWORD_INVALID_MESSAGE, TeacherClient.PASSWORD_INVALID_TITLE);
 				}
 
 				if (senderSMTPAddrField.getText() == null
 						|| senderSMTPAddrField.getText().trim().length() <= 0)
 				{
 					foundError = true;
-					PopupManager.showMessage(addressInvalidMessage, addressInvalidTitle);
+					PopupManager.showMessage(TeacherClient.ADDRESS_INVALID_MESSAGE, TeacherClient.ADDRESS_INVALID_TITLE);
 				}
 				else if (!isValidAddress(senderSMTPAddrField.getText()))
 				{
 					foundError = true;
-					PopupManager.showMessage(addressInvalidRegexMessage, addressInvalidTitle);
+					PopupManager.showMessage(TeacherClient.ADDRESS_INVALID_REGEX_MESSAGE, TeacherClient.ADDRESS_INVALID_TITLE);
 				}
 
 				if (senderSMTPPortField.getText() == null
 						|| senderSMTPPortField.getText().trim().length() <= 0)
 				{
 					foundError = true;
-					PopupManager.showMessage(portInvalidMessage, portInvalidTitle);
+					PopupManager.showMessage(TeacherClient.PORT_INVALID_MESSAGE, TeacherClient.PORT_INVALID_TITLE);
 				}
 				else
 				{
@@ -287,13 +288,13 @@ public class ExamInitNode implements DrawableNode
 						if (!isValidPort(Integer.parseInt(senderSMTPPortField.getText())))
 						{
 							foundError = true;
-							PopupManager.showMessage(portInvalidRange, portInvalidTitle);
+							PopupManager.showMessage(TeacherClient.PORT_INVALID_RANGE, TeacherClient.PORT_INVALID_TITLE);
 						}
 					}
 					catch (NumberFormatException e)
 					{
 						foundError = true;
-						PopupManager.showMessage(portInvalidCharsMessage, portInvalidTitle);
+						PopupManager.showMessage(TeacherClient.PORT_INVALID_CHARS_MESSAGE, TeacherClient.PORT_INVALID_TITLE);
 					}
 				}
 
@@ -304,9 +305,9 @@ public class ExamInitNode implements DrawableNode
 					                              senderAddrField.getText(),
 					                              senderPasswordField.getText().getBytes(),
 					                              true))
-						PopupManager.showMessage(smtpBadConfig, smtpBadTitle);
+						PopupManager.showMessage(TeacherClient.SMTP_BAD_CONFIG, TeacherClient.SMTP_BAD_TITLE);
 					else
-						PopupManager.showMessage(verifiedMessage, verifiedTitle);
+						PopupManager.showMessage(TeacherClient.VERIFIED_MESSAGE, TeacherClient.VERIFIED_TITLE);
 				}
 			}
 		});
@@ -324,12 +325,12 @@ public class ExamInitNode implements DrawableNode
 							|| statsDestinationAddrField.getText().trim().length() <= 0)
 					{
 						foundError = true;
-						PopupManager.showMessage(emailInvalidMessage, addressInvalidTitle);
+						PopupManager.showMessage(TeacherClient.EMAIL_INVALID_MESSAGE, TeacherClient.ADDRESS_INVALID_TITLE);
 					}
 					else if (!isValidEmail(statsDestinationAddrField.getText()))
 					{
 						foundError = true;
-						PopupManager.showMessage(emailInvalidRegexMessage, addressInvalidTitle);
+						PopupManager.showMessage(TeacherClient.EMAIL_INVALID_REGEX_MESSAGE, TeacherClient.ADDRESS_INVALID_TITLE);
 					}
 				}
 
@@ -339,38 +340,38 @@ public class ExamInitNode implements DrawableNode
 							|| senderAddrField.getText().trim().length() <= 0)
 					{
 						foundError = true;
-						PopupManager.showMessage(emailInvalidMessage, addressInvalidTitle);
+						PopupManager.showMessage(TeacherClient.EMAIL_INVALID_MESSAGE, TeacherClient.ADDRESS_INVALID_TITLE);
 					}
 					else if (!isValidEmail(senderAddrField.getText()))
 					{
 						foundError = true;
-						PopupManager.showMessage(emailInvalidRegexMessage, addressInvalidTitle);
+						PopupManager.showMessage(TeacherClient.EMAIL_INVALID_REGEX_MESSAGE, TeacherClient.ADDRESS_INVALID_TITLE);
 					}
 
 					if (senderPasswordField.getText() == null
 							|| senderAddrField.getText().trim().length() <= 0)
 					{
 						foundError = true;
-						PopupManager.showMessage(passwordInvalidMessage, passwordInvalidTitle);
+						PopupManager.showMessage(TeacherClient.PASSWORD_INVALID_MESSAGE, TeacherClient.PASSWORD_INVALID_TITLE);
 					}
 
 					if (senderSMTPAddrField.getText() == null
 							|| senderSMTPAddrField.getText().trim().length() <= 0)
 					{
 						foundError = true;
-						PopupManager.showMessage(addressInvalidMessage, addressInvalidTitle);
+						PopupManager.showMessage(TeacherClient.ADDRESS_INVALID_MESSAGE, TeacherClient.ADDRESS_INVALID_TITLE);
 					}
 					else if (!isValidAddress(senderSMTPAddrField.getText()))
 					{
 						foundError = true;
-						PopupManager.showMessage(addressInvalidRegexMessage, addressInvalidTitle);
+						PopupManager.showMessage(TeacherClient.ADDRESS_INVALID_REGEX_MESSAGE, TeacherClient.ADDRESS_INVALID_TITLE);
 					}
 
 					if (senderSMTPPortField.getText() == null
 							|| senderSMTPPortField.getText().trim().length() <= 0)
 					{
 						foundError = true;
-						PopupManager.showMessage(portInvalidMessage, portInvalidTitle);
+						PopupManager.showMessage(TeacherClient.PORT_INVALID_MESSAGE, TeacherClient.PORT_INVALID_TITLE);
 					}
 					else
 					{
@@ -379,13 +380,13 @@ public class ExamInitNode implements DrawableNode
 							if (!isValidPort(Integer.parseInt(senderSMTPPortField.getText())))
 							{
 								foundError = true;
-								PopupManager.showMessage(portInvalidRange, portInvalidTitle);
+								PopupManager.showMessage(TeacherClient.PORT_INVALID_RANGE, TeacherClient.PORT_INVALID_TITLE);
 							}
 						}
 						catch (NumberFormatException e)
 						{
 							foundError = true;
-							PopupManager.showMessage(portInvalidCharsMessage, portInvalidTitle);
+							PopupManager.showMessage(TeacherClient.PORT_INVALID_CHARS_MESSAGE, TeacherClient.PORT_INVALID_TITLE);
 						}
 					}
 				}
@@ -400,7 +401,7 @@ public class ExamInitNode implements DrawableNode
 							                          senderPasswordField.getText().getBytes(),
 							                          true))
 					{
-						PopupManager.showMessage(smtpBadConfig, smtpBadTitle);
+						PopupManager.showMessage(TeacherClient.SMTP_BAD_CONFIG, TeacherClient.SMTP_BAD_TITLE);
 					}
 					else
 					{

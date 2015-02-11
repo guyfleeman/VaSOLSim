@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:element name="vsstest">
+    <xs:element name="vssExam">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="version" type="xs:string"/>
-                <xs:element name="target" type="xs:string"/>
+                <xs:element name="VSSVersion" type="xs:string"/>
+                <xs:element name="type" type="xs:string"/>
+                <xs:element name="fxVersion" type="xs:string"/>
 
                 <xs:element name="info">
                     <xs:complexType>
@@ -41,7 +42,7 @@
                             <xs:element name="setID"/>
                             <xs:element name="setName"/>
                             <xs:element name="rscType" type="xs:string"/>
-                            <xs:element name="data"/>
+                            <xs:element name="data" type="xs:string"/>
 
                             <xs:element name="question" minOccurs="1" maxOccurs="unbounded">
                                 <xs:complexType>
@@ -49,9 +50,10 @@
                                         <xs:element name="questionID"/>
                                         <xs:element name="questionName"/>
                                         <xs:element name="question" type="xs:string"/>
-                                        <xs:element name="scramAns"/>
-                                        <xs:element name="retOrder"/>
-                                        <xs:element name="encAns" minOccurs="1" maxOccurs="8"/>
+                                        <xs:element name="scramAns" type="xs:string"/>
+                                        <xs:element name="retOrder" type="xs:string"/>
+                                        <xs:element name="image" type="xs:string"/>
+                                        <xs:element name="encAns" minOccurs="1" maxOccurs="8" type="xs:string"/>
 
                                         <xs:element name="answerChoice" minOccurs="1" maxOccurs="8">
                                             <xs:complexType>

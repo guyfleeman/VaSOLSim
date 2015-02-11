@@ -6,6 +6,7 @@ import com.vasolsim.common.notification.PopupManager;
 import com.vasolsim.common.file.AnswerChoice;
 import com.vasolsim.common.file.Question;
 import com.vasolsim.common.file.QuestionSet;
+import com.vasolsim.tclient.TeacherClient;
 import com.vasolsim.tclient.tree.TreeElement;
 
 import javafx.scene.control.TreeItem;
@@ -135,68 +136,6 @@ public class GenericUtils
 					"information into an email for the project manager. COULD NOT WRITE XML FILE. INTERNAL " +
 					"TRANSFORMER EXCEPTION";
 
-
-	//////////////////////////////
-	//  XML STRUCTURE CONSTANTS //
-	@SuppressWarnings("unused")
-	private static final boolean __BEGIN_XML_STRUCTURE_CONSTANTS = false;
-	//////////////////////////////
-
-	//system keys
-	public static final String INDENTATION_KEY = "{http://xml.apache.org/xslt}indent-amount";
-
-	//root depth
-	public static final String XML_ROOT_ELEMENT_NAME = "vssroot";
-
-	//root+ depth
-	public static final String XML_INFO_ELEMENT_NAME = "info";
-
-	//root++ depth (information+)
-	public static final String XML_TEST_NAME_ELEMENT_NAME   = "testName";
-	public static final String XML_AUTHOR_NAME_ELEMENT_NAME = "author";
-	public static final String XML_SCHOOL_NAME_ELEMENT_NAME = "school";
-	public static final String XML_PERIOD_NAME_ELEMENT_NAME = "class";
-	public static final String XML_DATE_ELEMENT_NAME        = "date";
-
-	//root+ depth
-	public static final String XML_SECURITY_ELEMENT_NAME = "sec";
-
-	//root++ depth (sec+)
-	public static final String XML_ENCRYPTED_VALIDATION_HASH_ELEMENT_NAME            = "encValHash";
-	public static final String XML_PARAMETRIC_INITIALIZATION_VECTOR_ELEMENT_NAME     = "paramIV";
-	public static final String XML_IS_REPORTING_STATISTICS_ELEMENT_NAME              = "statsReporting";
-	public static final String XML_IS_REPORTING_STATISTICS_STANDALONE_ELEMENT_NAME   = "statsStandalone";
-	public static final String XML_IS_ENCRYPTING_STATISTICS_ELEMENT_NAME             = "statsEnc";
-	public static final String XML_STATISTICS_DESTINATION_EMAIL_ADDRESS_ELEMENT_NAME = "statsDestEmail";
-	public static final String XML_STATISTICS_SENDER_EMAIL_ADDRESS_ELEMENT_NAME      = "statsSender";
-	public static final String XML_STATISTICS_SENDER_EMAIL_PASSWORD_ELEMENT_NAME     = "statsSenderPw";
-	public static final String XML_STATISTICS_SENDER_SMTP_ADDRESS_ELEMENT_NAME       = "statsSenderSMTPAddr";
-	public static final String XML_STATISTICS_SENDER_SMTP_PORT_ELEMENT_NAME          = "statsSenderSMTPPort";
-
-	//root+ depth
-	public static final String XML_QUESTION_SET_ELEMENT_NAME = "questionSet";
-
-	//root++ depth (questionSet+)
-	public static final String XML_QUESTION_SET_ID_ELEMENT_NAME            = "setID";
-	public static final String XML_QUESTION_SET_NAME_ELEMENT_NAME          = "setName";
-	public static final String XML_QUESTION_SET_RESOURCE_TYPE_ELEMENT_NAME = "rscType";
-	public static final String XML_QUESTION_SET_RESOURCE_DATA_ELEMENT_NAME = "rscData";
-	public static final String XML_QUESTION_ELEMENT_NAME                   = "QandA";
-
-	//root+++ depth (questionSet++, questionGrouping+)
-	public static final String XML_QUESTION_ID_ELEMENT_NAME                   = "questionID";
-	public static final String XML_QUESTION_NAME_ELEMENT_NAME                 = "questionName";
-	public static final String XML_QUESTION_TEXT_ELEMENT_NAME                 = "QandA";
-	public static final String XML_QUESTION_SCRAMBLE_ANSWERS_ELEMENT_NAME     = "scramAns";
-	public static final String XML_QUESTION_REATIAN_ANSWER_ORDER_ELEMENT_NAME = "retOrder";
-	public static final String XML_QUESTION_ENCRYPTED_ANSWER_HASH             = "encAnsHash";
-	public static final String XML_ANSWER_CHOICE_ELEMENT_NAME                 = "answerChoice";
-
-	//root++++ depth (questionSet+++, questionGrouping++, answer+)
-	public static final String XML_ANSWER_CHOICE_ID_ELEMENT_NAME         = "answerID";
-	public static final String XML_ANSWER_CHOICE_VISIBLE_ID_ELEMENT_NAME = "answerVisibleID";
-	public static final String XML_ANSWER_TEXT_ELEMENT_NAME              = "answer";
-
 	///////////////////////////
 	//  EMAIL PATTERN STUFF  //
 	@SuppressWarnings("unused")
@@ -224,6 +163,8 @@ public class GenericUtils
 	public static final int MIN_HASHES    = 1;
 	public static final int MAX_HASHES    = 8;
 
+	public static final String NO_DATA          = "!@!NONE!@!";
+	public static final String NO_EMAIL         = "!@!NO-EMAIL!@!";
 	public static final String NO_STATS         = "!@!NO-STATS!@!";
 	public static final String NO_SMTP          = "!@!NO-SMTP!@!";
 	public static final String NO_RESOURCE_DATA = "!@!NO-RSC-DATA!@!";
@@ -237,11 +178,7 @@ public class GenericUtils
 	public static enum ResourceType
 	{
 		NONE,
-		TXT,
-		PDF,
-		PNG,
-		JPG,
-		GIF
+		PNG
 	}
 
 	public enum QuestionType
@@ -257,115 +194,6 @@ public class GenericUtils
 	}
 
 	///////////////////////////////////
-	//  TEACHER CLIENT UI CONSTANTS  //
-	@SuppressWarnings("unused")
-	private static final boolean __BEGIN_TEACHER_CLIENT_UI_CONSTANTS = false;
-	///////////////////////////////////
-
-	//TODO MAKE ALL THESE VAR CAPS (dee dee dee)
-	public static final String passwordDescriptionLabel = "Please provide and confirm the exam's password prior to" +
-			" " +
-			"creation. This password will be used to prevent students from modifying the contents and the exam. The " +
-			"students will enter this password when they go to take the exam, so please do not use your personal " +
-			"information. Some good choices might be \"class period\" (e.g \"4y\") or \"your name\" (e.g. \"Karen\")" +
-			"." +
-			"You do not need to include the quotation marks, however symbols are valid. Students must enter the " +
-			"*EXACT* same password that you enter here in order to access the exam. Once you set the exam's " +
-			"password," +
-			"it may not be changed for security reasons; please double check your password prior to continuing.";
-	public static final String passwordPromptOne        = "Please enter the password: ";
-	public static final String passwordPromptTwo        = "Please confirm the password: ";
-	public static final String continueButtonText       = "Continue";
-	public static final String passwordInvalidTitle     = "Invalid Password";
-	public static final String passwordInvalidMessage   = "Password cannot be of zero length or all whitespace.";
-	public static final String passwordNoMatch          = "Passwords do not match.";
-
-	public static final String statsReportingInfoLabelText = "This form will take. The information needed to report " +
-			"the answers given by students. The answers can be read and compiled into class statistics. \n\n" +
-			"If you want to report statistics please check the box and enter the email address you want the " +
-			"statistics to be sent. DO NOT SEND STATISTICS TO YOUR PERSONAL EMAIL; you will get a bulky email for " +
-			"every student that completes the test. It is strongly recommended that you establish a gmail account " +
-			"for the sole purpose of reporting statistics. Once you create the email account, you will never have " +
-			"to read it again, the program will do it for you and compile the stats. When the student completes the " +
-			"test, he/she will be prompted to enter his/her email address. The program will automatically send an " +
-			"email from their account to the destination address you provide. \n\nIf you have any more concerns, " +
-			"or need help filling out the form, please visit my youtube channel. (!!LINK COMING SOON!!)";
-	public static final String statsReportingLabelText     = "Check this box to enable statistics reporting.";
-	public static final String statsReportingCBText        = "reporting statistics";
-	public static final String statsDestAddrLabelText      = "The destination email address for reported statistics.";
-	public static final String statsVerifyButtonText       = "Verify ->";
-
-	public static final String statsSAInfoLabelText                       = "If you'd prefer students not enter " +
-			"their" +
-			" " +
-			"own emails, " +
-			"you can report stats in \"standalone mode.\" In this mode, you will provide the address and password " +
-			"of an email account, which will send the answer data for all students. DO NOT USE YOUR PERSONAL EMAIL. " +
-			"The email and password will be encrypted using the industry standard for credit card data " +
-			"(SHA-512 -> AES-256 -> StartTLS). ";
-	public static final String statsSALabelText                           = "Check this box to enable standalone " +
-			"stats" +
-			" reporting.";
-	public static final String statsSACBText                              = "reporting statistics standalone";
-	public static final String statsSAAddrLabelText                       = "The sender email address.";
-	public static final String statsSAPasswordLabelText                   = "The sender email address password.";
-	public static final String statsSASMTPAddrLabelText                   = "The SMTP address for the email provider" +
-			" " +
-			"(should " +
-			"auto-complete).";
-	public static final String statsSASMTPPortLabelText                   = "The port for the SMTP address (should " +
-			"auto-complete).";
-	public static final String addressInvalidTitle                        = "Invalid Address";
-	public static final String emailInvalidMessage                        = "Email cannot be of zero length or all " +
-			"whitespace.";
-	public static final String emailInvalidRegexMessage                   = "Email is not of valid form.";
-	public static final String verifiedTitle                              = "Information Verified";
-	public static final String verifiedMessage                            = "All required information has been " +
-			"verified.";
-	public static final String addressInvalidMessage                      = "The address cannot be of zero length or" +
-			" " +
-			"all whitespace.";
-	public static final String addressInvalidRegexMessage                 = "The address is not of valid form.";
-	public static final String portInvalidTitle                           = "Invalid Port";
-	public static final String portInvalidMessage                         = "The port cannot be nothing or all " +
-			"whitespace";
-	public static final String portInvalidCharsMessage                    = "The port must be a numeric integer.";
-	public static final String portInvalidRange                           = "The port must be between 0 and 65536.";
-	public static final String smtpBadConfig                              = "The SMTP configuration was invalid.";
-	public static final String smtpBadTitle                               = "Invalid SMTP";
-	public static final String internalExceptionOnExamBuilderInstanceInit = "A problem internal to VaSOLSim has " +
-			"occurred.\nI apologize for the inconvenience.\n\n";
-	public static final String internalExceptionTitle                     = "Internal Exception";
-
-	public static final String testStatsLabelText  = "Exam Information Overview";
-	public static final String testNameLabelText   = "Test Name:";
-	public static final String authorNameLabelText = "Author Name:";
-	public static final String schoolNameLabelText = "School Name:";
-	public static final String periodNameLabelText = "Period:";
-
-	public static final String multipleChoiceText                 = "multiple choice (1 answer)";
-	public static final String multipleResponseText               = "multiple response (0-8 answers)";
-	public static final String techEnhancedMultipleChoiceText     = "multiple choice, technology enhanced format (1 " +
-			"answer)";
-	public static final String techEnchancedMultipleResponseText  = "multiple response, technology enhanced format " +
-			"(0-8 answers)";
-	public static final String techEnhancedDDMultipleChoiceText   = "multiple choice, drag and drop format (1 answer)";
-	public static final String techEnhancedDDMultipleResponseText = "multiple response, drag and drop format, " +
-			"predefined (1-8 answers)";
-	public static final String techEnchancedDDGrammarText         = "grammar multiple response (punctuation), " +
-			"drag and drop " +
-			"format (udf answer count)";
-	public static final String techEnchancedVennDiagramText       = "venn diagram, multiple response " +
-			"(avaliable in a future release)";
-
-	public static final String questionSetInfoLabelText  = "Question Set Information Overview";
-	public static final String questionSetNameLabelText  = "Question Set Name:";
-	public static final String resourceFileInfoLabelText = "Use this section to attach a resource file. The resource" +
-			" " +
-			"will be visible to the student as he/she works through every QandA in the section. Valid files are " +
-			"text (.txt), MS Word (.docx), PDF (.pdf), and images (.jpg, .png, .gif).";
-	public static final String invalidFileTypeMessage    = "File type not recognized: .";
-	public static final String invalidFileTypeTitle      = "Invalid File Type";
 
 	////////////////////////////////
 	//  END CONSTANT DECLARATION  //
@@ -716,7 +544,8 @@ public class GenericUtils
 		{
 			if (notify)
 			{
-				PopupManager.showMessage("Cause:\n" + e.getCause() + "\n\nMessage:\n" + e.getMessage(), smtpBadTitle);
+				PopupManager.showMessage("Cause:\n" + e.getCause() + "\n\nMessage:\n" + e.getMessage(), TeacherClient.SMTP_BAD_TITLE);
+
 				System.out.println(e.getCause());
 				System.out.println(e.getMessage());
 			}
@@ -1025,7 +854,7 @@ public class GenericUtils
 	 */
 	public static void pause()
 	{
-		pause(500);
+		pause(300);
 	}
 
 	/**
@@ -1037,7 +866,7 @@ public class GenericUtils
 	{
 		try
 		{
-			Thread.sleep(300);
+			Thread.sleep(time);
 		}
 		catch (InterruptedException e)
 		{
@@ -1081,7 +910,7 @@ public class GenericUtils
 	}
 
 	/*
-	 * considering porting text formatting to html but 2.2 implementation is a pain in the ass
+	 * considering porting text formatting to html but 2.2 implementation is a pain
 	public static String getHtmlLead(String content)
 	{
 

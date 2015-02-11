@@ -88,7 +88,7 @@ public class QuestionSet
 		try
 		{
 			resources = renderPDF(file);
-			resourceType = ResourceType.PDF;
+			resourceType = ResourceType.PNG;
 		}
 		catch (IOException e)
 		{

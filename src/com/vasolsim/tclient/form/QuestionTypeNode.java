@@ -1,5 +1,6 @@
 package com.vasolsim.tclient.form;
 
+import com.vasolsim.common.node.DrawableNode;
 import com.vasolsim.tclient.TeacherClient;
 import com.vasolsim.tclient.core.CenterNode;
 import javafx.event.EventHandler;
@@ -41,48 +42,48 @@ public class QuestionTypeNode implements DrawableNode
 
 		ToggleGroup rbGroup = new ToggleGroup();
 
-		final RadioButton multipleChoiceRB = new RadioButton(multipleChoiceText);
+		final RadioButton multipleChoiceRB = new RadioButton(TeacherClient.MULTIPLE_CHOICE_TEXT);
 		multipleChoiceRB.setToggleGroup(rbGroup);
 		multipleChoiceRB.getStyleClass().add("lbltextsub");
 		multipleChoiceRB.setWrapText(true);
 
-		final RadioButton multipleResponseRB = new RadioButton(multipleResponseText);
+		final RadioButton multipleResponseRB = new RadioButton(TeacherClient.MULTIPLE_RESPONSE_TEXT);
 		multipleResponseRB.setToggleGroup(rbGroup);
 		multipleResponseRB.getStyleClass().add("lbltextsub");
 		multipleResponseRB.setWrapText(true);
 
-		final RadioButton teMultipleChoiceRB = new RadioButton(techEnhancedMultipleChoiceText);
+		final RadioButton teMultipleChoiceRB = new RadioButton(TeacherClient.TECH_ENHANCED_MULTIPLE_CHOICE_TEXT);
 		teMultipleChoiceRB.setToggleGroup(rbGroup);
 		teMultipleChoiceRB.getStyleClass().add("lbltextsub");
 		teMultipleChoiceRB.setWrapText(true);
 
-		final RadioButton teMultipleResponseRB = new RadioButton(techEnchancedMultipleResponseText);
+		final RadioButton teMultipleResponseRB = new RadioButton(TeacherClient.TECH_ENHANCED_MULTIPLE_RESPONSE_TEXT);
 		teMultipleResponseRB.setToggleGroup(rbGroup);
 		teMultipleResponseRB.getStyleClass().add("lbltextsub");
 		teMultipleResponseRB.setWrapText(true);
 
-		final RadioButton teDDMultipleChoiceRB = new RadioButton(techEnhancedDDMultipleChoiceText);
+		final RadioButton teDDMultipleChoiceRB = new RadioButton(TeacherClient.TECH_ENHANCED_DD_MULTIPLE_CHOICE_TEXT);
 		teDDMultipleChoiceRB.setToggleGroup(rbGroup);
 		teDDMultipleChoiceRB.getStyleClass().add("lbltextsub");
 		teDDMultipleChoiceRB.setWrapText(true);
 
-		final RadioButton teDDMultipleResponseRB = new RadioButton(techEnhancedDDMultipleResponseText);
+		final RadioButton teDDMultipleResponseRB = new RadioButton(TeacherClient.TECH_ENHANCED_DD_MULTIPLE_RESPONSE_TEXT);
 		teDDMultipleResponseRB.setToggleGroup(rbGroup);
 		teDDMultipleResponseRB.getStyleClass().add("lbltextsub");
 		teDDMultipleResponseRB.setWrapText(true);
 
-		final RadioButton teDDGrammarMultipleResponseRB = new RadioButton(techEnchancedDDGrammarText);
+		final RadioButton teDDGrammarMultipleResponseRB = new RadioButton(TeacherClient.TECH_ENCHANCED_DD_GRAMMAR_TEXT);
 		teDDGrammarMultipleResponseRB.setToggleGroup(rbGroup);
 		teDDGrammarMultipleResponseRB.getStyleClass().add("lbltextsub");
 		teDDGrammarMultipleResponseRB.setWrapText(true);
 
-		final RadioButton teDDVennDiagramRB = new RadioButton(techEnchancedVennDiagramText);
+		final RadioButton teDDVennDiagramRB = new RadioButton(TeacherClient.TECH_ENCHANCED_VENN_DIAGRAM_TEXT);
 		teDDVennDiagramRB.setToggleGroup(rbGroup);
 		teDDVennDiagramRB.setDisable(true);
 		teDDVennDiagramRB.getStyleClass().add("lbltextsub");
 		teDDVennDiagramRB.setWrapText(true);
 
-		Button continueButton = new Button(continueButtonText);
+		Button continueButton = new Button(TeacherClient.CONTINUE_BUTTON_TEXT);
 
 		verticalRoot.getChildren().addAll(questionInfoLabel,
 		                                  multipleChoiceRB,

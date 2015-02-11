@@ -2,6 +2,8 @@ package com.vasolsim.tclient.form;
 
 import com.vasolsim.common.file.Exam;
 import com.vasolsim.common.file.QuestionSet;
+import com.vasolsim.common.node.DrawableNode;
+import com.vasolsim.tclient.TeacherClient;
 import com.vasolsim.tclient.core.CenterNode;
 import com.vasolsim.tclient.tree.TreeElement;
 import javafx.event.EventHandler;
@@ -43,7 +45,7 @@ public class ExamNode implements DrawableNode
 		verticalRoot.getStyleClass().add("borders");
 		horizontalRoot.getChildren().add(verticalRoot);
 
-		Label testStats = new Label(testStatsLabelText);
+		Label testStats = new Label(TeacherClient.TEST_STATS_LABEL_TEXT);
 		testStats.getStyleClass().add("lbltext");
 
 		Label testNameDispLabel = new Label(
@@ -108,25 +110,25 @@ public class ExamNode implements DrawableNode
 		spacerTwo.setPrefHeight(1);
 		spacerTwo.setPrefWidth(2000);
 
-		Label testNameLabel = new Label(testNameLabelText);
+		Label testNameLabel = new Label(TeacherClient.TEST_NAME_LABEL_TEXT);
 		testNameLabel.getStyleClass().add("lbltext");
 
 		final TextField testNameField = new TextField();
 		testNameField.setMaxWidth(400);
 
-		Label authorNameLabel = new Label(authorNameLabelText);
+		Label authorNameLabel = new Label(TeacherClient.AUTHOR_NAME_LABEL_TEXT);
 		authorNameLabel.getStyleClass().add("lbltext");
 
 		final TextField authorNameField = new TextField();
 		authorNameField.setMaxWidth(400);
 
-		Label schoolNameLabel = new Label(schoolNameLabelText);
+		Label schoolNameLabel = new Label(TeacherClient.SCHOOL_NAME_LABEL_TEXT);
 		schoolNameLabel.getStyleClass().add("lbltext");
 
 		final TextField schoolNameField = new TextField();
 		schoolNameField.setMaxWidth(400);
 
-		Label periodNameLabel = new Label(periodNameLabelText);
+		Label periodNameLabel = new Label(TeacherClient.PERIOD_NAME_LABEL_TEXT);
 		periodNameLabel.getStyleClass().add("lbltext");
 
 		final TextField periodNameField = new TextField();

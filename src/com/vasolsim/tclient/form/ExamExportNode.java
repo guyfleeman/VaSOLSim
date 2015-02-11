@@ -3,6 +3,7 @@ package com.vasolsim.tclient.form;
 import com.vasolsim.common.VaSolSimException;
 import com.vasolsim.common.file.Exam;
 import com.vasolsim.common.file.ExamBuilder;
+import com.vasolsim.common.node.DrawableNode;
 import com.vasolsim.common.notification.PopupManager;
 import com.vasolsim.tclient.TeacherClient;
 import com.vasolsim.tclient.core.CenterNode;
@@ -23,8 +24,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 
 import java.io.File;
-
-import static com.vasolsim.common.GenericUtils.*;
 
 /**
  * @author guyfleeman
@@ -88,16 +87,16 @@ public class ExamExportNode implements DrawableNode
 
 		if (!exportRaw)
 		{
-			Label infoLabel = new Label(passwordDescriptionLabel);
+			Label infoLabel = new Label(TeacherClient.PASSWORD_DESCRIPTION_LABEL);
 			infoLabel.getStyleClass().add("lbltext");
 			infoLabel.setWrapText(true);
 
-			Label passwordLabelOne = new Label(passwordPromptOne);
+			Label passwordLabelOne = new Label(TeacherClient.PASSWORD_PROMPT_ONE);
 			passwordLabelOne.getStyleClass().add("lbltext");
 			final PasswordField passwordFieldOne = new PasswordField();
 			passwordFieldOne.setMaxWidth(400);
 
-			Label passwordLabelTwo = new Label(passwordPromptTwo);
+			Label passwordLabelTwo = new Label(TeacherClient.PASSWORD_PROMPT_TWO);
 			passwordLabelTwo.getStyleClass().add("lbltext");
 			final PasswordField passwordFieldTwo = new PasswordField();
 			passwordFieldTwo.setMaxWidth(400);
@@ -118,21 +117,23 @@ public class ExamExportNode implements DrawableNode
 					if (passwordFieldOne.getText() == null
 							|| passwordFieldOne.getText().trim().length() <= 0)
 					{
-						PopupManager.showMessage("Password Field 1:\n" + passwordInvalidMessage, passwordInvalidTitle);
+						PopupManager.showMessage("Password Field 1:\n" + TeacherClient.PASSWORD_INVALID_MESSAGE,
+						                         TeacherClient.PASSWORD_INVALID_TITLE);
 						return;
 					}
 
 					if (passwordFieldTwo.getText() == null
 							|| passwordFieldTwo.getText().trim().length() <= 0)
 					{
-						PopupManager.showMessage("Password Field 2 (confirmation):\n" + passwordInvalidMessage,
-						                         passwordInvalidTitle);
+						PopupManager.showMessage("Password Field 2 (confirmation):\n" +
+								                         TeacherClient.PASSWORD_INVALID_MESSAGE,
+						                         TeacherClient.PASSWORD_INVALID_TITLE);
 						return;
 					}
 
 					if (!passwordFieldOne.getText().equals(passwordFieldTwo.getText()))
 					{
-						PopupManager.showMessage(passwordNoMatch, passwordInvalidTitle);
+						PopupManager.showMessage(TeacherClient.PASSWORD_NO_MATCH, TeacherClient.PASSWORD_INVALID_TITLE);
 						return;
 					}
 
@@ -166,9 +167,25 @@ public class ExamExportNode implements DrawableNode
 
 					try
 					{
+						/*
+						 * check for and remove characters that can't be in a filename
+						 */
+						String newTestName = exam.getTestName();
+						for (String illegalFileCharacter : TeacherClient.illegalFileCharactersList)
+							newTestName = newTestName.replaceAll(illegalFileCharacter, "");
+
+						/*
+						 * check for reserved filenames
+						 */
+						for (String reservedFileName : TeacherClient.reservedSystemFileNamesList)
+							if (newTestName.equalsIgnoreCase(reservedFileName))
+							{
+								newTestName = newTestName + " - SystemReserved";
+								break;
+							}
+
 						ExamBuilder.writeExam(exam,
-						                      new File(fileField.getText() + "/" +
-								                               exam.getTestName().replaceAll(" ", "") + ".vss"),
+						                      new File(fileField.getText() + "/" + newTestName + ".vss"),
 						                      password,
 						                      true);
 					}

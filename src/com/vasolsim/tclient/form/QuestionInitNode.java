@@ -1,5 +1,6 @@
 package com.vasolsim.tclient.form;
 
+import com.vasolsim.common.node.DrawableNode;
 import com.vasolsim.tclient.TeacherClient;
 import com.vasolsim.tclient.core.CenterNode;
 import com.vasolsim.tclient.tree.QuestionSetTreeElement;
@@ -55,7 +56,7 @@ public class QuestionInitNode implements DrawableNode
 		questionTextArea.setPrefHeight(280);
 		*/
 
-		Button continueButton = new Button(continueButtonText);
+		Button continueButton = new Button(TeacherClient.CONTINUE_BUTTON_TEXT);
 
 		verticalRoot.getChildren().addAll(questionInitInfoLabel, questionTextArea, continueButton);
 

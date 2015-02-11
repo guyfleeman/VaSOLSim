@@ -1,5 +1,6 @@
 package com.vasolsim.tclient.form;
 
+import com.vasolsim.common.node.DrawableNode;
 import com.vasolsim.common.notification.PopupManager;
 import com.vasolsim.common.file.QuestionSet;
 import com.vasolsim.tclient.TeacherClient;
@@ -55,10 +56,10 @@ public class QuestionSetNode implements DrawableNode
 		verticalRoot.getStyleClass().add("borders");
 		horizontalRoot.getChildren().add(verticalRoot);
 
-		Label questionSetInfoLabel = new Label(questionSetInfoLabelText);
+		Label questionSetInfoLabel = new Label(TeacherClient.QUESTION_SET_INFO_LABEL_TEXT);
 		questionSetInfoLabel.getStyleClass().add("lbltext");
 
-		Label questionSetNameLabel = new Label(questionSetNameLabelText);
+		Label questionSetNameLabel = new Label(TeacherClient.QUESTION_SET_NAME_LABEL_TEXT);
 		questionSetNameLabel.getStyleClass().add("lbltext");
 
 		final TextField questionSetNameField = new TextField();
@@ -71,7 +72,7 @@ public class QuestionSetNode implements DrawableNode
 		spacer.setPrefWidth(2000);
 		spacer.getStyleClass().add("lblspacer");
 
-		Label resourceFileInfoLabel = new Label(resourceFileInfoLabelText);
+		Label resourceFileInfoLabel = new Label(TeacherClient.RESOURCE_FILE_INFO_LABEL_TEXT);
 		resourceFileInfoLabel.getStyleClass().add("lbltext");
 		resourceFileInfoLabel.setWrapText(true);
 
