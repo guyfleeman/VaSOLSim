@@ -1,0 +1,49 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# os generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE generated files #
+#######################
+.idea*
+project**
+
+# GIT #
+#######
+#.gitignore
+
+# GRADLE #
+##########
+.gradle
+build/**

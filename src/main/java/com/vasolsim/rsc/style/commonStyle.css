@@ -1,0 +1,80 @@
+.charPaneDefaultSuper
+{
+	-fx-background-color: transparent;
+}
+
+.charPaneDefaultSuper:hover
+{
+	-fx-background-color: transparent;
+	-fx-border-width: 3;
+	-fx-border-radius: 3;
+	-fx-border-color: #0C14F2;
+}
+
+.charPaneDefault
+{
+	-fx-background-color: #f4b400;
+	-fx-border-width: 2;
+    -fx-border-color: #000000;
+}
+
+.charPaneDefaultActive
+{
+	-fx-background-color: #f4b400;
+	-fx-border-width: 3;
+	-fx-border-color: #f65314;
+}
+
+.charPaneDefaultText
+{
+	-fx-font-size: 32;
+    -fx-text-fill: rgb(0, 0, 0);
+    -fx-font-weight: bold;
+}
+
+.charPaneSmallText
+{
+	-fx-font-size: 24;
+    -fx-text-fill: rgb(0, 0, 0);
+    -fx-font-weight: bold;
+}
+
+.stringPaneVerySmallText
+{
+	-fx-font-size: 12;
+    -fx-text-fill: rgb(0, 0, 0);
+    -fx-font-weight: bold;
+}
+
+/* /////////////////////////////////////////////////////////////////
+//  style classes for the +/- image buttons in the tree elements  //
+///////////////////////////////////////////////////////////////// */
+.btnDefault
+{
+	-fx-background-color: transparent;
+    -fx-background-radius: 4px 4px 4px 4px;
+
+    -fx-border-width: 2;
+    -fx-border-color: transparent;
+    -fx-border-radius: 5px 5px 5px 5px;
+}
+
+.btnHoverCreate
+{
+	-fx-background-color: rgba(0, 255, 0, 0.1);
+	-fx-background-radius: 4px 4px 4px 4px;
+
+	-fx-border-width: 2;
+	-fx-border-radius: 5px 5px 5px 5px;
+    -fx-border-color: rgba(0, 255, 0, 0.8);
+}
+
+.btnHoverDestroy
+{
+	-fx-background-color: rgba(255, 0, 0, 0.1);
+    -fx-background-radius: 4px 4px 4px 4px;
+
+    -fx-border-width: 2;
+    -fx-border-color: rgba(255, 0, 0, 0.8);
+    -fx-border-radius: 5px 5px 5px 5px;
+}

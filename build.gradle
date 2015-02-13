@@ -1,7 +1,7 @@
 apply plugin: 'java'
 
 sourceCompatibility = 1.5
-version = '1.0'
+version = '0.5.0'
 
 repositories {
     mavenCentral()
@@ -9,4 +9,17 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    //commons lang
+    compile 'org.apache.commons:commons-lang3:3.3.2'
+    //commons io
+    compile 'commons-io:commons-io:2.4'
+    //log4j
+    compile 'log4j:log4j:1.2.17'
+    //pdfbox
+    compile 'org.apache.pdfbox:pdfbox:1.8.8'
+    //javamail
+    compile 'javax.mail:mail:1.4.7'
+    //javax.annotation.Nullable/Nonnull
+    compile 'com.google.code.findbugs:jsr305:3.0.0'
 }
