@@ -36,8 +36,14 @@ Thumbs.db
 
 # IDE generated files #
 #######################
-.idea*
 project**
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+*.iws
+
 
 # GIT #
 #######
@@ -47,3 +53,6 @@ project**
 ##########
 .gradle
 build/**
+vss-common/build/**
+vss-studentclient/build/**
+vss-teacherclient/build/**

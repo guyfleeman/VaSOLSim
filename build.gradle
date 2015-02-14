@@ -1,25 +1,128 @@
-apply plugin: 'java'
+version = '0.5.0a'
 
-sourceCompatibility = 1.5
-version = '0.5.0'
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
 
-repositories {
-    mavenCentral()
+    task listProjects << {
+        task -> println "$task.project.name"
+    }
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+subprojects {
+    apply plugin: 'java'
 
-    //commons lang
-    compile 'org.apache.commons:commons-lang3:3.3.2'
-    //commons io
-    compile 'commons-io:commons-io:2.4'
-    //log4j
-    compile 'log4j:log4j:1.2.17'
-    //pdfbox
-    compile 'org.apache.pdfbox:pdfbox:1.8.8'
-    //javamail
-    compile 'javax.mail:mail:1.4.7'
-    //javax.annotation.Nullable/Nonnull
-    compile 'com.google.code.findbugs:jsr305:3.0.0'
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.11'
+
+        /*
+         * commons lang
+         * commons io
+         * log4j
+         * javamail
+         * findbugs
+         */
+        compile('org.apache.commons:commons-lang3:3.3.2',
+        'commons-io:commons-io:2.4',
+        'log4j:log4j:1.2.17',
+        'javax.mail:mail:1.4.7',
+        'com.google.code.findbugs:jsr305:3.0.0')
+    }
+}
+
+
+project(':vss-common') {
+    dependencies {
+        compile('org.apache.pdfbox:pdfbox:1.8.4')
+    }
+}
+
+project(':vss-studentclient') {
+    apply from: 'http://dl.bintray.com/content/shemnon/javafx-gradle/0.3.0/javafx.plugin'
+
+    dependencies {
+        compile project(':vss-common')
+    }
+
+    mainClassName = 'main.java.vasolsim.sclient.StudentClient'
+    applicationDefaultJvmArgs = ["-Dgreeting.language=en", "-Xms=512m", "-Xmx=2048m"]
+
+    /*
+     * lean jar and javafx deploy
+     */
+    javafx {
+        appID 'vss-sc'
+        appName 'VSS Student Client'
+
+        mainClass 'main.java.vasolsim.sclient.StudentClient'
+
+        //jvm arguments, application command line arguments
+        jvmArgs = ['-Dgreeting.language=en', '-Xms=512m', '-Xmx=2048m']
+        arguments = ['--disable-dep-check']
+    }
+
+    /*
+     * fat jar deploy
+     */
+    task fatJar(type: Jar) {
+        manifest {
+            attributes 'Main-Class': 'main.java.vasolsim.sclient.StudentClient'
+        }
+
+        baseName = project.name + '-fat'
+        from {
+            configurations.compile.collect {
+                it.isDirectory() ? it : zipTree(it)
+            }
+        }
+
+        with jar
+    }
+}
+
+project('vss-teacherclient') {
+    apply from: 'http://dl.bintray.com/content/shemnon/javafx-gradle/0.3.0/javafx.plugin'
+
+    dependencies {
+        compile project(':vss-common')
+    }
+
+    mainClassName = 'main.java.vasolsim.tclient.TeacherClient'
+    applicationDefaultJvmArgs = ['-Dgreeting.language=en', '-Xms=512m', '-Xmx=2048m']
+
+    /*
+     * javafx deploy
+     */
+    javafx {
+        appID 'vss-tc'
+        appName 'VSS Teacher Client'
+
+        mainClass 'main.java.vasolsim.tclient.TeacherClient'
+
+        //jvm arguments, application command line arguments
+        jvmArgs = ['-Dgreeting.language=en', '-Xms=512m', '-Xmx=2048m']
+        arguments = ['--disable-dep-check']
+    }
+
+    /*
+     * fat jar deploy
+     */
+    task fatJar(type: Jar) {
+        manifest {
+            attributes 'Main-Class': 'main.java.vasolsim.tclient.TeacherClient'
+        }
+
+        baseName = project.name + '-fat'
+        from {
+            configurations.compile.collect {
+                it.isDirectory() ? it : zipTree(it)
+            }
+        }
+
+        with jar
+    }
 }
