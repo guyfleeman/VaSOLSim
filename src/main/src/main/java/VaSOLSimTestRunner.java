@@ -1,10 +1,10 @@
-package main.java.vasolsim;
+package main.java;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import static main.java.vasolsim.common.GenericUtils.*;
+//import static main.java.vasolsim.common.GenericUtils.*;
 
 /**
  * @author guyfleeman
@@ -18,6 +18,7 @@ public class VaSOLSimTestRunner
 		//docGen();
 	}
 
+	/*
 	public static void smtpTest()
 	{
 		System.out.println(isValidEmail("guyfleeman@gmail.com"));
@@ -29,6 +30,7 @@ public class VaSOLSimTestRunner
 		                                            "<mypassword>".getBytes(),
 		                                            true));
 	}
+	*/
 
 	/*
 	public static void docGen() throws VaSolSimException
