@@ -1,4 +1,4 @@
-# Virginia SOL Simulator (VSS)
+# Virginia SOL Simulator (VSS) [![Build Status](https://travis-ci.org/guyfleeman/VaSOLSim.svg?branch=master)](https://travis-ci.org/guyfleeman/VaSOLSim)
 
 VSS is a multi-module project designed to simulate the Virginia Department of Education (DOE) and Pearson Labs end of course (EOC) online testing for students, while providing educators with the tools to create modern exams and easily compile statistics on student performance.
 
