@@ -1,17 +1,14 @@
+ext.sourceCompatibility = 1.7
+ext.targetCompatibility = 1.8
 version = '0.5.0a'
 
 allprojects {
+    apply plugin: 'java'
     apply plugin: 'idea'
     apply plugin: 'eclipse'
-
-    task listProjects << {
-        task -> println "$task.project.name"
-    }
 }
 
 subprojects {
-    apply plugin: 'java'
-
     repositories {
         mavenCentral()
     }
@@ -48,17 +45,17 @@ project(':vss-studentclient') {
         compile project(':vss-common')
     }
 
-    mainClassName = 'main.java.vasolsim.sclient.StudentClient'
-    applicationDefaultJvmArgs = ["-Dgreeting.language=en", "-Xms=512m", "-Xmx=2048m"]
+    ext.mainClassName = 'main.java.vasolsim.sclient.StudentClient'
+    ext.applicationDefaultJvmArgs = ['-Dgreeting.language=en', '-Xms512m', '-Xmx2048m']
 
     /*
      * lean jar and javafx deploy
      */
     javafx {
-        appID 'vss-sc'
-        appName 'VSS Student Client'
+        appID = 'vss-sc'
+        appName = 'VSS Student Client'
 
-        mainClass 'main.java.vasolsim.sclient.StudentClient'
+        mainClass = 'main.java.vasolsim.sclient.StudentClient'
 
         //jvm arguments, application command line arguments
         jvmArgs = ['-Dgreeting.language=en', '-Xms=512m', '-Xmx=2048m']
@@ -66,21 +63,20 @@ project(':vss-studentclient') {
     }
 
     /*
-     * fat jar deploy
+     * fatJar build
      */
     task fatJar(type: Jar) {
-        manifest {
-            attributes 'Main-Class': 'main.java.vasolsim.sclient.StudentClient'
-        }
-
-        baseName = project.name + '-fat'
+        appendix = 'fat'
+        from sourceSets.main.output
         from {
             configurations.compile.collect {
                 it.isDirectory() ? it : zipTree(it)
             }
         }
 
-        with jar
+        manifest {
+            attributes 'Main-Class': mainClassName
+        }
     }
 }
 
@@ -91,38 +87,37 @@ project('vss-teacherclient') {
         compile project(':vss-common')
     }
 
-    mainClassName = 'main.java.vasolsim.tclient.TeacherClient'
-    applicationDefaultJvmArgs = ['-Dgreeting.language=en', '-Xms=512m', '-Xmx=2048m']
+    ext.mainClassName = 'main.java.vasolsim.tclient.TeacherClient'
+    ext.applicationDefaultJvmArgs = ['-Dgreeting.language=en', '-Xms512m', '-Xmx2048m']
 
     /*
      * javafx deploy
      */
     javafx {
-        appID 'vss-tc'
-        appName 'VSS Teacher Client'
+        appID = 'vss-tc'
+        appName = 'VSS Teacher Client'
 
-        mainClass 'main.java.vasolsim.tclient.TeacherClient'
+        mainClass = 'main.java.vasolsim.tclient.TeacherClient'
 
         //jvm arguments, application command line arguments
-        jvmArgs = ['-Dgreeting.language=en', '-Xms=512m', '-Xmx=2048m']
+        jvmArgs = ['-Dgreeting.language=en', '-Xms512m', '-Xmx2048m']
         arguments = ['--disable-dep-check']
     }
 
     /*
-     * fat jar deploy
+     * fatJar build
      */
     task fatJar(type: Jar) {
-        manifest {
-            attributes 'Main-Class': 'main.java.vasolsim.tclient.TeacherClient'
-        }
-
-        baseName = project.name + '-fat'
+        appendix = 'fat'
+        from sourceSets.main.output
         from {
             configurations.compile.collect {
                 it.isDirectory() ? it : zipTree(it)
             }
         }
 
-        with jar
+        manifest {
+            attributes 'Main-Class': mainClassName
+        }
     }
 }
