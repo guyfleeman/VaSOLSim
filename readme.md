@@ -4,7 +4,7 @@ VSS is a multi-module project designed to simulate the Virginia Department of Ed
 
 ## Educators and Students
 
-The project is still in alpha development. This means that the project has established development requirements and has begun to accumulate a code base. Although the project is far enough along to working prototypes, it is not yet ready for public release.
+The project is still in alpha development. This means that the project has established development requirements and has begun to accumulate a code base. Although the project is far enough along to have working prototypes, it is not yet ready for public release.
 
 ## Developers
 
@@ -22,7 +22,7 @@ This module contains the student user interface. The actual emulation of the EOC
 
 ### vss-teacherclient
 
-This module provides a powerful user interface and statistics suite to educators. It allow them to create the exams emulated by the student client, and then retrieve and analyze performance statistics to instantly tailor learning environment.
+This module provides a powerful user interface and statistics suite to educators. It allows them to create the exams emulated by the student client, and then retrieve and analyze performance statistics to instantly tailor the learning environment.
 
 ### Building
 
@@ -53,7 +53,7 @@ gradle <module>:assemble
 
 4) Edit Some Code
 
-5) Testing Changes
+5) Test Changes
 
 ```
 gradle <module>:run
