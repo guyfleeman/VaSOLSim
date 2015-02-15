@@ -2,6 +2,10 @@ ext.sourceCompatibility = 1.7
 ext.targetCompatibility = 1.8
 version = '0.5.0a'
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.4'
+}
+
 allprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
