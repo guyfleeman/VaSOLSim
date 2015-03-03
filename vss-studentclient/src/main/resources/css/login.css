@@ -1,0 +1,132 @@
+/*
+ * Copyright (c) 2015.
+ *
+ *     This file is part of VaSOLSim.
+ *
+ *     VaSOLSim is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     VaSOLSim is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+.login-root
+{
+	-fx-background-image: url("../img/loginBackground.png");
+}
+
+.login-cont
+{
+    -fx-padding: 40px;
+    -fx-min-width: 480px;
+    -fx-spacing: 40px;
+}
+
+.login-bg
+{
+    -fx-background-color: rgba(72, 72, 72, 0.7);
+    -fx-background-radius: 25px;
+    -fx-border-radius: 20px;
+    -fx-border-color: #3333CC;
+    -fx-border-width: 4px;
+    -fx-padding: 40px;
+    -fx-min-width: 420px;
+    -fx-min-height: 420px;
+    -fx-pref-height: 2000px;
+}
+
+.login-title-bg
+{
+    -fx-background-color: rgba(72, 72, 72, 0.7);
+    -fx-background-radius: 25px;
+    -fx-border-radius: 20px;
+    -fx-border-color: #3333CC;
+    -fx-border-width: 4px;
+    -fx-padding: 30px;
+    -fx-min-width: 420px;
+    -fx-min-height: 105px;
+    -fx-pref-height: 105px;
+}
+
+.login-color
+{
+	-fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 12px;
+    -fx-min-width: 240px;
+    -fx-min-height: 100px;
+}
+
+/*
+ * login node color box, white
+ */
+.login-white
+{
+	-fx-text: "White";
+	-fx-text-fill: #484848;
+	-fx-text-wrap: false;
+	-fx-background-color: #FFFFFF;
+    -fx-background-radius: 20px 0 0 0;
+}
+
+/*
+ * login node color box, light gray
+ */
+.login-lightgray
+{
+	-fx-text: "Light Gray";
+	-fx-text-fill: #000000;
+	-fx-text-wrap: false;
+	-fx-background-color: #D1D1D1;
+    -fx-background-radius: 0 20px 0 0;
+}
+
+/*
+ * login node color box, dark gray
+ */
+.login-darkgray
+{
+	-fx-text: "Dark Gray";
+	-fx-text-fill: #FFFFFF;
+	-fx-text-wrap: false;
+	-fx-background-color: #484848;
+    -fx-background-radius: 0 0 0 20px;
+}
+
+/*
+ * login node color box, black
+ */
+.login-black
+{
+	-fx-text: "Black";
+	-fx-text-fill: #D1D1D1;
+	-fx-text-wrap: false;
+	-fx-background-color: #000000;
+    -fx-background-radius: 0 0 20px 0;
+}
+
+.login-field-cont
+{
+    -fx-spacing: 20px;
+    -fx-padding: 20px 40px 40px 40px;
+}
+
+.login-field
+{
+    -fx-min-width: 220px;
+    -fx-pref-width: 480px;
+    -fx-min-height: 40px;
+    -fx-pref-height: 40px;
+}
+
+.login-title
+{
+    -fx-padding: 0 0 100px 0;
+}

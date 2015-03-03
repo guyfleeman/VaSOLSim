@@ -1,9 +1,29 @@
+/*
+ * Copyright (c) 2015.
+ *
+ *     This file is part of VaSOLSim.
+ *
+ *     VaSOLSim is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     VaSOLSim is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package main.java.vasolsim.common.file;
 
 import javax.annotation.Nonnull;
 import main.java.vasolsim.common.GenericUtils;
 import main.java.vasolsim.common.VaSolSimException;
 import main.java.vasolsim.common.notification.PopupManager;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -367,7 +387,7 @@ public class ExamBuilder
 				                           qSetElement,
 				                           examDoc);
 				GenericUtils.appendSubNode(XML_QUESTION_SET_NAME_ELEMENT_NAME,
-				                           (qSet.getName() == null || qSet.getName().equals(""))
+				                           (qSet.getName().equals(""))
 				                           ? "Question Set " + (setsIndex + 1)
 				                           : qSet.getName(),
 				                           qSetElement,
@@ -377,25 +397,28 @@ public class ExamBuilder
 				                           qSetElement,
 				                           examDoc);
 
-				if (qSet.getResourceType() == GenericUtils.ResourceType.PNG)
+				if (qSet.getResourceType() != GenericUtils.ResourceType.NONE && qSet.getResources() != null)
 				{
 					logger.debug("exporting question set resources...");
 					for (BufferedImage img : qSet.getResources())
 					{
-						try
+						if (img != null)
 						{
-							logger.trace("writing image...");
-							ByteArrayOutputStream out = new ByteArrayOutputStream();
-							ImageIO.write(img, "png", out);
-							out.flush();
-							GenericUtils.appendSubNode(XML_QUESTION_SET_RESOURCE_DATA_ELEMENT_NAME,
-							                           convertBytesToHexString(out.toByteArray()),
-							                           qSetElement,
-							                           examDoc);
-						}
-						catch (IOException e)
-						{
-							throw new VaSolSimException("Error: cannot write images to byte array for transport");
+							try
+							{
+								logger.trace("writing image...");
+								ByteArrayOutputStream out = new ByteArrayOutputStream();
+								ImageIO.write(img, "png", out);
+								out.flush();
+								GenericUtils.appendCDATASubNode(XML_QUESTION_SET_RESOURCE_DATA_ELEMENT_NAME,
+								                           new String(Base64.encodeBase64(out.toByteArray())),
+								                           qSetElement,
+								                           examDoc);
+							}
+							catch (IOException e)
+							{
+								throw new VaSolSimException("Error: cannot write images to byte array for transport");
+							}
 						}
 					}
 				}
@@ -416,7 +439,7 @@ public class ExamBuilder
 					                           examDoc);
 					logger.trace("question name -> " + question.getName());
 					GenericUtils.appendSubNode(XML_QUESTION_NAME_ELEMENT_NAME,
-					                           (question.getName() == null || question.getName().equals(""))
+					                           (question.getName().equals(""))
 					                           ? "Question " + (setIndex + 1)
 					                           : question.getName(),
 					                           qElement,

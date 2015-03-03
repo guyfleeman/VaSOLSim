@@ -38,7 +38,8 @@ subprojects {
 
 project(':vss-common') {
     dependencies {
-        compile('org.apache.pdfbox:pdfbox:1.8.4')
+        compile('org.apache.pdfbox:pdfbox:1.8.4',
+        'commons-codec:commons-codec:1.9')
     }
 }
 
@@ -62,7 +63,7 @@ project(':vss-studentclient') {
         mainClass = 'main.java.vasolsim.sclient.StudentClient'
 
         //jvm arguments, application command line arguments
-        jvmArgs = ['-Dgreeting.language=en', '-Xms=512m', '-Xmx=2048m']
+        jvmArgs = ['-Dgreeting.language=en', '-Xms512m', '-Xmx2048m']
         arguments = ['--disable-dep-check']
     }
 

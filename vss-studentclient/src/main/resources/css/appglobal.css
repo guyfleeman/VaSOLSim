@@ -17,16 +17,52 @@
  *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'java'
-
-sourceCompatibility = 1.7
-targetCompatibility = 1.8
-version = '0.5.0a'
-
-repositories {
-    mavenCentral()
+.text
+{
+    -fx-font-weight: bold;
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+.text-small
+{
+    -fx-font-size: 16px;
+}
+
+.text-medium
+{
+    -fx-font-size: 24px;
+}
+
+.text-large
+{
+    -fx-font-size: 32px;
+}
+
+.text-jumbo
+{
+    -fx-font-size: 48px;
+}
+
+.text-massive
+{
+    -fx-font-size: 64px;
+}
+
+.text-white
+{
+    -fx-text-fill: #FFFFFF;
+}
+
+.text-lightgray
+{
+    -fx-text-fill: #D1D1D1;
+}
+
+.text-darkgray
+{
+    -fx-text-fill: #484848;
+}
+
+.text-black
+{
+    -fx-text-fill: #000000;
 }

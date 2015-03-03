@@ -1,5 +1,25 @@
+/*
+ * Copyright (c) 2015.
+ *
+ *     This file is part of VaSOLSim.
+ *
+ *     VaSOLSim is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     VaSOLSim is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package main.java.vasolsim.sclient;
 
+import javafx.scene.layout.VBox;
 import main.java.vasolsim.common.ExternalTask;
 import main.java.vasolsim.common.GenericUtils;
 import main.java.vasolsim.common.Preload;
@@ -41,6 +61,13 @@ public class StudentClient extends Application
 	public static Stage          stage;
 	public static Scene          primaryScene;
 	public static DrawableParent loginNode;
+
+	/*
+	 * resources
+	 */
+	public static String cssRoot = "/css/";
+	public static String appStyle = cssRoot + "appglobal.css";
+	public static String loginStyle = cssRoot + "login.css";
 
 	/*
 	 * logging
@@ -125,6 +152,9 @@ public class StudentClient extends Application
 	@Override
 	public void start(final Stage primaryStage)
 	{
+		/*
+		 * primary stage and scene initialization
+		 */
 		StudentClient.stage = primaryStage;
 		StudentClient.stage.setOnCloseRequest(new EventHandler<WindowEvent>()
 		{
@@ -135,7 +165,18 @@ public class StudentClient extends Application
 				Platform.exit();
 			}
 		});
+		StudentClient.primaryScene = new Scene(new VBox(), 960, 720);
 
+		/*
+		 * size stage
+		 */
+		StudentClient.screenSize = Screen.getPrimary().getVisualBounds();
+		StudentClient.stage.setWidth(StudentClient.screenSize.getWidth());
+		StudentClient.stage.setHeight(StudentClient.screenSize.getHeight());
+
+		/*
+		 * create preload thread
+		 */
 		Preload.stage = StudentClient.stage;
 		Preload.preloadTitle = StudentClient.preloadTitle;
 		Preload.load(getInitRoutine(),
@@ -155,6 +196,14 @@ public class StudentClient extends Application
 					@Override
 					public void run()
 					{
+
+						/*
+						 * resource initialization
+						 */
+						StudentClient.primaryScene.getStylesheets().addAll(
+								StudentClient.class.getResource(StudentClient.loginStyle).toExternalForm(),
+								StudentClient.class.getResource(StudentClient.appStyle).toExternalForm());
+
 						//TODO initialize fx nodes
 						loginNode = new LoginNode();
 
@@ -189,13 +238,6 @@ public class StudentClient extends Application
 				 */
 				StudentClient.stage.setTitle(StudentClient.title);
 				StudentClient.stage.setScene(StudentClient.primaryScene);
-
-				/*
-				 * size stage
-				 */
-				StudentClient.screenSize = Screen.getPrimary().getVisualBounds();
-				StudentClient.stage.setWidth(StudentClient.screenSize.getWidth());
-				StudentClient.stage.setHeight(StudentClient.screenSize.getHeight());
 
 				/*
 				 * show

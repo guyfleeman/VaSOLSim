@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) 2015.
+ *
+ *     This file is part of VaSOLSim.
+ *
+ *     VaSOLSim is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     VaSOLSim is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package main.java.vasolsim.common;
 
 import main.java.vasolsim.common.file.Exam;
@@ -60,7 +79,7 @@ public class GenericUtils
 	private static final boolean __BEGIN_CONSTANT_DECLARATION = false;
 	//////////////////////////////////
 
-	/////////////////////////////
+ 	/////////////////////////////
 	//  DEFAULT CRYPTO VALUES  //
 	@SuppressWarnings("unused")
 	private static final boolean __BEGIN_CRYPTO_VALUES = false;
@@ -173,6 +192,8 @@ public class GenericUtils
 	public static final String NO_SCHOOL_NAME_GIVEN = "No school name given.";
 	public static final String NO_PERIOD_ID_GIVEN   = "No period given";
 	public static final String NO_DATE_GIVEN        = "No date given.";
+
+	public static final String ILLEGAL_FS_REGEX = "[:\\\\/*\"?|<>']";
 
 	public static enum ResourceType
 	{
@@ -438,6 +459,16 @@ public class GenericUtils
 	}
 
 	/**
+	 * canonicalizes a string for FS use
+	 * @param input potentially unsafe file name
+	 * @return safe file name
+	 */
+	public static String toValidFileName(String input)
+	{
+		return input.replaceAll(ILLEGAL_FS_REGEX, "");
+	}
+
+	/**
 	 * Returns if a given string is a valid email regex
 	 *
 	 * @param email email address
@@ -577,6 +608,21 @@ public class GenericUtils
 	{
 		Element subElement = doc.createElement(elementName);
 		subElement.appendChild(doc.createTextNode(nodeData));
+		parentElement.appendChild(subElement);
+	}
+
+	/**
+	 * Creates a cdata node within a created element and then attaches the date to a parent.
+	 *
+	 * @param elementName   the name for the new element
+	 * @param nodeData      the data for the new text node
+	 * @param parentElement the parent element
+	 * @param doc           the document (root)
+	 */
+	public static void appendCDATASubNode(String elementName, String nodeData, Element parentElement, Document doc)
+	{
+		Element subElement = doc.createElement(elementName);
+		subElement.appendChild(doc.createCDATASection(nodeData));
 		parentElement.appendChild(subElement);
 	}
 
