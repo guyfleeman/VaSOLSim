@@ -45,6 +45,7 @@ public class Exam
 	private final boolean isLocked;
 	private boolean reportingStats           = false;
 	private boolean reportingStatsStandalone = false;
+	private boolean scrambleQuestionSetOrder = false;
 
 	@Nonnull
 	private String testName   = NO_TEST_NAME_GIVEN;
@@ -113,7 +114,7 @@ public class Exam
 	}
 
 	/**
-	 * Advanced constructor. Initializes an unlocked exam. Exams must be locked before they will be accepted by the
+	 * Advanced constructor. Initializes an exam. Exams must be locked before they will be accepted by the
 	 * viewer.
 	 * @param reportingStats if the exam will report statistics upon completion
 	 * @param reportingStatsStandalone if the exam is reporting statistics, will it do so standalone
@@ -144,6 +145,59 @@ public class Exam
 		this.statsSenderPassword = statsSenderPassword;
 		this.statsSenderSMTPAddress = statsSenderSMTPAddress;
 		this.statsSenderSMTPPort = statsSenderSMTPPort;
+		this.isLocked = isLocked;
+	}
+
+	/**
+	 * Advanced constructor. Initializes an unlocked exam. Exams must be locked before they will be accepted by the
+	 * viewer.
+	 * @param exam an exam to clone. The clone will be unlocked and any locked data will be lost and replaced by the
+	 *             default internal values.
+	 */
+	protected Exam(Exam exam)
+	{
+		this(exam, false);
+	}
+
+	/**
+	 * Advanced constructor. Initializes an exam. Exams must be locked before they will be accepted by the viewer.
+	 * @param exam an exam to clone. The clone will be unlocked and any locked data will be lost and replaced by the
+	 *             default internal values.
+	 * @param isLocked if the exam will be locked.
+	 */
+	Exam(Exam exam,
+	     boolean isLocked)
+	{
+
+		/*
+		 * copy creation stamp
+		 */
+		this.authorName = exam.getAuthorName();
+		this.testName = exam.getAuthorName();
+		this.schoolName = exam.getSchoolName();
+		this.periodName = exam.getPeriodName();
+		this.date = exam.getDate();
+
+		/*
+		 * copy stats info
+		 */
+		this.reportingStats = exam.isReportingStats();
+		this.reportingStatsStandalone = exam.isReportingStatsStandalone();
+		this.statsDestinationEmail = exam.getStatsDestinationEmail();
+		this.statsSenderEmail = exam.getStatsSenderEmail();
+		this.statsSenderPassword = exam.privledgedGetStatsSenderPassword();
+		this.statsSenderSMTPAddress = exam.getStatsSenderSMTPAddress();
+		this.statsSenderSMTPPort = exam.getStatsSenderSMTPPort();
+
+		/*
+		 * copy data
+		 */
+		this.scrambleQuestionSetOrder = exam.scrambleQuestionSetOrder;
+		this.questionSets = exam.getQuestionSets();
+
+		/*
+		 * set lock
+		 */
 		this.isLocked = isLocked;
 	}
 
@@ -346,6 +400,16 @@ public class Exam
 	}
 
 	/**
+	 * gets the password for sending statistics
+	 * @return the password
+	 */
+	@Nullable
+	final String privledgedGetStatsSenderPassword()
+	{
+		return statsSenderPassword;
+	}
+
+	/**
 	 * sets the password for sending statistics, only if the exam is unlocked
 	 * @param statsSenderPassword the password
 	 */
@@ -510,5 +574,24 @@ public class Exam
 	{
 		if (!isLocked)
 			this.questionSets = questionSets;
+	}
+
+	/**
+	 * determines if the order of the question sets will be randomized when presented
+	 * @return if the sets' order will be scrambled
+	 */
+	public boolean getScrambleQuestionSetOrder()
+	{
+		return scrambleQuestionSetOrder;
+	}
+
+	/**
+	 * determines if the order of the question sets will be randomized when presented
+	 * @param scrambleQuestionSetOrder if the sets' order will be scrambled
+	 */
+	public void setScrambleQuestionSetOrder(boolean scrambleQuestionSetOrder)
+	{
+		if (!isLocked)
+			this.scrambleQuestionSetOrder = scrambleQuestionSetOrder;
 	}
 }

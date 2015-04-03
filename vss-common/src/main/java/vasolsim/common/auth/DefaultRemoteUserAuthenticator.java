@@ -17,43 +17,34 @@
  *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.java.vasolsim.common;
+package main.java.vasolsim.common.auth;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 /**
- * @author guyfleeman
- * @date 6/27/14
- * <p>VaSolException is thrown whenever VaSolSim is violated. It is also used as a wrapper to report internal exception
- * in a friendlier manner. Many crypto/sec exceptions are wrapped by this class.</p>
+ * @author willstuckey
+ * @date 2/5/15 <p></p>
  */
-public class VaSolSimException extends Exception
+public class DefaultRemoteUserAuthenticator implements RemoteUserAuthenticator
 {
-	@Nullable
-	public static String lastErrorMessage;
+	protected static DefaultRemoteUserAuthenticator instance;
 
-	/**
-	 * @param message the message
-	 */
-	public VaSolSimException(String message)
+	private DefaultRemoteUserAuthenticator() {}
+
+	static
 	{
-		super(message);
+		instance = new DefaultRemoteUserAuthenticator();
 	}
 
-	/**
-	 * @param cause the cause
-	 */
-	public VaSolSimException(Throwable cause)
+	@Nonnull
+	public static DefaultRemoteUserAuthenticator getInstance()
 	{
-		super(cause);
+		return instance;
 	}
 
-	/**
-	 * @param message the
-	 * @param cause
-	 */
-	public VaSolSimException(String message, Throwable cause)
+	@Nonnull
+	public VSSAuthToken authenticateUser(String username, char[] password, String remote) throws VSSAuthenticationException
 	{
-		super(message, cause);
+		throw new VSSAuthenticationException("Client does not yet support remote authorization.");
 	}
 }

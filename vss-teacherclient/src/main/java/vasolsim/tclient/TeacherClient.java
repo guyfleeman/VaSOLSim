@@ -22,7 +22,7 @@ package main.java.vasolsim.tclient;
 import javax.annotation.Nonnull;
 import main.java.vasolsim.common.ExternalTask;
 import main.java.vasolsim.common.GenericUtils;
-import main.java.vasolsim.common.Preload;
+import main.java.vasolsim.common.Preloader;
 import main.java.vasolsim.common.notification.DebugWindow;
 import main.java.vasolsim.common.notification.PopupManager;
 import main.java.vasolsim.tclient.core.BottomNode;
@@ -218,22 +218,19 @@ public class TeacherClient extends Application
 	///////////////////////////////////////
 
 	/*
-	 * helper text
-	 */
-	public static boolean showExtendedInfo = false;
-
-	/*
 	 * titles
 	 */
 	public static String preloadTitle = "VaSOLSim Teacher Client. Loading...";
 	public static String title        = "Virginia Standards Of Learning Simulator (VaSOLSim) - Teacher Client";
 
 	/*
-	 * resource paths
+	 * resources
 	 */
+	public static boolean clearPersistenceFlagged = false;
 	public static String rscPathRoot                = "/rsc/";
 	public static String pathToStyle                = rscPathRoot + "css/tClientStyle.css";
 	public static String pathToCommonStyle          = rscPathRoot + "css/commonStyle.css";
+	public static String pathToAppGlobal            = rscPathRoot + "css/appglobal.css";
 	public static String pathToBackgroundImage      = rscPathRoot + "img/background.png";
 	public static String pathToExamsIcon            = rscPathRoot + "img/exams.png";
 	public static String pathToExamIcon             = rscPathRoot + "img/exam.png";
@@ -402,18 +399,25 @@ public class TeacherClient extends Application
 			@Override
 			public void handle(WindowEvent windowEvent)
 			{
-				System.out.println("TODO: save open data");
+				if (!clearPersistenceFlagged)
+					System.out.println("TODO: save open data");
+				else
+				{
+					new File(System.getProperty("user.home") + "/.vss-teacherclient").deleteOnExit();
+					//vasolsimFileRoot.deleteOnExit();
+				}
+
 				Platform.exit();
 			}
 		});
 
 		TeacherClient.primaryScene = new Scene(new VBox(), 960, 720);
 
-		Preload.stage = TeacherClient.stage;
-		Preload.preloadTitle = TeacherClient.preloadTitle;
-		Preload.load(getInitRoutine(),
-		             getOnSuccessRoutine(),
-		             Preload.getDefaultOnFailHandler());
+		Preloader.stage = TeacherClient.stage;
+		Preloader.preloadTitle = TeacherClient.preloadTitle;
+		Preloader.load(getInitRoutine(),
+		               getOnSuccessRoutine(),
+		               Preloader.getDefaultOnFailHandler());
 	}
 
 	/**
@@ -469,7 +473,7 @@ public class TeacherClient extends Application
 					updateMessage("Checking for persistence...");
 					GenericUtils.pause();
 
-					File vasolsimFileRoot = new File(System.getProperty("user.home") + "/.vasolsim");
+					File vasolsimFileRoot = new File(System.getProperty("user.home") + "/.vss-teacherclient");
 					File rsc              = new File(vasolsimFileRoot.getAbsolutePath() + "/rsc");
 					File data             = new File(vasolsimFileRoot.getAbsolutePath() + "/data");
 					File img              = new File(vasolsimFileRoot.getAbsolutePath() + "/rsc/img");
@@ -523,6 +527,10 @@ public class TeacherClient extends Application
 									GenericUtils.exportResource(pathToStyle,
 									                            rsc.getAbsolutePath() + "/tClientStyle.css");
 
+								if (!(new File(rsc.getAbsolutePath() + "/appglobal.css").isFile()))
+									GenericUtils.exportResource(pathToAppGlobal,
+									                            rsc.getAbsolutePath() + "/appglobal.css");
+
 								if (!(new File(img.getAbsolutePath() + "/background.png")).isFile())
 									GenericUtils.exportResource(pathToBackgroundImage,
 									                            img.getAbsolutePath() + "/background.png");
@@ -554,7 +562,7 @@ public class TeacherClient extends Application
 							TeacherClient.charset.add(s.charAt(0));
 						TeacherClient.charset.add(' ');
 
-						for (String s : properties.getProperty("stylesheets", defaultStylesheets).split(" "))
+						for (String s : properties.getProperty("stylesheet", defaultStylesheets).split(" "))
 							TeacherClient.primaryScene.getStylesheets().add("file:///" + rsc.getAbsolutePath() + "/" + s);
 					}
 
@@ -648,10 +656,13 @@ public class TeacherClient extends Application
 		task.updateMessage("Loading external rsc.style...");
 		GenericUtils.pause();
 
+		System.out.println("IM HERE");
 		TeacherClient.primaryScene.getStylesheets().add(
 				TeacherClient.class.getResource(TeacherClient.pathToStyle).toExternalForm());
 		TeacherClient.primaryScene.getStylesheets().add(
 				TeacherClient.class.getResource(TeacherClient.pathToCommonStyle).toExternalForm());
+		TeacherClient.primaryScene.getStylesheets().add(
+				TeacherClient.class.getResource(TeacherClient.pathToAppGlobal).toExternalForm());
 
 		/*
 		 * get default charset

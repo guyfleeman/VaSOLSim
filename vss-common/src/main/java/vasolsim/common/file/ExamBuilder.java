@@ -29,6 +29,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import javax.crypto.Cipher;
 import javax.imageio.ImageIO;
@@ -541,6 +543,60 @@ public class ExamBuilder
 	 */
 	public static Exam readExam(@Nonnull File examFile, @Nonnull String password) throws VaSolSimException
 	{
+		Document examDoc;
+		try
+		{
+			examDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(examFile);
+		}
+		catch (ParserConfigurationException
+				| SAXException
+				| IOException e)
+		{
+			logger.error(e);
+			throw new VaSolSimException(e);
+		}
+
+		examDoc.getDocumentElement().normalize();
+
+		String rootId = examDoc.getDocumentElement().getNodeName();
+
+		/*
+		 * select root
+		 */
+		if (rootId.equals("vssExam"))
+		{
+			Exam exam = new Exam();
+
+			/*
+			 * iterate through root
+			 */
+			if (examDoc.hasChildNodes())
+			{
+				for (int rootIndex = 0; rootIndex < examDoc.getChildNodes().getLength(); rootIndex++)
+				{
+					Node activeRootNode = examDoc.getChildNodes().item(rootIndex);
+					System.out.println(activeRootNode.getNodeName());
+				}
+			}
+			else
+			{
+				VaSolSimException.lastErrorMessage = "root has no child nodes";
+				VaSolSimException vsse = new VaSolSimException("malformed root");
+				logger.warn(vsse);
+				throw vsse;
+			}
+
+			//lock and return
+			return new Exam(exam, true);
+		}
+		else if (rootId.equals("vssRemote"))
+		{
+
+		}
+		else
+		{
+			//TODO outsource
+		}
 
 
 		return null;

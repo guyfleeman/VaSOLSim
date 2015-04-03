@@ -34,7 +34,7 @@
     -fx-background-color: rgba(72, 72, 72, 0.7);
     -fx-background-radius: 25px;
     -fx-border-radius: 20px;
-    -fx-border-color: #3333CC;
+    -fx-border-color: #000000;
     -fx-border-width: 4px;
     -fx-padding: 40px;
     -fx-min-width: 420px;
@@ -47,7 +47,7 @@
     -fx-background-color: rgba(72, 72, 72, 0.7);
     -fx-background-radius: 25px;
     -fx-border-radius: 20px;
-    -fx-border-color: #3333CC;
+    -fx-border-color: #000000;
     -fx-border-width: 4px;
     -fx-padding: 30px;
     -fx-min-width: 420px;

@@ -17,31 +17,34 @@
  *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.java.vasolsim.sclient.auth;
-
-/**
- * @author willstuckey
- * @date 2/5/15 <p></p>
- */
-public class VSSAuthenticationException extends Exception
+.selector-root
 {
-	public VSSAuthenticationException()
-	{
-		super();
-	}
+    -fx-background-image: url("../img/loginBackground.png");
+}
 
-	public VSSAuthenticationException(String message)
-	{
-		super(message);
-	}
+.selector-cont
+{
+    -fx-spacing: 40px;
+    -fx-padding: 30px;
+    -fx-min-width: 640px;
+}
 
-	public VSSAuthenticationException(Throwable cause)
-	{
-		super(cause);
-	}
+.selector-bg
+{
+    -fx-background-color: rgba(72, 72, 72, 0.7);
+    -fx-background-radius: 25px;
+    -fx-border-radius: 20px;
+    -fx-border-color: #000000;
+    -fx-border-width: 4px;
+    -fx-spacing: 20px;
+    -fx-padding: 40px;
+    -fx-min-width: 640px;
+    -fx-min-height: 80px;
+    -fx-pref-width: 2000px;
+    /*-fx-pref-height: 400px;*/
+}
 
-	public VSSAuthenticationException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
+.selector-btnbox
+{
+    -fx-spacing: 20px;
 }

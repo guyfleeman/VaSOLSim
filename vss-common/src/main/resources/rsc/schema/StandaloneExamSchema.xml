@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2015.
+  ~
+  ~     This file is part of VaSOLSim.
+  ~
+  ~     VaSOLSim is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     VaSOLSim is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="vssExam">
+        <xs:complexType>
+            <xs:sequence>
+
+                <!-- identification info -->
+                <xs:element name="information">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="author" type="xs:string"/>
+                            <xs:element name="school" type="xs:string"/>
+                            <xs:element name="class" type="xs:string"/>
+                            <xs:element name="date" type="xs:string"/>
+
+                            <xs:element name="scrambleOrder" type="xs:boolean"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="dependencies">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="hasDependencies" type="xs:string"/>
+
+                            <xs:element name="dependency">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="name" type="xs:string"/>
+                                        <xs:element name="version" type="xs:string"/>
+                                        <xs:element name="author" type="xs:string"/>
+                                        <xs:element name="remote" type="xs:anyURI"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- security and notification parameters -->
+                <xs:element name="security">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <!-- information locks -->
+                            <xs:element name="hashAlgorithm" type="xs:string"/>
+                            <xs:element name="encryptedValidationHash" type="xs:string"/>
+                            <xs:element name="encryptingQuestions" type="xs:boolean"/>
+
+                            <!-- notification -->
+                            <xs:element name="statisticsReporting" type="xs:boolean"/>
+                            <xs:element name="statisticsUsername" type="xs:boolean"/>
+                            <xs:element name="statisticsApiKey" type="xs:boolean"/>
+                            <xs:element name="statisticsAddress"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- question sets with attached resources -->
+                <xs:element name="questionSet" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="setID"/>
+                            <xs:element name="scrambleOrder" type="xs:boolean"/>
+
+                            <!-- resource info -->
+                            <xs:element name="usingResource" type="xs:boolean"/>
+                            <xs:element name="resourceParadigm" type="xs:string"/>
+                            <xs:element name="resourceData" type="xs:base64Binary"/>
+
+                            <!-- questions with attached resources -->
+                            <xs:element name="question" minOccurs="1" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="questionID"/>
+                                        <xs:element name="questionText" type="xs:string"/>
+                                        <xs:element name="scrambleOrder" type="xs:boolean"/>
+                                        <xs:element name="enforceResponseOrder" type="xs:boolean"/>
+                                        <xs:element name="encryptedAnswerHash" type="xs:base64Binary" minOccurs="1" maxOccurs="12"/>
+
+                                        <!-- resource info -->
+                                        <xs:element name="usingResource" type="xs:boolean"/>
+                                        <xs:element name="resourceParadigm" type="xs:string"/>
+                                        <xs:element name="resourceData" type="xs:base64Binary"/>
+
+                                        <!-- answers with attached resources -->
+                                        <xs:element name="answer" minOccurs="1" maxOccurs="12">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="answerID"/>
+                                                    <xs:element name="answerChoiceID"/>
+                                                    <xs:element name="answer"/>
+
+                                                    <!-- resource info -->
+                                                    <xs:element name="usingResource" type="xs:boolean"/>
+                                                    <xs:element name="resourceParadigm" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="resourceData" type="xs:base64Binary" minOccurs="0"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

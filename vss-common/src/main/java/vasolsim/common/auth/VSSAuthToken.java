@@ -17,43 +17,40 @@
  *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.java.vasolsim.common;
-
-import javax.annotation.Nullable;
+package main.java.vasolsim.common.auth;
 
 /**
- * @author guyfleeman
- * @date 6/27/14
- * <p>VaSolException is thrown whenever VaSolSim is violated. It is also used as a wrapper to report internal exception
- * in a friendlier manner. Many crypto/sec exceptions are wrapped by this class.</p>
+ * @author willstuckey
+ * @date 2/5/15 <p></p>
  */
-public class VaSolSimException extends Exception
+public class VSSAuthToken
 {
-	@Nullable
-	public static String lastErrorMessage;
+	protected AuthType authType;
 
-	/**
-	 * @param message the message
-	 */
-	public VaSolSimException(String message)
+	protected VSSAuthToken(AuthType authType)
 	{
-		super(message);
+		this.authType = authType;
 	}
 
-	/**
-	 * @param cause the cause
-	 */
-	public VaSolSimException(Throwable cause)
+	public enum AuthType
 	{
-		super(cause);
+		NONE,
+		LOCAL,
+		REMOTE
 	}
 
-	/**
-	 * @param message the
-	 * @param cause
-	 */
-	public VaSolSimException(String message, Throwable cause)
+	public boolean hasCurrentAuth()
 	{
-		super(message, cause);
+		return this.authType != AuthType.NONE;
+	}
+
+	public AuthType getAuthType()
+	{
+		return this.authType;
+	}
+
+	public void revoke()
+	{
+		this.authType = AuthType.NONE;
 	}
 }

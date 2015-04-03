@@ -17,21 +17,17 @@
  *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.java.vasolsim.sclient.auth;
+package main.java.vasolsim.common.notification.remote;
+
+import java.io.File;
 
 /**
  * @author willstuckey
- * @date 2/5/15 <p></p>
+ * @date 3/11/15 <p></p>
  */
-public class VSSAuthToken
+public interface RemoteNotifier
 {
-	public VSSAuthToken()
-	{
+	public boolean sendRemoteNotification(String subject, String body);
 
-	}
-
-	public void revoke()
-	{
-
-	}
+	public boolean sendRemoteNotification(String subject, String body, File[] attachments);
 }

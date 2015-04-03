@@ -59,7 +59,7 @@ public class ExamInitNode implements DrawableNode
 		HBox horizontalRoot = new HBox();
 
 		VBox verticalRoot = new VBox();
-		verticalRoot.getStyleClass().add("borders");
+		verticalRoot.getStyleClass().addAll("borders");
 		horizontalRoot.getChildren().add(verticalRoot);
 
 		/*

@@ -39,7 +39,7 @@ public class CenterNode
 		centerRoot.setPrefWidth(Double.MAX_VALUE);
 		centerRoot.getStyleClass().add("borders");
 
-		styledRoot = new VBox();
+		styledRoot = new VBox(20);
 		styledRoot.getStyleClass().add("centervbox");
 		styledRoot.setPrefHeight(1200);
 		styledRoot.setPrefWidth(2000);

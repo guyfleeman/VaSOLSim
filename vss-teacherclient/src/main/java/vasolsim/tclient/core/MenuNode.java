@@ -19,6 +19,7 @@
 
 package main.java.vasolsim.tclient.core;
 
+import main.java.vasolsim.common.notification.PopupManager;
 import main.java.vasolsim.tclient.TeacherClient;
 import main.java.vasolsim.tclient.form.ExamExportNode;
 import main.java.vasolsim.common.support.SystemInformationNode;
@@ -29,6 +30,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.KeyCombination;
+
+import java.io.File;
 
 /**
  * @author willstuckey
@@ -143,6 +146,19 @@ public class MenuNode
 		                             exitApplicationMenuItem,
 		                             new SeparatorMenuItem(),
 		                             clearPersistence);
+		clearPersistence.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent event)
+			{
+				if (PopupManager.askYesNo("Are you sure you would like to delete persistent data? This will close " +
+						                          "the program. (you should manually save exams before proceeding)"))
+				{
+					TeacherClient.clearPersistenceFlagged = true;
+					TeacherClient.stage.close();
+				}
+			}
+		});
 
 		Menu statisticsMenu = new Menu("Statistics");
 		MenuItem fetchAllStatisticsMenuItem = new MenuItem("Fetch All Statistics");

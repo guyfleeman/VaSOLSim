@@ -1,3 +1,5 @@
+import groovy.io.FileType
+
 ext.sourceCompatibility = 1.7
 ext.targetCompatibility = 1.8
 version = '0.5.0a'
@@ -35,6 +37,62 @@ subprojects {
     }
 }
 
+private int getLines(File file) {
+    int index = 0;
+    file.eachLine {
+        index++;
+    }
+    return index;
+}
+
+task size << {
+    def filesGradle = 0
+    def filesJava   = 0
+    def filesCSS    = 0
+    def filesXML    = 0
+    def linesGradle = 0
+    def linesJava   = 0
+    def linesCSS    = 0
+    def linesXML    = 0
+
+    def dir = new File('.')
+    def list = []
+    dir.eachFileRecurse (FileType.ANY) { file ->
+        if (file.toString().contains('.git')
+                || (file.toString().contains('build') && !file.name.contains('build'))) {
+            return
+        }
+
+        if (file.isFile()) {
+            list << file
+        }
+    }
+
+    list.each {
+        if (it.name.matches('.*\\.java')) {
+            filesJava++
+            linesJava += getLines(it)
+        }
+        else if (it.name.matches('.*\\.css')) {
+            filesCSS++
+            linesCSS += getLines(it)
+        }
+        else if (it.name.matches('.*\\.xml')) {
+            filesXML++
+            linesXML += getLines(it)
+        }
+        else if (it.name.matches('.*\\.gradle')) {
+            filesGradle++
+            linesGradle += getLines(it)
+        }
+    }
+
+    println "Lines Gradle: " + linesGradle
+    println "Lines Java: " + linesJava
+    println "Lines CSS: " + linesCSS
+    println "Lines XML: " + linesXML
+    println "Lines Total: " + (linesGradle + linesJava + linesCSS + linesXML)
+}
 
 project(':vss-common') {
     dependencies {

@@ -17,37 +17,13 @@
  *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.java.vasolsim.common;
+package main.java.vasolsim.common.auth;
 
 /**
- * @author guyfleeman
- * @date 7/2/14
- * <p>This exception is thrown if the XML of an imported is malformed, or incomplete, to a non-recoverable point.</p>
+ * @author willstuckey
+ * @date 3/3/15 <p></p>
  */
-public class MalformedXMLException extends VaSolSimException
+public interface LocalUserAuthenticator
 {
-	/**
-	 * @param message the message
-	 */
-	public MalformedXMLException(String message)
-	{
-		super(message);
-	}
-
-	/**
-	 * @param cause the cause
-	 */
-	public MalformedXMLException(Throwable cause)
-	{
-		super(cause);
-	}
-
-	/**
-	 * @param message the message
-	 * @param cause the cause
-	 */
-	public MalformedXMLException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
+	public VSSAuthToken authenticateUser(String firstname, String lastname, String studentNumber) throws VSSAuthenticationException;
 }

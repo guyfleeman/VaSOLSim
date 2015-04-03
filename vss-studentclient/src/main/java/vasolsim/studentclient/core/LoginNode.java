@@ -17,21 +17,28 @@
  *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.java.vasolsim.sclient.core;
+package main.java.vasolsim.studentclient.core;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import main.java.vasolsim.common.GenericUtils;
+import main.java.vasolsim.common.auth.VSSAuthenticationException;
 import main.java.vasolsim.common.node.DrawableParent;
-import main.java.vasolsim.sclient.StudentClient;
+import main.java.vasolsim.common.notification.PopupManager;
+import main.java.vasolsim.studentclient.StudentClient;
 import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.apache.log4j.Logger;
 
 /**
  * @author willstuckey
@@ -39,6 +46,8 @@ import javafx.scene.layout.VBox;
  */
 public class LoginNode implements DrawableParent
 {
+	public static Logger logger = Logger.getLogger(LoginNode.class.getName());
+
 	protected Parent loginNode;
 
 	public LoginNode()
@@ -48,6 +57,8 @@ public class LoginNode implements DrawableParent
 
 	public void redrawParent(boolean apply)
 	{
+		logger.info("displaying login");
+
 		final HBox horizontalRoot = new HBox();
 		horizontalRoot.getStyleClass().add("login-root");
 		{
@@ -71,6 +82,9 @@ public class LoginNode implements DrawableParent
 				loginRoot.setAlignment(Pos.CENTER);
 				loginRoot.getStyleClass().add("login-bg");
 				{
+					final Button loginButton = new Button("Login");
+					loginButton.getStyleClass().addAll("text", "text-medium", "text-white", "core-button");
+
 					final VBox localRoot = new VBox();
 					{
 						final RadioButton select = new RadioButton("Local Login");
@@ -113,6 +127,60 @@ public class LoginNode implements DrawableParent
 										firstNameTF.setDisable(false);
 										lastNameTF.setDisable(false);
 										studentNumberTF.setDisable(false);
+
+										logger.info("Login Context -> local");
+										loginButton.setOnAction(new EventHandler<ActionEvent>()
+										{
+											@Override
+											public void handle(ActionEvent event)
+											{
+												try
+												{
+													StudentClient.activeAuthorization =
+															StudentClient.localUserAuthenticator.authenticateUser(
+																	firstNameTF.getText(),
+																	lastNameTF.getText(),
+																	studentNumberTF.getText());
+
+													advanceNode();
+												}
+												catch (VSSAuthenticationException e)
+												{
+													StudentClient.activeAuthorization = null;
+													//logger.warn(GenericUtils.exceptionToString(e));
+													PopupManager.showMessage(VSSAuthenticationException
+															                         .lastErrorMessage);
+												}
+											}
+										});
+									}
+								}
+							});
+
+							/*
+							 * default handler
+							 */
+							loginButton.setOnAction(new EventHandler<ActionEvent>()
+							{
+								@Override
+								public void handle(ActionEvent event)
+								{
+									try
+									{
+										StudentClient.activeAuthorization =
+												StudentClient.localUserAuthenticator.authenticateUser(
+														firstNameTF.getText(),
+														lastNameTF.getText(),
+														studentNumberTF.getText());
+
+										advanceNode();
+									}
+									catch (VSSAuthenticationException e)
+									{
+										StudentClient.activeAuthorization = null;
+										//logger.warn(GenericUtils.exceptionToString(e));
+										PopupManager.showMessage(VSSAuthenticationException
+												                         .lastErrorMessage);
 									}
 								}
 							});
@@ -129,6 +197,7 @@ public class LoginNode implements DrawableParent
 						select.setToggleGroup(loginGroup);
 						select.setSelected(false);
 						select.getStyleClass().addAll("text", "text-medium", "text-white");
+						select.setDisable(true);
 
 						final VBox fields = new VBox();
 						fields.getStyleClass().add("login-field-cont");
@@ -168,6 +237,31 @@ public class LoginNode implements DrawableParent
 										usernameTF.setDisable(false);
 										passwordTF.setDisable(false);
 										remoteTF.setDisable(false);
+
+										logger.info("Login Context -> remote");
+										loginButton.setOnAction(new EventHandler<ActionEvent>()
+										{
+											@Override
+											public void handle(ActionEvent event)
+											{
+												try
+												{
+													StudentClient.activeAuthorization =
+															StudentClient.remoteUserAuthenticator.authenticateUser(
+																	usernameTF.getText(),
+																	passwordTF.getText().toCharArray(),
+																	remoteTF.getText());
+
+													advanceNode();
+												}
+												catch (VSSAuthenticationException e)
+												{
+													StudentClient.activeAuthorization = null;
+													logger.warn(GenericUtils.exceptionToString(e));
+													PopupManager.showMessage(VSSAuthenticationException.lastErrorMessage);
+												}
+											}
+										});
 									}
 								}
 							});
@@ -178,7 +272,7 @@ public class LoginNode implements DrawableParent
 						remoteRoot.getChildren().addAll(select, fields);
 					}
 
-					loginRoot.getChildren().addAll(localRoot, remoteRoot);
+					loginRoot.getChildren().addAll(localRoot, remoteRoot, loginButton);
 				}
 
 				left.getChildren().addAll(titleRoot, loginRoot);
@@ -201,7 +295,6 @@ public class LoginNode implements DrawableParent
 					top.getChildren().addAll(white, lightGray);
 				}
 
-
 				final HBox bottom = new HBox();
 				bottom.setAlignment(Pos.CENTER);
 				{
@@ -221,6 +314,12 @@ public class LoginNode implements DrawableParent
 		}
 
 		loginNode = horizontalRoot;
+	}
+
+	protected void advanceNode()
+	{
+		//StudentClient.primaryScene.setRoot(null);
+		StudentClient.primaryScene.setRoot(StudentClient.examSelectorNode.getParent());
 	}
 
 	public Parent getParent()

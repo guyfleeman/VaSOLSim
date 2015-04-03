@@ -17,19 +17,23 @@
  *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.java.vasolsim.sclient.auth;
+package main.java.vasolsim.common.notification.remote;
 
-import javax.annotation.Nonnull;
+import java.io.File;
 
 /**
  * @author willstuckey
- * @date 2/5/15 <p></p>
+ * @date 3/11/15 <p></p>
  */
-public class DefaultRemoteUserAuthenticator implements RemoteUserAuthenticator
+public class RemoteDependentNotifier implements RemoteNotifier
 {
-	@Nonnull
-	public VSSAuthToken authenticateUser() throws VSSAuthenticationException
+	public boolean sendRemoteNotification(String subject, String body)
 	{
-		throw new VSSAuthenticationException("Client does not yet support remote authorization.");
+		return sendRemoteNotification(subject, body, null);
+	}
+
+	public boolean sendRemoteNotification(String subject, String body, File[] attachments)
+	{
+		return false;
 	}
 }

@@ -38,6 +38,7 @@ import static main.java.vasolsim.common.GenericUtils.*;
 public class QuestionSet
 {
 	private final boolean isLocked;
+	private boolean scrambleQuestionOrder = false;
 	@Nonnull
 	private String name;
 	@Nonnull
@@ -191,6 +192,15 @@ public class QuestionSet
 	}
 
 	/**
+	 *
+	 * @return
+	 */
+	public boolean hasResources()
+	{
+		return resourceType == ResourceType.PNG;
+	}
+
+	/**
 	 * gets the name
 	 * @return name
 	 */
@@ -228,5 +238,23 @@ public class QuestionSet
 	{
 		if (!isLocked)
 			this.questions = questions;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public boolean getScrambleQuestionOrder()
+	{
+		return scrambleQuestionOrder;
+	}
+
+	/**
+	 *
+	 * @param scrambleQuestionOrder
+	 */
+	public void setScrambleQuestionOrder(boolean scrambleQuestionOrder)
+	{
+		this.scrambleQuestionOrder = scrambleQuestionOrder;
 	}
 }

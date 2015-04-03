@@ -1,131 +1,115 @@
 /*
  * Copyright (c) 2015.
  *
- *     This file is part of VaSOLSim.
+ * This file is part of VaSOLSim.
  *
- *     VaSOLSim is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * VaSOLSim is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *     VaSOLSim is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * VaSOLSim is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.root
-{
-	-fx-background-image: url("../img/background.png");
+.root {
+    -fx-background-image: url("img/background.png");
 }
 
-.borders
-{
-	-fx-padding: 10 10 10 10;
-	-fx-spacing: 20 20 20 20;
+.borders {
+    -fx-padding: 10px 10px 10px 10px;
+    -fx-spacing: 20px;
 }
 
-.paddingtwo
-{
-	/* top, right, bottom, left */
-	-fx-padding: 3 5 3 5;
+.paddingtwo {
+    /* top, right, bottom, left */
+    -fx-padding: 3px 5px 3px 5px;
 }
 
-.helementspacing
-{
-	-fx-padding: 10 10 10 0;
-    -fx-spacing: 10 10 10 0;
+.helementspacing {
+    -fx-padding: 10px 10px 10px 0;
+    -fx-spacing: 10px 10px 10px 0;
 }
 
-.leftvbox
-{
-	-fx-padding: 10 10 10 10;
-    -fx-spacing: 20 20 20 20;
-
-	-fx-background-color: rgba(51, 173, 255, 0.2);
-	-fx-border-width: 2;
-	-fx-border-color: rgba(51, 173, 255, 0.6);
-	/* top-left, top-right, bottom-right, bottom-left */
-     -fx-border-radius: 10 0 0 10;
-     -fx-background-radius: 9 0 0 9;
-}
-
-.centervbox
-{
-	-fx-padding: 10 10 10 10;
-    -fx-spacing: 20 20 20 20;
+.leftvbox {
+    -fx-padding: 10px 10px 10px 10px;
+    -fx-spacing: 20px;
 
     -fx-background-color: rgba(51, 173, 255, 0.2);
-    -fx-border-width: 2;
+    -fx-border-width: 2px;
     -fx-border-color: rgba(51, 173, 255, 0.6);
     /* top-left, top-right, bottom-right, bottom-left */
-    -fx-border-radius: 0 10 10 0;
-    -fx-background-radius: 0 9 9 0;
+    -fx-border-radius: 10px 0 0 10px;
+    -fx-background-radius: 9px 0 0 9px;
 }
 
-.treebox
-{
-	 -fx-background-color: rgb(255, 0, 0);
+.centervbox {
+    -fx-padding: 10px 10px 10px 10px;
+    -fx-spacing: 20px;
+
+    -fx-background-color: rgba(51, 173, 255, 0.2);
+    -fx-border-width: 2px;
+    -fx-border-color: rgba(51, 173, 255, 0.6);
+    /* top-left, top-right, bottom-right, bottom-left */
+    -fx-border-radius: 0 10px 10px 0;
+    -fx-background-radius: 0 9px 9px 0;
 }
 
-.lbltext
-{
-	-fx-font-size: 16;
-	-fx-text-fill: rgb(255, 255, 255);
-	-fx-font-weight: bold;
+.treebox {
+    -fx-background-color: rgb(255, 0, 0);
 }
 
-.lbltextsub
-{
- 	-fx-font-size: 14;
+.lbltext {
+    -fx-font-size: 16;
     -fx-text-fill: rgb(255, 255, 255);
     -fx-font-weight: bold;
 }
 
-.rectspacer
-{
-	-fx-fill: white;
-	-fx-stroke-width: 3;
-}
-
-.lblspacer
-{
-	-fx-font-size: 0;
-	-fx-padding: 0 0 0 0;
-	-fx-background-color: rgb(255, 255, 255);
-	/* -fx-background-radius: 2 2 2 2; */
-}
-
-.cbtext
-{
-	-fx-font-size: 12;
+.lbltextsub {
+    -fx-font-size: 14;
     -fx-text-fill: rgb(255, 255, 255);
     -fx-font-weight: bold;
 }
 
-.scrollpanebg
-{
-	-fx-background-color: rgba(51, 173, 255, 0.0);
+.rectspacer {
+    -fx-fill: white;
+    -fx-stroke-width: 3px;
 }
 
-.pic
-{
-	-fx-spacing: 10;
+.lblspacer {
+    -fx-font-size: 0;
+    -fx-padding: 0 0 0 0;
+    -fx-background-color: rgb(255, 255, 255);
+    /* -fx-background-radius: 2 2 2 2; */
 }
 
-.grammarSpace
-{
-	-fx-background-color: transparent;
-	-fx-border-width: 2;
-	-fx-border-color: #000000;
+.cbtext {
+    -fx-font-size: 12;
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-font-weight: bold;
 }
 
-.grammarSpaceActive
-{
-	-fx-background-color: transparent;
-    -fx-border-width: 2;
+.scrollpanebg {
+    -fx-background-color: rgba(51, 173, 255, 0.0);
+}
+
+.pic {
+    -fx-spacing: 10;
+}
+
+.grammarSpace {
+    -fx-background-color: transparent;
+    -fx-border-width: 2px;
+    -fx-border-color: #000000;
+}
+
+.grammarSpaceActive {
+    -fx-background-color: transparent;
+    -fx-border-width: 2px;
     -fx-border-color: rgba(0, 255, 0, 0.8);
 }

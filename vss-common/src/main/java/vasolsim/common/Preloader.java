@@ -40,7 +40,7 @@ import javafx.stage.Stage;
  * @date 11/7/14
  * <p>VaSOLSim preloader framework.</p>
  */
-public class Preload
+public class Preloader
 {
 	public static String preloadTitle       = "Title";
 	public static String pathToPreloadImage = "/rsc/img/preload.png";
@@ -83,7 +83,7 @@ public class Preload
 		StackPane preloadRoot = new StackPane();
 
 		ImageView view = new ImageView(new Image(
-				Preload.class.getResource(Preload.pathToPreloadImage).toExternalForm()));
+				Preloader.class.getResource(Preloader.pathToPreloadImage).toExternalForm()));
 		view.setFitWidth(800);
 		view.setFitHeight(480);
 		view.setPreserveRatio(false);

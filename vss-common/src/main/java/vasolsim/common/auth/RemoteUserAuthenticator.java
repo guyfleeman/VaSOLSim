@@ -17,7 +17,7 @@
  *     along with VaSOLSim.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package main.java.vasolsim.sclient.auth;
+package main.java.vasolsim.common.auth;
 
 import javax.annotation.Nonnull;
 
@@ -28,5 +28,5 @@ import javax.annotation.Nonnull;
 public interface RemoteUserAuthenticator
 {
 	@Nonnull
-	public VSSAuthToken authenticateUser() throws VSSAuthenticationException;
+	public VSSAuthToken authenticateUser(String username, char[] password, String remote) throws VSSAuthenticationException;
 }
