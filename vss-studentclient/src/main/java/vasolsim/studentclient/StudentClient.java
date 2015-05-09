@@ -28,9 +28,9 @@ import main.java.vasolsim.common.auth.LocalUserAuthenticator;
 import main.java.vasolsim.common.auth.RemoteUserAuthenticator;
 import main.java.vasolsim.common.auth.VSSAuthToken;
 import main.java.vasolsim.common.node.DrawableParent;
-import main.java.vasolsim.common.notification.DebugWindow;
-import main.java.vasolsim.common.notification.PopupManager;
-import main.java.vasolsim.common.notification.remote.RemoteStandaloneNotifier;
+import main.java.vasolsim.common.support.notification.DebugWindow;
+import main.java.vasolsim.common.support.notification.PopupManager;
+import main.java.vasolsim.common.support.notification.remote.RemoteStandaloneNotifier;
 import main.java.vasolsim.studentclient.core.LoginNode;
 
 import java.util.Arrays;

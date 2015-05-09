@@ -33,7 +33,7 @@ import javafx.scene.control.ToggleGroup;
 import main.java.vasolsim.common.GenericUtils;
 import main.java.vasolsim.common.auth.VSSAuthenticationException;
 import main.java.vasolsim.common.node.DrawableParent;
-import main.java.vasolsim.common.notification.PopupManager;
+import main.java.vasolsim.common.support.notification.PopupManager;
 import main.java.vasolsim.studentclient.StudentClient;
 import javafx.scene.Parent;
 import javafx.scene.layout.HBox;

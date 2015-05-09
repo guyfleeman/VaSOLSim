@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: main.java.vasolsim.tclient.TeacherClient
+Main-Class: main.java.vasolsim.teacherclient.TeacherClient
 

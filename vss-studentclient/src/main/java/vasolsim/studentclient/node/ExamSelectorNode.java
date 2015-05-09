@@ -32,7 +32,7 @@ import main.java.vasolsim.common.auth.VSSAuthToken;
 import main.java.vasolsim.common.file.Exam;
 import main.java.vasolsim.common.file.ExamBuilder;
 import main.java.vasolsim.common.node.DrawableParent;
-import main.java.vasolsim.common.notification.PopupManager;
+import main.java.vasolsim.common.support.notification.PopupManager;
 import main.java.vasolsim.studentclient.StudentClient;
 
 import java.io.File;

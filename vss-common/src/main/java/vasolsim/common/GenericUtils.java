@@ -20,11 +20,11 @@
 package main.java.vasolsim.common;
 
 import main.java.vasolsim.common.file.Exam;
-import main.java.vasolsim.common.notification.PopupManager;
+import main.java.vasolsim.common.support.notification.PopupManager;
 import main.java.vasolsim.common.file.AnswerChoice;
 import main.java.vasolsim.common.file.Question;
 import main.java.vasolsim.common.file.QuestionSet;
-import main.java.vasolsim.tclient.tree.TreeElement;
+import main.java.vasolsim.common.node.tree.TreeElement;
 
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
@@ -59,7 +59,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -917,41 +916,6 @@ public class GenericUtils
 		{
 			throw new RuntimeException(e);
 		}
-	}
-
-	/**
-	 * exports an internal resource to an external file
-	 *
-	 * @param internalResource internal resource
-	 * @param externalResource external target file
-	 *
-	 * @return if the export was successful
-	 */
-	public static boolean exportResource(String internalResource, String externalResource)
-	{
-		return exportResource(GenericUtils.class.getResource(internalResource), new File(externalResource));
-	}
-
-	/**
-	 * exports an internal resource to an external file
-	 *
-	 * @param internalResource internal resource
-	 * @param externalResource external target file
-	 *
-	 * @return if the export was successful
-	 */
-	public static boolean exportResource(URL internalResource, File externalResource)
-	{
-		try
-		{
-			FileUtils.copyURLToFile(internalResource, externalResource);
-		}
-		catch (IOException e)
-		{
-			return false;
-		}
-
-		return true;
 	}
 
 	/*

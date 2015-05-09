@@ -20,7 +20,7 @@
 package main.java.vasolsim.common;
 
 import javax.annotation.Nonnull;
-import main.java.vasolsim.common.notification.PopupManager;
+import main.java.vasolsim.common.support.notification.PopupManager;
 
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;

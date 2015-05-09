@@ -1,2 +1,2 @@
 rootProject.name = 'VaSOLSim'
-include 'vss-common', 'vss-studentclient', 'vss-teacherclient'
+include 'vss-common', 'vss-plugin-api', 'vss-plugin-impl', 'vss-studentclient', 'vss-teacherclient'

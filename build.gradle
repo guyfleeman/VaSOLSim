@@ -12,11 +12,13 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
     apply plugin: 'eclipse'
+    group = 'vss'
 }
 
 subprojects {
     repositories {
         mavenCentral()
+        mavenRepo urls: 'https://github.com/guyfleeman/VaSOLSim-maven-missing/raw/master/'
     }
 
     dependencies {
@@ -33,7 +35,8 @@ subprojects {
         'commons-io:commons-io:2.4',
         'log4j:log4j:1.2.17',
         'javax.mail:mail:1.4.7',
-        'com.google.code.findbugs:jsr305:3.0.0')
+        'com.google.code.findbugs:jsr305:3.0.0',
+        'com.google.code.jspf:jspf.core:1.0.2')
     }
 }
 
@@ -101,6 +104,13 @@ project(':vss-common') {
     }
 }
 
+project(':vss-plugin-api') {
+    dependencies {
+        compile project(':vss-common')
+        /*compile('')*/
+    }
+}
+
 project(':vss-studentclient') {
     apply from: 'http://dl.bintray.com/content/shemnon/javafx-gradle/0.3.0/javafx.plugin'
 
@@ -108,7 +118,7 @@ project(':vss-studentclient') {
         compile project(':vss-common')
     }
 
-    ext.mainClassName = 'main.java.vasolsim.sclient.StudentClient'
+    ext.mainClassName = 'main.java.vasolsim.studentclient.StudentClient'
     ext.applicationDefaultJvmArgs = ['-Dgreeting.language=en', '-Xms512m', '-Xmx2048m']
 
     /*
@@ -118,7 +128,7 @@ project(':vss-studentclient') {
         appID = 'vss-sc'
         appName = 'VSS Student Client'
 
-        mainClass = 'main.java.vasolsim.sclient.StudentClient'
+        mainClass = 'main.java.vasolsim.studentclient.StudentClient'
 
         //jvm arguments, application command line arguments
         jvmArgs = ['-Dgreeting.language=en', '-Xms512m', '-Xmx2048m']
@@ -143,14 +153,14 @@ project(':vss-studentclient') {
     }
 }
 
-project('vss-teacherclient') {
+project(':vss-teacherclient') {
     apply from: 'http://dl.bintray.com/content/shemnon/javafx-gradle/0.3.0/javafx.plugin'
 
     dependencies {
         compile project(':vss-common')
     }
 
-    ext.mainClassName = 'main.java.vasolsim.tclient.TeacherClient'
+    ext.mainClassName = 'main.java.vasolsim.teacherclient.TeacherClient'
     ext.applicationDefaultJvmArgs = ['-Dgreeting.language=en', '-Xms512m', '-Xmx2048m']
 
     /*
@@ -160,7 +170,7 @@ project('vss-teacherclient') {
         appID = 'vss-tc'
         appName = 'VSS Teacher Client'
 
-        mainClass = 'main.java.vasolsim.tclient.TeacherClient'
+        mainClass = 'main.java.vasolsim.teacherclient.TeacherClient'
 
         //jvm arguments, application command line arguments
         jvmArgs = ['-Dgreeting.language=en', '-Xms512m', '-Xmx2048m']

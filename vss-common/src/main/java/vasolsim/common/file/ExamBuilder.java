@@ -22,7 +22,7 @@ package main.java.vasolsim.common.file;
 import javax.annotation.Nonnull;
 import main.java.vasolsim.common.GenericUtils;
 import main.java.vasolsim.common.VaSolSimException;
-import main.java.vasolsim.common.notification.PopupManager;
+import main.java.vasolsim.common.support.notification.PopupManager;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Level;
