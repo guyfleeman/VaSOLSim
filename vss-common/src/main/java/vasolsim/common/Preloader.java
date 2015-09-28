@@ -61,6 +61,7 @@ public class Preloader
 	                        @Nonnull EventHandler<WorkerStateEvent> onSuccess,
 	                        @Nonnull EventHandler<WorkerStateEvent> onFail)
 	{
+		stage.hide();
 		stage.setTitle(preloadTitle);
 		stage.setScene(getPreloadScene());
 		stage.show();
@@ -82,8 +83,8 @@ public class Preloader
 	{
 		StackPane preloadRoot = new StackPane();
 
-		ImageView view = new ImageView(new Image(
-				Preloader.class.getResource(Preloader.pathToPreloadImage).toExternalForm()));
+		Image img = new Image(Preloader.class.getResource(Preloader.pathToPreloadImage).toExternalForm());
+		ImageView view = new ImageView(img);
 		view.setFitWidth(800);
 		view.setFitHeight(480);
 		view.setPreserveRatio(false);

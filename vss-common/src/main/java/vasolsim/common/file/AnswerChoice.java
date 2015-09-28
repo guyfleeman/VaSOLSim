@@ -260,4 +260,9 @@ public class AnswerChoice
 	{
 		this.visualPersistence = null;
 	}
+
+	public String toString()
+	{
+		return "AC: " + visibleChoiceID + ", " + text + ", " + isCorrect;
+	}
 }

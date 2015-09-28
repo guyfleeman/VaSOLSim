@@ -161,6 +161,7 @@ public class Question
 				{
 					AnswerChoice ac = new AnswerChoice();
 					ac.setActive(false);
+					ac.setCorrect(false);
 					ac.setText(Character.toString(c));
 					ac.setVisibleChoiceID(Character.toString(c));
 					answers.add(ac);

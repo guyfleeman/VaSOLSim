@@ -22,6 +22,7 @@ package main.java.vasolsim.teacherclient;
 import javax.annotation.Nonnull;
 import main.java.vasolsim.common.ExternalTask;
 import main.java.vasolsim.common.GenericUtils;
+import main.java.vasolsim.common.PersistenceUtil;
 import main.java.vasolsim.common.Preloader;
 import main.java.vasolsim.common.support.PersistenceUtils;
 import main.java.vasolsim.common.support.notification.DebugWindow;
@@ -230,9 +231,16 @@ public class TeacherClient extends Application
 	 */
 	public static boolean clearPersistenceFlagged = false;
 	public static String rscPathRoot                = "/rsc/";
+	public static String cssRoot                    = File.separator + "css" + File.separator;
 	public static String pathToStyle                = rscPathRoot + "css/tClientStyle.css";
 	public static String pathToCommonStyle          = rscPathRoot + "css/commonStyle.css";
 	public static String pathToAppGlobal            = rscPathRoot + "css/appglobal.css";
+	public static String[] styles =
+			{
+					"tClientStyle.css",
+					"commonStyle.css"/*,
+					"appglobal.css"*/
+			};
 	public static String pathToBackgroundImage      = rscPathRoot + "img/background.png";
 	public static String pathToExamsIcon            = rscPathRoot + "img/exams.png";
 	public static String pathToExamIcon             = rscPathRoot + "img/exam.png";
@@ -242,7 +250,7 @@ public class TeacherClient extends Application
 	public static String pathToQuestionIcon         = rscPathRoot + "img/question.png";
 	public static String pathToCorrectAnswerIcon    = rscPathRoot + "img/answerCorrect.png";
 	public static String pathToIncorrectAnswerIcon  = rscPathRoot + "img/answerIncorrect.png";
-	public static String pathToMasterPropertiesFile = rscPathRoot + "persistence/teacherClient.prop";
+	public static String pathToMasterPropertiesFile = rscPathRoot + "config/teacherClient.prop";
 
 	/*
 	 * rsc.style
@@ -405,8 +413,9 @@ public class TeacherClient extends Application
 					System.out.println("TODO: save open data");
 				else
 				{
+					//FIXME this needs to be recursive
+					//FIXME this is the wrong directory
 					new File(System.getProperty("user.home") + "/.vss-teacherclient").deleteOnExit();
-					//vasolsimFileRoot.deleteOnExit();
 				}
 
 				Platform.exit();
@@ -434,34 +443,21 @@ public class TeacherClient extends Application
 			@Override
 			protected Void call() throws Exception
 			{
+				this.applyDelay = true;
+				this.delayTime = 300; //ms
+
 				try
 				{
 					updateMessage("Initializing core elements...");
-					GenericUtils.pause();
+					teacherClientLogger.info("initializing core elements");
 
-					/*
-					 * create top node, the menu bar
-					 */
+					teacherClientLogger.trace("getting core nodes");
 					TeacherClient.topNode = MenuNode.getMenuNode();
-
-					/*
-					 * create left node, will contain the tree
-					 */
 					TeacherClient.leftNode = LeftNode.getLeftNode();
-
-					/*
-					 * create the center node
-					 */
 					TeacherClient.centerNode = CenterNode.getCenterRoot();
-
-					/*
-					 * create the bottom node
-					 */
 					TeacherClient.bottomNode = BottomNode.getBottomNode();
 
-					/*
-					 * bind nodes to the scene root
-					 */
+					teacherClientLogger.trace("binding nodes to root");
 					final BorderPane border = new BorderPane();
 					border.setTop(TeacherClient.topNode);
 					border.setLeft(TeacherClient.leftNode);
@@ -469,120 +465,30 @@ public class TeacherClient extends Application
 					border.setRight(TeacherClient.rightNode);
 					border.setBottom(TeacherClient.bottomNode);
 
-					/*
-					 * check for filesystem persistence (saved preferences and data)
-					 */
-					updateMessage("Checking for persistence...");
-					GenericUtils.pause();
-
-					PersistenceUtils.initCore();
-					try
+					updateMessage("Looking for data...");
+					teacherClientLogger.debug("looking for persistence");
+					File contentRoot = new File(System.getProperty("user.home") + File.separator +
+							                            PersistenceUtil.fsRoot + PersistenceUtil.tcRoot);
+					if (!PersistenceUtil.initPersistence(contentRoot.getPath(), File.separator + "rsc")
+							|| !PersistenceUtil.loadPersistentStyle(contentRoot.getPath() + File.separator + "rsc",
+							                                        primaryScene))
 					{
-						PersistenceUtils.initPersistentFS(new File("/rsc"), new File(System.getProperty("user.home") + "/.vss/teacherClient"), false, true);
-
-					}
-					catch (IOException e)
-					{
-						e.printStackTrace();
-						System.out.println(e.toString());
-					}
-
-					/*
-					File vasolsimFileRoot = new File(System.getProperty("user.home") + "/.vss-teacherclient");
-					File rsc              = new File(vasolsimFileRoot.getAbsolutePath() + "/rsc");
-					File data             = new File(vasolsimFileRoot.getAbsolutePath() + "/data");
-					File img              = new File(vasolsimFileRoot.getAbsolutePath() + "/rsc/img");
-
-					File propFile         = new File(vasolsimFileRoot.getAbsolutePath() + "/teacherClient.prop");
-					File imgFile          = new File(img.getAbsolutePath() + "/background.png");
-
-					boolean canLoadPersistence = true;
-					if (!(vasolsimFileRoot.isDirectory()
-							&& rsc.isDirectory()
-							&& data.isDirectory()
-							&& img.isDirectory()
-							&& propFile.isFile()
-							&& imgFile.isFile()))
-					{
-						updateMessage("Persistence absent. Creating...");
-						GenericUtils.pause();
-
-						vasolsimFileRoot.mkdirs();
-						rsc.mkdirs();
-						data.mkdirs();
-						img.mkdirs();
-
-						//failure to initialize required resources for persistence
-						if (!(vasolsimFileRoot.isDirectory()
-								&& rsc.isDirectory()
-								&& data.isDirectory()
-								&& img.isDirectory()))
+						teacherClientLogger.error("failed to load persistence off of the file system. " +
+								                          "Personalization will fail.");
+						for (String style : styles)
 						{
-							updateMessage("Error creating persistence. Attempting to recover...");
-							GenericUtils.pause();
-							loadDefaultResources(this);
-							canLoadPersistence = false;
-						}
-						else
-						{
-							try
-							{
-								if (!(new File(vasolsimFileRoot.getAbsolutePath() + "/teacherClient.prop").isFile()))
-									PersistenceUtils.exportResource(pathToMasterPropertiesFile,
-									                            vasolsimFileRoot.getAbsolutePath() +
-											                            "/teacherClient.prop");
-
-								if (!(new File(rsc.getAbsolutePath() + "/commonStyle.css").isFile()))
-									PersistenceUtils.exportResource(pathToCommonStyle,
-									                            rsc.getAbsolutePath() + "/commonStyle.css");
-
-								if (!(new File(rsc.getAbsolutePath() + "/tClientStyle.css").isFile()))
-									PersistenceUtils.exportResource(pathToStyle,
-									                            rsc.getAbsolutePath() + "/tClientStyle.css");
-
-								if (!(new File(rsc.getAbsolutePath() + "/appglobal.css").isFile()))
-									PersistenceUtils.exportResource(pathToAppGlobal,
-									                            rsc.getAbsolutePath() + "/appglobal.css");
-
-								if (!(new File(img.getAbsolutePath() + "/background.png")).isFile())
-									PersistenceUtils.exportResource(pathToBackgroundImage,
-									                            img.getAbsolutePath() + "/background.png");
-							}
-							//failure to copy master to visible or persistent resources
-							catch (Exception e)
-							{
-								updateMessage("Error creating persistence. Attempting to recover...");
-								GenericUtils.pause();
-								loadDefaultResources(this);
-								canLoadPersistence = false;
-							}
+							TeacherClient.primaryScene.getStylesheets().add(
+									TeacherClient.class.getResource(style).toExternalForm());
+							teacherClientLogger.debug("fbr: " + TeacherClient.class.getResource(style)
+							                                                       .toExternalForm());
 						}
 					}
-
-					if (canLoadPersistence)
-					{
-						updateMessage("Persistence found. Checking data...");
-						GenericUtils.pause();
-
-						FileInputStream fis = new FileInputStream(propFile);
-						Properties properties = new Properties();
-						properties.load(fis);
-						fis.close();
-
-						for (String s : properties.getProperty("charset", defaultCharsetString).split(" "))
-							TeacherClient.charset.add(s.charAt(0));
-						TeacherClient.charset.add(' ');
-
-						for (String s : properties.getProperty("stylesheet", defaultStylesheets).split(" "))
-							TeacherClient.primaryScene.getStylesheets().add("file:///" + rsc.getAbsolutePath() + "/" + s);
-					}
-					*/
 
 					/*
 					 * initialize assets that require a FX thread for initialization.
 					 */
 					updateMessage("Scheduling visual initialization...");
-					GenericUtils.pause();
+					teacherClientLogger.trace("setting resources to be run on the FX thread");
 
 					Platform.runLater(new Runnable()
 					{
@@ -603,10 +509,9 @@ public class TeacherClient extends Application
 						}
 					});
 
+					teacherClientLogger.info("initialization complete");
 					updateProgress(1, 1);
 					updateMessage("Done.");
-
-					GenericUtils.pause(1000);
 				}
 				catch (Exception e)
 				{
@@ -654,6 +559,20 @@ public class TeacherClient extends Application
 				TeacherClient.stage.show();
 			}
 		};
+	}
+
+	/**
+	 *
+	 * @param task
+	 */
+	public static void initPersistence(ExternalTask task)
+	{
+		/*
+		 * check for filesystem persistence (saved preferences and data)
+		 */
+		task.updateMessage("Checking for persistence...");
+
+		PersistenceUtil.initPersistence("", "");
 	}
 
 	/**

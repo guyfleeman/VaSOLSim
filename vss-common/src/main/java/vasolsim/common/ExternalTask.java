@@ -28,9 +28,15 @@ import javafx.concurrent.Task;
  */
 public abstract class ExternalTask<E> extends Task<E>
 {
+	public boolean applyDelay = false;
+	public long delayTime = 300;
+
 	public void updateMessage(String message)
 	{
 		super.updateMessage(message);
+
+		if (applyDelay)
+			GenericUtils.pause(delayTime);
 	}
 
 	public void updateProgress(double current, double max)

@@ -21,6 +21,7 @@ package main.java.vasolsim.studentclient;
 
 import main.java.vasolsim.common.ExternalTask;
 import main.java.vasolsim.common.GenericUtils;
+import main.java.vasolsim.common.PersistenceUtil;
 import main.java.vasolsim.common.Preloader;
 import main.java.vasolsim.common.auth.DefaultLocalUserAuthenticator;
 import main.java.vasolsim.common.auth.DefaultRemoteUserAuthenticator;
@@ -33,6 +34,7 @@ import main.java.vasolsim.common.support.notification.PopupManager;
 import main.java.vasolsim.common.support.notification.remote.RemoteStandaloneNotifier;
 import main.java.vasolsim.studentclient.core.LoginNode;
 
+import java.io.File;
 import java.util.Arrays;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -102,7 +104,7 @@ public class StudentClient extends Application
 	 * logging
 	 */
 	public static String logFormat = "%d{ISO8601} [%t] %-5p %c %x - %m%n";
-	public static Logger teacherClientLogger;
+	public static Logger studentClientLogger;
 	public static DebugWindow              debugWindow    = new DebugWindow(false);
 	public static RemoteStandaloneNotifier remoteNotifier = RemoteStandaloneNotifier.getInstance();
 
@@ -123,84 +125,31 @@ public class StudentClient extends Application
 				                   "If you're actively developing VSS, please set deploy to false.\n" +
 				                   "---------- DONE ----------");
 
-		/*
-		 * perform dependency link check, used to debug the addition of new libraries and fatJar creation
-		 */
-		if (!Arrays.asList(args).contains("--disable-dep-check"))
-		{
-			try
-			{
-				System.out.println("apache commons: " + StudentClient.class.getClassLoader().getResources(
-						"org/apache/commons/lang3/exception/ExceptionUtils.class"));
-				System.out.println("apache io:      " + StudentClient.class.getClassLoader().getResources(
-						"org/apache/commons/io/FileUtils.class"));
-				System.out.println("apache log4j:   " + StudentClient.class.getClassLoader().getResources(
-						"org/apache/log4j/Logger.class"));
-				System.out.println("apache pdfbox:  " + StudentClient.class.getClassLoader().getResources(
-						"org/apache/pdfbox/pdmodel.PDDocument.class"));
-				System.out.println("javamail:       " + StudentClient.class.getClassLoader().getResources(
-						"javax/mail/Version.class"));
-			}
-			catch (Exception e)
-			{
-				System.out.println("error enumerating dependencies");
-				throw new RuntimeException("error enumerating dependencies");
-			}
-		}
-		else
-		{
-			System.out.println("skipped dependency link check");
-		}
+		//initialize resources critical to the preloader
+		dependencySanityCheck(args);
+		initLogging(args);
 
-		/*
-		 * initialize logging
-		 */
-
-		ConsoleAppender console = new ConsoleAppender();
-		console.setLayout(new PatternLayout(logFormat));
-		console.setThreshold(Level.TRACE);
-		console.activateOptions();
-		Logger.getRootLogger().addAppender(console);
-
-		WriterAppender debugWindowAppender = new WriterAppender(
-				new PatternLayout(logFormat), StudentClient.debugWindow);
-
-		debugWindowAppender.setThreshold(Level.INFO);
-		if (Arrays.asList(args).contains("--debug"))
-			debugWindowAppender.setThreshold(Level.DEBUG);
-		if (Arrays.asList(args).contains("--trace"))
-			debugWindowAppender.setThreshold(Level.TRACE);
-
-		debugWindowAppender.activateOptions();
-		Logger.getRootLogger().addAppender(debugWindowAppender);
-
-		teacherClientLogger = Logger.getLogger(StudentClient.class.getName());
-		teacherClientLogger.setLevel(Level.ALL);
-
-		/*
-		 * set system keys
-		 */
-		teacherClientLogger.info("starting VSS student client");
-		teacherClientLogger.trace("init system properties");
+		//set system data
+		studentClientLogger.info("starting VSS student client");
+		studentClientLogger.trace("init system properties");
+		//force initialization of the JFX runtime prior to the preloader
 		new JFXPanel();
 		if (!Arrays.asList(args).contains("--disable-fullspeed"))
 			System.setProperty("javafx.animation.fullspeed", Boolean.toString(true));
 		if (!Arrays.asList(args).contains("--disable-caspian"))
 			System.setProperty("javafx.userAgentStylesheetUrl", "caspian");
-		teacherClientLogger.trace("launch");
+		studentClientLogger.debug("launch");
 
-		/*
-		 * launch the application
-		 */
 		try
 		{
 			launch(args);
 		}
 		catch (Exception e)
 		{
-			teacherClientLogger.fatal("unhandled root exception:\n\n" + GenericUtils.exceptionToString(e));
+			studentClientLogger.fatal("unhandled root exception:\n\n" + GenericUtils.exceptionToString(e));
 			if (PopupManager.askYesNo("unhandled root exception:\n\n" + GenericUtils.exceptionToString(e) +
 					                          "\n\nWould you like to send a bug report?"))
+			{
 				if (deploy)
 				{
 					boolean success = remoteNotifier.sendRemoteNotification("Student Client - Root Exception",
@@ -208,7 +157,10 @@ public class StudentClient extends Application
 					PopupManager.showMessage("The report " + (success ? "was successfully sent." : "failed to send."));
 				}
 				else
+				{
 					PopupManager.showMessage("The report was not sent. Bug reports are only sent in deploy mode.");
+				}
+			}
 
 			System.exit(-1);
 		}
@@ -259,6 +211,7 @@ public class StudentClient extends Application
 			@Override
 			protected Void call() throws Exception
 			{
+				final long NUM_UPDATE_STEPS = 2;
 
 				/*
 				 * authentication
@@ -267,29 +220,36 @@ public class StudentClient extends Application
 				StudentClient.localUserAuthenticator = DefaultLocalUserAuthenticator.getInstance();
 				StudentClient.remoteUserAuthenticator = DefaultRemoteUserAuthenticator.getInstance();
 
+				updateMessage("Looking for data...");
+				studentClientLogger.debug("looking for persistence");
+				File contentRoot = new File(System.getProperty("user.home") + File.separator +
+						                            PersistenceUtil.fsRoot + PersistenceUtil.scRoot);
+				if (!PersistenceUtil.initPersistence(contentRoot.getPath(), File.separator + "rsc")
+						|| !PersistenceUtil.loadPersistentStyle(contentRoot.getPath() + File.separator + "rsc",
+						                                        primaryScene))
+				{
+					studentClientLogger.error("failed to load persistence off of the file system. " +
+							                          "Personalization will fail.");
+					for (String style : styles)
+					{
+						StudentClient.primaryScene.getStylesheets().add(
+								StudentClient.class.getResource(style).toExternalForm());
+						studentClientLogger.debug("fbr: " + StudentClient.class.getResource(style)
+						                                                       .toExternalForm());
+					}
+				}
+
+				updateMessage("Initializing the UI...");
+				updateProgress(1, NUM_UPDATE_STEPS);
 				Platform.runLater(new Runnable()
 				{
 					@Override
 					public void run()
 					{
+						//node initialization
 
-						/*
-						 * resource initialization
-						 */
-						for (String style : styles)
-						{
-							StudentClient.primaryScene.getStylesheets().add(
-									StudentClient.class.getResource(style).toExternalForm());
-							System.out.println(StudentClient.class.getResource(style).toExternalForm());
-						}
-
-						/*
-						 * node initialization
-						 */
-						//TODO initialize fx nodes
 						StudentClient.loginNode = new LoginNode();
 						StudentClient.examSelectorNode = new ExamSelectorNode();
-
 
 						/*
 						 * set root
@@ -298,6 +258,9 @@ public class StudentClient extends Application
 					}
 				});
 
+				updateMessage("Done.");
+				updateProgress(2, NUM_UPDATE_STEPS);
+
 				return null;
 			}
 		};
@@ -305,6 +268,7 @@ public class StudentClient extends Application
 
 	/**
 	 * creates the on success EventHandler for the preloader
+	 *
 	 * @return event handler
 	 */
 	public static EventHandler<WorkerStateEvent> getOnSuccessRoutine()
@@ -314,6 +278,7 @@ public class StudentClient extends Application
 			@Override
 			public void handle(WorkerStateEvent workerStateEvent)
 			{
+
 				/*
 				 * hide and brief pause
 				 */
@@ -335,7 +300,9 @@ public class StudentClient extends Application
 				stage.maximizedProperty().addListener(new ChangeListener<Boolean>()
 				{
 					@Override
-					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean
+							newValue)
+
 					{
 						if (!newValue)
 						{
@@ -345,11 +312,68 @@ public class StudentClient extends Application
 					}
 				});
 
-				/*
-				 * show
-				 */
 				StudentClient.stage.show();
 			}
 		};
+	}
+
+	public static void dependencySanityCheck(String[] args)
+	{
+		/*
+		 * perform dependency link check, used to debug the addition of new libraries and fatJar creation
+		 */
+		if (!Arrays.asList(args).contains("--disable-dep-check"))
+		{
+			try
+			{
+				System.out.println("apache commons: " + StudentClient.class.getClassLoader().getResources(
+						"org/apache/commons/lang3/exception/ExceptionUtils.class"));
+				System.out.println("apache io:      " + StudentClient.class.getClassLoader().getResources(
+						"org/apache/commons/io/FileUtils.class"));
+				System.out.println("apache log4j:   " + StudentClient.class.getClassLoader().getResources(
+						"org/apache/log4j/Logger.class"));
+				System.out.println("apache pdfbox:  " + StudentClient.class.getClassLoader().getResources(
+						"org/apache/pdfbox/pdmodel.PDDocument.class"));
+				System.out.println("javamail:       " + StudentClient.class.getClassLoader().getResources(
+						"javax/mail/Version.class"));
+			}
+			catch (Exception e)
+			{
+				System.out.println("error enumerating dependencies");
+				throw new RuntimeException("error enumerating dependencies");
+			}
+		}
+		else
+		{
+			System.out.println("skipped dependency link check");
+		}
+	}
+
+	/**
+	 * initialize the logging
+	 * @param args
+	 */
+	protected static void initLogging(String[] args)
+	{
+		ConsoleAppender console = new ConsoleAppender();
+		console.setLayout(new PatternLayout(logFormat));
+		console.setThreshold(Level.TRACE);
+		console.activateOptions();
+		Logger.getRootLogger().addAppender(console);
+
+		WriterAppender debugWindowAppender = new WriterAppender(
+				new PatternLayout(logFormat), StudentClient.debugWindow);
+
+		debugWindowAppender.setThreshold(Level.INFO);
+		if (Arrays.asList(args).contains("--debug"))
+			debugWindowAppender.setThreshold(Level.DEBUG);
+		if (Arrays.asList(args).contains("--trace"))
+			debugWindowAppender.setThreshold(Level.TRACE);
+
+		debugWindowAppender.activateOptions();
+		Logger.getRootLogger().addAppender(debugWindowAppender);
+
+		studentClientLogger = Logger.getLogger(StudentClient.class.getName());
+		studentClientLogger.setLevel(Level.ALL);
 	}
 }

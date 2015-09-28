@@ -54,5 +54,7 @@ project**
 .gradle
 build/**
 vss-common/build/**
+vss-plugin-api/build/**
+vss-plugin-impl/build/**
 vss-studentclient/build/**
 vss-teacherclient/build/**
